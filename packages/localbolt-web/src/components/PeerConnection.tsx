@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import WebRTCService from "@/services/webrtc/WebRTCService";
+import { SignalingError } from "@/types/webrtc-errors";
+import { WebSocketSignaling, detectDeviceType, getDeviceName } from "@/services/signaling";
 import { TransferProgressBar } from "./file-upload/TransferProgress";
 import { PeerCodeInput } from "./peer-connection/PeerCodeInput";
 import { TargetPeerInput } from "./peer-connection/TargetPeerInput";
@@ -50,25 +52,41 @@ export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
     }
   }, [webrtc, isConnected]);
 
+  const signalingRef = useRef<WebSocketSignaling | null>(null);
+  const rtcServiceRef = useRef<WebRTCService | null>(null);
+
   useEffect(() => {
     if (!webrtc) {
-      // Use cryptographically secure peer code generation
       const code = generateSecurePeerCode();
       setPeerCode(code);
       console.log('[WEBRTC] Creating new service with secure code:', code);
-      const rtcService = new WebRTCService(code, handleFileReceive, handleConnectionError, handleProgress);
-      rtcService.setConnectionStateHandler(handleConnectionStateChange);
-      setWebrtc(rtcService);
+
+      const wsUrl = import.meta.env.VITE_SIGNAL_URL || 'ws://localhost:3001';
+      const signaling = new WebSocketSignaling(wsUrl);
+      signalingRef.current = signaling;
+
+      signaling.connect(code, getDeviceName(), detectDeviceType()).then(() => {
+        const rtcService = new WebRTCService(signaling, code, handleFileReceive, handleConnectionError, handleProgress);
+        rtcService.setConnectionStateHandler(handleConnectionStateChange);
+        rtcServiceRef.current = rtcService;
+        setWebrtc(rtcService);
+      }).catch((err) => {
+        console.error('[SIGNALING] Failed to connect:', err);
+        handleConnectionError(new SignalingError('Signaling connection failed', err));
+      });
 
       return () => {
         console.log('[WEBRTC] Cleaning up service');
-        rtcService.disconnect();
+        rtcServiceRef.current?.disconnect();
+        rtcServiceRef.current = null;
+        signalingRef.current?.disconnect();
+        signalingRef.current = null;
         setIsConnected(false);
         onConnectionChange(false);
         clearProgress();
       };
     }
-  }, []); 
+  }, []);
 
   const handleConnectionStateChange = (state: RTCPeerConnectionState) => {
     console.log('[UI] Connection state changed:', state);

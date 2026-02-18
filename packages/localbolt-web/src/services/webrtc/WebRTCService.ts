@@ -1,9 +1,8 @@
 import { box, randomBytes } from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
-import { supabase } from '@/integrations/supabase/client';
 import { WebRTCError, ConnectionError, SignalingError, TransferError, EncryptionError } from '@/types/webrtc-errors';
 import { getLocalOnlyRTCConfig } from '@/lib/platform-utils';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import type { SignalingProvider, SignalMessage } from '@/services/signaling';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -39,13 +38,6 @@ interface FileChunkMessage {
   cancelledBy?: 'sender' | 'receiver';
   paused?: boolean;
   resumed?: boolean;
-}
-
-interface SignalData {
-  type: 'offer' | 'answer' | 'ice-candidate';
-  data: any;
-  from: string;
-  to: string;
 }
 
 // ─── Encryption Helpers ─────────────────────────────────────────────────────
@@ -87,8 +79,7 @@ class WebRTCService {
   // Connection
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
-  private channel: RealtimeChannel | null = null;
-  private channelReady: Promise<void> | null = null;
+  private signaling: SignalingProvider;
 
   // Encryption
   private keyPair: { publicKey: Uint8Array; secretKey: Uint8Array };
@@ -120,6 +111,7 @@ class WebRTCService {
   private connectTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
+    signaling: SignalingProvider,
     private localPeerCode: string,
     private onReceiveFile: (file: Blob, filename: string) => void,
     private onError: (error: WebRTCError) => void,
@@ -128,51 +120,18 @@ class WebRTCService {
     console.log('[INIT] WebRTCService with peer code:', localPeerCode);
     this.keyPair = box.keyPair();
     this.onProgressCallback = onProgress;
-    this.setupSignaling();
+    this.signaling = signaling;
+    this.signaling.onSignal((signal) => this.handleSignal(signal));
   }
 
   // ─── Signaling ──────────────────────────────────────────────────────────
 
-  private setupSignaling() {
-    console.log('[SIGNALING] Subscribing to broadcast channel...');
-    this.channel = supabase.channel('signals')
-      .on('broadcast', { event: 'signal' }, ({ payload }) => {
-        this.handleSignal(payload as SignalData);
-      });
-
-    this.channelReady = new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new SignalingError('Signaling subscription timeout')), 8000);
-      this.channel!.subscribe((status) => {
-        console.log('[SIGNALING] Channel status:', status);
-        if (status === 'SUBSCRIBED') {
-          clearTimeout(timeout);
-          console.log('[SIGNALING] Channel ready');
-          resolve();
-        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
-          clearTimeout(timeout);
-          reject(new SignalingError(`Signaling subscribe failed: ${status}`));
-        }
-      });
-    });
-
-    // Surface unhandled subscription errors
-    this.channelReady.catch((err) => {
-      console.error('[SIGNALING] Channel subscription failed:', err);
-    });
-  }
-
-  private async sendSignal(type: SignalData['type'], data: any, to: string) {
-    if (!this.channel || !this.channelReady) throw new SignalingError('Channel not initialized');
-    await this.channelReady;
+  private async sendSignal(type: SignalMessage['type'], data: any, to: string) {
     console.log('[SIGNALING] Sending', type, 'to', to);
-    await this.channel.send({
-      type: 'broadcast',
-      event: 'signal',
-      payload: { type, data, from: this.localPeerCode, to } as SignalData,
-    });
+    await this.signaling.sendSignal(type, data, to);
   }
 
-  private async handleSignal(signal: SignalData) {
+  private async handleSignal(signal: SignalMessage) {
     if (signal.to !== this.localPeerCode) return;
     console.log('[SIGNALING] Received', signal.type, 'from', signal.from);
     if (signal.from) this.remotePeerCode = signal.from;
@@ -195,7 +154,7 @@ class WebRTCService {
     }
   }
 
-  private async handleOffer(signal: SignalData) {
+  private async handleOffer(signal: SignalMessage) {
     console.log('[SIGNALING] Processing offer from', signal.from);
     this.remotePublicKey = decodeBase64(signal.data.publicKey);
 
@@ -216,7 +175,7 @@ class WebRTCService {
     await this.flushPendingCandidates();
   }
 
-  private async handleAnswer(signal: SignalData) {
+  private async handleAnswer(signal: SignalMessage) {
     console.log('[SIGNALING] Processing answer from', signal.from);
     this.remotePublicKey = decodeBase64(signal.data.publicKey);
 
@@ -231,7 +190,7 @@ class WebRTCService {
     await this.flushPendingCandidates();
   }
 
-  private async handleIceCandidate(signal: SignalData) {
+  private async handleIceCandidate(signal: SignalMessage) {
     const candidate = new RTCIceCandidate(signal.data);
     console.log('[ICE] Remote candidate:', candidate.type, candidate.address, candidate.protocol);
 

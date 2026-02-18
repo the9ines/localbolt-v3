@@ -1,5 +1,14 @@
 # LocalBolt v3 — Claude Code Instructions
 
+## SRE Protocol (STRICT — No Exceptions)
+
+Every change to this project MUST follow strict SRE discipline. These rules apply to ALL Claude agents working in this repo.
+
+- **No uncommitted work leaves your session.** Before ending any task, ALL changes must be staged and committed. No loose files, no "I'll commit later."
+- **Working tree must be clean when you're done.** Run `git status` before and after work. Zero untracked or modified files when you finish.
+- **If you touch it, git tracks it.** Every file modification, creation, or deletion must be reflected in a commit. Nothing happens off-the-books.
+- **Never commit secrets.** No API keys, passwords, tokens, `.env` files, or credentials in any commit. Check `git diff --cached` before committing.
+
 ## Commit Protocol (MANDATORY)
 
 Every commit made by any Claude instance MUST follow this exact workflow:
