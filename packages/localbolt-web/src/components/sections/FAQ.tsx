@@ -12,7 +12,7 @@ export const faqs = [
   },
   {
     question: "Is LocalBolt safer than WeTransfer or Google Drive?",
-    answer: "Significantly. WeTransfer and Google Drive store your files on their servers. LocalBolt transfers files directly between your devices using NaCl/Curve25519 encryption (the same standard used by Signal and WireGuard). Your files never touch any server ⚡not during transfer, not after."
+    answer: "Significantly. WeTransfer and Google Drive store your files on their servers. LocalBolt transfers files directly between your devices using NaCl/Curve25519 encryption (the same standard used by Signal and WireGuard). Your files never touch any server. Not during transfer, not after."
   },
   {
     question: "Does LocalBolt work like AirDrop on Windows and Android?",
