@@ -8,3 +8,6 @@ target/
 *.swp
 *.swo
 .vite/
+
+# Local Netlify folder
+.netlify
