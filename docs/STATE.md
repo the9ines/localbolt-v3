@@ -1,16 +1,16 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.7-bolt-title
+- **Tag**: v3.0.9-discovery-polish
 - **Branch**: main
-- **HEAD**: 4471a2b
+- **HEAD**: eff0bb2
 
 ## Architecture
 - **Frontend**: React 18 + TypeScript + Vite + Tailwind + shadcn/ui + TanStack Router/Query
 - **Signaling**: Custom Rust WebSocket server (IP-based room grouping, replaced Supabase)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
-- **Discovery**: WS server groups same-IP peers (web), mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows live device list with icons and one-tap connect; mDNS planned for Tauri offline mode
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
@@ -27,7 +27,7 @@
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
 - **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5]
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
-- **Phase C**: NEXT — AirDrop-style device discovery UI
+- **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -44,3 +44,5 @@
 | v3.0.5-signaling-abstraction | fe14191 | Supabase types stub |
 | v3.0.6-bolt-separators | 4ead633 | Visual bolt icon separators in copy |
 | v3.0.7-bolt-title | 4471a2b | Bolt emoji in page title and meta tags |
+| v3.0.8-device-discovery | 5f86aa4 | AirDrop-style device discovery, peer code UI removed |
+| v3.0.9-discovery-polish | eff0bb2 | Visual refinement of discovery to match Transfer card |
