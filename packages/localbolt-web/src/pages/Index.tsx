@@ -87,13 +87,13 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud</title>
+        <title>LocalBolt ⚡ Encrypted P2P File Transfer ⚡ No Servers, No Cloud</title>
         <meta name="description" content="End-to-end encrypted file transfer directly between your devices. Files never touch a server. No sign-up, no cloud, no trace." />
         <meta name="keywords" content="encrypted file transfer, P2P file sharing, no cloud file transfer, end-to-end encrypted, private file sharing, secure file transfer, airdrop alternative, NaCl encryption" />
 
         {/* Open Graph / Social Media */}
-        <meta property="og:title" content="LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud" />
-        <meta property="og:description" content="End-to-end encrypted P2P file transfer. Files go directly between devices — never stored on any server. NaCl/Curve25519 encryption." />
+        <meta property="og:title" content="LocalBolt ⚡ Encrypted P2P File Transfer ⚡ No Servers, No Cloud" />
+        <meta property="og:description" content="End-to-end encrypted P2P file transfer. Files go directly between devices ⚡ never stored on any server. NaCl/Curve25519 encryption." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://localbolt.site" />
         <meta property="og:image" content="https://localbolt.site/og-image.png" />
@@ -107,10 +107,10 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@localbolt" />
         <meta name="twitter:creator" content="@the9ines" />
-        <meta name="twitter:title" content="LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud" />
+        <meta name="twitter:title" content="LocalBolt ⚡ Encrypted P2P File Transfer ⚡ No Servers, No Cloud" />
         <meta name="twitter:description" content="End-to-end encrypted file transfer between your devices. No servers, no cloud, no trace." />
         <meta name="twitter:image" content="https://localbolt.site/og-image.png" />
-        <meta name="twitter:image:alt" content="LocalBolt — Encrypted P2P File Transfer with NaCl/Curve25519 encryption" />
+        <meta name="twitter:image:alt" content="LocalBolt ⚡ Encrypted P2P File Transfer with NaCl/Curve25519 encryption" />
 
         {/* Additional Social Media Meta Tags */}
         <meta property="fb:app_id" content="" />
