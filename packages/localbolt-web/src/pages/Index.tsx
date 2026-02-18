@@ -46,14 +46,14 @@ const Index = () => {
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "End-to-end encrypted peer-to-peer file transfer. Files transfer directly between devices using NaCl/Curve25519 encryption — never stored on any server.",
+      "description": "End-to-end encrypted peer-to-peer file transfer. Files transfer directly between devices using NaCl/Curve25519 encryption ⚡never stored on any server.",
       "featureList": [
         "NaCl/Curve25519 end-to-end encryption",
-        "Direct peer-to-peer transfer — files never touch a server",
-        "Zero server storage — no cloud, no trace",
-        "Cross-platform — any modern browser",
+        "Direct peer-to-peer transfer ⚡files never touch a server",
+        "Zero server storage ⚡no cloud, no trace",
+        "Cross-platform ⚡any modern browser",
         "No file size limits",
-        "No account required — zero data collection"
+        "No account required ⚡zero data collection"
       ]
     },
     {
@@ -62,7 +62,7 @@ const Index = () => {
       "name": "LocalBolt",
       "url": "https://localbolt.site",
       "logo": "https://localbolt.site/og-image.png",
-      "description": "Encrypted peer-to-peer file transfer service — NaCl/Curve25519 encryption, zero server storage"
+      "description": "Encrypted peer-to-peer file transfer service ⚡NaCl/Curve25519 encryption, zero server storage"
     },
     {
       "@context": "https://schema.org",
