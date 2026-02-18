@@ -1,0 +1,16 @@
+
+User-agent: *
+Allow: /
+
+# Main sitemap
+Sitemap: https://localbolt.site/sitemap.xml
+
+# Important pages
+Allow: /
+Allow: /about
+Allow: /privacy
+Allow: /terms
+
+# Optimize crawl budget
+Disallow: /api/
+Disallow: /*.json$

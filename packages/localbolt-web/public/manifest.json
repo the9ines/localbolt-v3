@@ -1,0 +1,20 @@
+{
+  "name": "LocalBolt",
+  "short_name": "LocalBolt",
+  "description": "Secure browser-based file sharing with end-to-end encryption",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#14FF6A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "en",
+  "scope": "/"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "localbolt",
+  "version": "3.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/localbolt-web",
+    "build": "npm run build --workspace=packages/localbolt-web",
+    "typecheck": "npm run typecheck --workspace=packages/localbolt-web",
+    "dev:tauri": "cd apps/tauri && npx tauri dev",
+    "dev:tauri:ios": "cd apps/tauri && npx tauri ios dev",
+    "dev:tauri:android": "cd apps/tauri && npx tauri android dev",
+    "build:tauri": "cd apps/tauri && npx tauri build",
+    "build:tauri:ios": "cd apps/tauri && npx tauri ios build",
+    "build:tauri:android": "cd apps/tauri && npx tauri android build"
+  }
+}

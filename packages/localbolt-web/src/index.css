@@ -1,0 +1,124 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 142 100% 54%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 142 100% 54%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 142 100% 54%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-dark text-foreground font-inter antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+  
+  .animated-border {
+    @apply relative overflow-hidden;
+  }
+  
+  .animated-border::after {
+    @apply content-[''] absolute -top-[150%] -left-[150%] w-[300%] h-[300%];
+    background: conic-gradient(
+      from 90deg at 40% 40%,
+      #14FF6A 0deg,
+      transparent 70deg,
+      transparent 180deg,
+      #14FF6A 180deg,
+      transparent 250deg,
+      transparent 360deg
+    );
+    animation: rotate 4s linear infinite;
+  }
+  
+  @keyframes rotate {
+    100% {
+      transform: rotate(1turn);
+    }
+  }
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #14FF6A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #14FF6A;
+}
+
+/* Drag and drop styles */
+.drag-active {
+  @apply border-neon scale-[1.01] transition-all duration-200;
+}
+
+/* Loader animation */
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #121212;
+  border-bottom-color: #14FF6A;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Glass card effect */
+.glass-card {
+  @apply bg-dark-lighter/30 backdrop-blur-lg border border-white/10 shadow-xl;
+}

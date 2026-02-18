@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14FF6A" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2314FF6A'><path d='M13 10V3L4 14h7v7l9-11h-7z'/></svg>" />
+    
+    <!-- HTML Meta Tags -->
+    <title>LocalBolt ⚡️ Free Encrypted File Transfer ⚡️ AirDrop for Everyone</title>
+    <meta name="description" content="Share files securely between devices with end-to-end encryption directly in your browser. No sign ups, no installs, no limits.">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://localbolt.site/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LocalBolt ⚡️ Free Encrypted File Transfer ⚡️ AirDrop for Everyone">
+    <meta property="og:description" content="Share files securely between devices with end-to-end encryption directly in your browser. No sign ups, no installs, no limits.">
+    <meta property="og:image" content="https://localbolt.site/og-image.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="localbolt.site">
+    <meta property="twitter:url" content="https://localbolt.site/">
+    <meta name="twitter:title" content="LocalBolt ⚡️ Free Encrypted File Transfer ⚡️ AirDrop for Everyone">
+    <meta name="twitter:description" content="Share files securely between devices with end-to-end encryption directly in your browser. No sign ups, no installs, no limits.">
+    <meta name="twitter:image" content="https://localbolt.site/og-image.png">
+
+    <!-- Additional SEO -->
+    <meta name="keywords" content="secure file sharing, browser file transfer, p2p file sharing, encrypted file transfer, webrtc file sharing, local file transfer, peer to peer sharing, private file sharing, airdrop alternative, free file transfer">
+    <meta name="author" content="LocalBolt">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="application-name" content="LocalBolt" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="LocalBolt" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+
+    <!-- Search Engine -->
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://localbolt.site" />
+    
+    <!-- Google Analytics with Consent Mode -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2K67086C7E"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      // Initialize with consent denied by default
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+      
+      gtag('config', 'G-2K67086C7E');
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script
+      type="module"
+      src="/src/main.tsx"
+      defer
+      onerror="console.error('Failed to load main application');">
+    </script>
+  </body>
+</html>
