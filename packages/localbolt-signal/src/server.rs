@@ -11,7 +11,7 @@ use std::sync::Arc;
 use futures_util::{SinkExt, StreamExt};
 use tokio::net::TcpStream;
 use tokio::sync::mpsc;
-use tokio_tungstenite::tungstenite::handshake::server::{Request, Response};
+use tokio_tungstenite::tungstenite::handshake::server::{ErrorResponse, Request, Response};
 use tokio_tungstenite::tungstenite::Message;
 use tracing::{debug, error, info, warn};
 
@@ -28,7 +28,7 @@ pub async fn handle_connection(
     let forwarded_for = Arc::new(std::sync::Mutex::new(None::<String>));
     let forwarded_for_cb = forwarded_for.clone();
 
-    let callback = move |req: &Request, resp: Response| -> Result<Response, tokio_tungstenite::tungstenite::error::Error> {
+    let callback = move |req: &Request, resp: Response| -> Result<Response, ErrorResponse> {
         // Extract X-Forwarded-For if present (reverse proxy scenario).
         if let Some(xff) = req.headers().get("x-forwarded-for") {
             if let Ok(value) = xff.to_str() {
