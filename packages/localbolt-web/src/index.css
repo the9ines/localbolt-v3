@@ -13,19 +13,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 100% 54%;
+    --primary: 76 100% 44%;
     --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 64%;
-    --accent: 142 100% 54%;
+    --accent: 76 100% 44%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 142 100% 54%;
+    --ring: 76 100% 44%;
     --radius: 0.75rem;
   }
 }
@@ -52,10 +52,10 @@
     @apply content-[''] absolute -top-[150%] -left-[150%] w-[300%] h-[300%];
     background: conic-gradient(
       from 90deg at 40% 40%,
-      #14FF6A 0deg,
+      #A4E200 0deg,
       transparent 70deg,
       transparent 180deg,
-      #14FF6A 180deg,
+      #A4E200 180deg,
       transparent 250deg,
       transparent 360deg
     );
@@ -84,12 +84,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #14FF6A;
+  background: #A4E200;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #14FF6A;
+  background: #A4E200;
 }
 
 /* Drag and drop styles */
@@ -102,7 +102,7 @@
   width: 48px;
   height: 48px;
   border: 5px solid #121212;
-  border-bottom-color: #14FF6A;
+  border-bottom-color: #A4E200;
   border-radius: 50%;
   display: inline-block;
   box-sizing: border-box;

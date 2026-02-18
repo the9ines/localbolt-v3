@@ -65,7 +65,7 @@ export class WebSocketSignaling implements SignalingProvider {
   private deviceType: DiscoveredDevice['deviceType'] = 'laptop';
 
   // Callbacks
-  private signalCallback: ((signal: SignalMessage) => void) | null = null;
+  private signalCallbacks: Array<(signal: SignalMessage) => void> = [];
   private peerDiscoveredCallback: ((peer: DiscoveredDevice) => void) | null = null;
   private peerLostCallback: ((peerCode: string) => void) | null = null;
 
@@ -105,7 +105,7 @@ export class WebSocketSignaling implements SignalingProvider {
   }
 
   onSignal(callback: (signal: SignalMessage) => void): void {
-    this.signalCallback = callback;
+    this.signalCallbacks.push(callback);
   }
 
   onPeerDiscovered(callback: (peer: DiscoveredDevice) => void): void {
@@ -157,7 +157,7 @@ export class WebSocketSignaling implements SignalingProvider {
     }
 
     this.peers.clear();
-    this.signalCallback = null;
+    this.signalCallbacks = [];
     this.peerDiscoveredCallback = null;
     this.peerLostCallback = null;
     this.connectResolve = null;
@@ -294,8 +294,8 @@ export class WebSocketSignaling implements SignalingProvider {
 
   private handleSignal(msg: SignalInMessage): void {
     console.log(`[WS-SIGNAL] Received ${msg.payload.type} from ${msg.from}`);
-    if (this.signalCallback) {
-      this.signalCallback(msg.payload);
+    for (const cb of this.signalCallbacks) {
+      cb(msg.payload);
     }
   }
 

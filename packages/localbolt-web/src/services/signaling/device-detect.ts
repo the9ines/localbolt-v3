@@ -30,48 +30,19 @@ export function detectDeviceType(): DiscoveredDevice['deviceType'] {
 }
 
 /**
- * Generate a human-readable device name like "Chrome on macOS" or "Safari on iPhone".
- * Parses navigator.userAgent for browser and OS.
+ * Generate a clean device name like "iPhone", "Mac", "Windows PC".
+ * Parses navigator.userAgent for the device/OS only — no browser prefix.
  */
 export function getDeviceName(): string {
   const ua = navigator.userAgent;
 
-  // Detect browser
-  let browser = 'Browser';
-  if (/Edg\//i.test(ua)) {
-    browser = 'Edge';
-  } else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) {
-    browser = 'Opera';
-  } else if (/Brave/i.test(ua)) {
-    browser = 'Brave';
-  } else if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua) && !/OPR\//i.test(ua)) {
-    browser = 'Chrome';
-  } else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) {
-    browser = 'Safari';
-  } else if (/Firefox\//i.test(ua)) {
-    browser = 'Firefox';
-  }
+  if (/iPhone/i.test(ua)) return 'iPhone';
+  if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && 'ontouchend' in document)) return 'iPad';
+  if (/Android/i.test(ua)) return 'Android';
+  if (/CrOS/i.test(ua)) return 'Chromebook';
+  if (/Windows/i.test(ua)) return 'Windows PC';
+  if (/Mac OS X|Macintosh/i.test(ua)) return 'Mac';
+  if (/Linux/i.test(ua)) return 'Linux';
 
-  // Detect OS / device
-  let os = '';
-  if (/iPhone/i.test(ua)) {
-    os = 'iPhone';
-  } else if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && 'ontouchend' in document)) {
-    os = 'iPad';
-  } else if (/Android/i.test(ua)) {
-    os = 'Android';
-  } else if (/Windows/i.test(ua)) {
-    os = 'Windows';
-  } else if (/Mac OS X|Macintosh/i.test(ua)) {
-    os = 'macOS';
-  } else if (/Linux/i.test(ua)) {
-    os = 'Linux';
-  } else if (/CrOS/i.test(ua)) {
-    os = 'ChromeOS';
-  }
-
-  if (os) {
-    return `${browser} on ${os}`;
-  }
-  return browser;
+  return 'Device';
 }

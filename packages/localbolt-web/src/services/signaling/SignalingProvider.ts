@@ -3,7 +3,7 @@
 // Implementations: WebSocketSignaling (custom Rust WS server), future: Nostr relays.
 
 export interface SignalMessage {
-  type: 'offer' | 'answer' | 'ice-candidate';
+  type: 'offer' | 'answer' | 'ice-candidate' | 'connection_request' | 'connection_accepted' | 'connection_declined';
   data: any;
   from: string;
   to: string;

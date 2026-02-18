@@ -133,6 +133,9 @@ class WebRTCService {
 
   private async handleSignal(signal: SignalMessage) {
     if (signal.to !== this.localPeerCode) return;
+    // Only handle WebRTC signal types — ignore custom approval types
+    if (signal.type !== 'offer' && signal.type !== 'answer' && signal.type !== 'ice-candidate') return;
+
     console.log('[SIGNALING] Received', signal.type, 'from', signal.from);
     if (signal.from) this.remotePeerCode = signal.from;
 
