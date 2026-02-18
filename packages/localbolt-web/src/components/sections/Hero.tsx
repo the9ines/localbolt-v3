@@ -1,5 +1,5 @@
 
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Zap } from "lucide-react";
 
 interface HeroProps {
   onStartSharing: () => void;
@@ -12,7 +12,7 @@ export const Hero = ({ onStartSharing }: HeroProps) => {
         Encrypted P2P File Sharing
       </h1>
       <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-        Private, encrypted file transfer — directly between your devices. Files never touch a server.
+        Private, encrypted file transfer <Zap className="inline w-3.5 h-3.5 text-gray-500" aria-hidden="true" /> directly between your devices. Files never touch a server.
       </p>
       <button
         onClick={onStartSharing}

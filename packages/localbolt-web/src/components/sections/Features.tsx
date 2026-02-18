@@ -1,10 +1,13 @@
 
 import { Shield, Wifi, Laptop, Server, Lock, Zap, Globe, Clock, LucideIcon } from "lucide-react";
+import { type ReactNode } from "react";
+
+const Bolt = () => <Zap className="inline w-2.5 h-2.5 text-gray-500" aria-hidden="true" />;
 
 interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
-  description: string;
+  description: ReactNode;
 }
 
 const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => (
@@ -27,7 +30,7 @@ export const Features = () => {
     {
       icon: Wifi,
       title: "WebRTC P2P Transfer",
-      description: "Files transfer directly between devices over encrypted WebRTC data channels — faster and more private than cloud uploads."
+      description: <>Files transfer directly between devices over encrypted WebRTC data channels <Bolt /> faster and more private than cloud uploads.</>
     },
     {
       icon: Server,
@@ -66,7 +69,7 @@ export const Features = () => {
       <div className="text-center max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold mb-2">Military-Grade Encryption, Zero Trust Architecture</h2>
         <p className="text-sm text-gray-500 leading-relaxed">
-          LocalBolt uses NaCl/Curve25519 encryption — the same cryptographic standard trusted by Signal and WireGuard — to transfer files directly between devices with zero server storage.
+          LocalBolt uses NaCl/Curve25519 encryption <Zap className="inline w-3 h-3 text-gray-500" aria-hidden="true" /> the same cryptographic standard trusted by Signal and WireGuard <Zap className="inline w-3 h-3 text-gray-500" aria-hidden="true" /> to transfer files directly between devices with zero server storage.
         </p>
       </div>
 

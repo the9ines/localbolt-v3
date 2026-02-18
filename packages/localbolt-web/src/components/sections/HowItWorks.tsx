@@ -27,7 +27,7 @@ export const HowItWorks = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">How It Works</h2>
         <p className="text-sm text-gray-500">
-          Start sharing files in seconds — no apps, no accounts
+          Start sharing files in seconds <Zap className="inline w-3 h-3 text-gray-500" aria-hidden="true" /> no apps, no accounts
         </p>
       </div>
 
