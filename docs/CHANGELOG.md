@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.12-signal-ping — Handle keepalive pings and log signal relays (2026-02-18, b2d3788)
+- Added `Ping` variant to `ClientMessage` enum in protocol — keepalive ping from client, no-op to prevent idle timeout
+- Added handler for `ClientMessage::Ping` in server connection loop — continues without action, preventing WS idle disconnect
+- Added `tracing::info!` log line for signal relay events (logs `from` and `to` peer codes)
+- Files changed:
+  - `packages/localbolt-signal/src/protocol.rs`
+  - `packages/localbolt-signal/src/server.rs`
+
 ## v3.0.11-fly-deploy — Deploy Rust signal server to Fly.io (2026-02-18, c4a6753)
 - Bumped Rust base image from 1.82 to 1.85 in signal server Dockerfile
 - Fixed WebSocket callback return type from `tungstenite::error::Error` to `ErrorResponse` (imported `ErrorResponse` type)
