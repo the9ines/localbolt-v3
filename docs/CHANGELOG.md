@@ -1,5 +1,46 @@
 # LocalBolt v3 Changelog
 
+## v3.0.13-vanilla-ts — Remove React, rewrite UI in vanilla TypeScript (2026-02-18, 7697d5b)
+- Removed React, React DOM, all Radix UI primitives, TanStack Router/Query, shadcn/ui, lucide-react, and 50+ runtime dependencies
+- Runtime dependencies reduced from 54 to 2 (tweetnacl, tweetnacl-util); dev dependencies reduced to 7
+- Rewrote all UI components in vanilla TypeScript with direct DOM manipulation
+- New components: `app.ts`, `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`
+- New page sections: `header.ts`, `hero.ts`, `features.ts`, `how-it-works.ts`, `faq.ts`, `footer.ts`, `transfer.ts`, `trust-strip.ts`, `consent-modal.ts`
+- Added lightweight state store (`state/store.ts`) replacing React hooks and context
+- Added SVG icon module (`ui/icons.ts`) replacing lucide-react
+- Added toast notification module (`ui/toast.ts`) replacing sonner/radix toast
+- Implemented connection approval flow: request, accept/decline, then WebRTC handshake
+- Device discovery popup for selecting nearby devices
+- Clean device names: iPhone, Mac, Windows PC, Android, Linux, iPad, Chromebook, etc.
+- Updated brand color from #14FF6A to #A4E200 in Tailwind config
+- WebSocket signaling updated to support multiple concurrent listeners per event
+- Added disconnect confirmation before severing WebRTC connection
+- Entry point changed from `main.tsx` (React) to `main.ts` (vanilla)
+- Removed: React router, React hooks (`use-mobile`, `use-peer-code`, `use-peer-connection`, `use-toast`, `use-transfer-progress`), Supabase integration stubs, `lib/utils.ts`, `vite-env.d.ts`
+- 117 files changed (2,502 additions, 13,490 deletions)
+- Files changed:
+  - `packages/localbolt-web/package.json` (54 deps removed, version bumped to 3.0.0)
+  - `packages/localbolt-web/index.html` (inline HTML structure replaces React root)
+  - `packages/localbolt-web/src/main.ts` (new, replaces main.tsx)
+  - `packages/localbolt-web/src/app.ts` (new, replaces App.tsx)
+  - `packages/localbolt-web/src/state/store.ts` (new)
+  - `packages/localbolt-web/src/ui/icons.ts` (new)
+  - `packages/localbolt-web/src/ui/toast.ts` (new)
+  - `packages/localbolt-web/src/components/device-discovery.ts` (new)
+  - `packages/localbolt-web/src/components/peer-connection.ts` (new)
+  - `packages/localbolt-web/src/components/file-upload.ts` (new)
+  - `packages/localbolt-web/src/components/transfer-progress.ts` (new)
+  - `packages/localbolt-web/src/components/connection-status.ts` (new)
+  - `packages/localbolt-web/src/sections/` (9 new vanilla TS section files)
+  - `packages/localbolt-web/src/services/signaling/WebSocketSignaling.ts` (multi-listener support)
+  - `packages/localbolt-web/src/services/signaling/device-detect.ts` (clean device names)
+  - `packages/localbolt-web/src/services/webrtc/WebRTCService.ts` (minor update)
+  - `packages/localbolt-web/tailwind.config.ts` (color update)
+  - `packages/localbolt-web/vite.config.ts` (React plugin removed)
+  - `packages/localbolt-web/tsconfig.app.json` (JSX config removed)
+  - `package-lock.json` (massive reduction)
+  - 80+ React component/hook/UI files deleted
+
 ## v3.0.12-signal-ping — Handle keepalive pings and log signal relays (2026-02-18, b2d3788)
 - Added `Ping` variant to `ClientMessage` enum in protocol — keepalive ping from client, no-op to prevent idle timeout
 - Added handler for `ClientMessage::Ping` in server connection loop — continues without action, preventing WS idle disconnect

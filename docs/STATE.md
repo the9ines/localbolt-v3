@@ -1,33 +1,46 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.12-signal-ping
+- **Tag**: v3.0.13-vanilla-ts
 - **Branch**: main
-- **HEAD**: b2d3788
+- **HEAD**: 7697d5b
 
 ## Architecture
-- **Frontend**: React 18 + TypeScript + Vite + Tailwind + shadcn/ui + TanStack Router/Query
+- **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
 - **Signaling**: Custom Rust WebSocket server (IP-based room grouping, replaced Supabase)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows live device list with icons and one-tap connect; mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; mDNS planned for Tauri offline mode
+- **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
-- `packages/localbolt-web` — Production web app (React 18, fully functional)
+- `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web**: React 18, Vite, Tailwind CSS, shadcn/ui, TanStack Router/Query, TweetNaCl, lucide-react
+- **Web runtime** (2): tweetnacl, tweetnacl-util
+- **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
+
+## UI Components (vanilla TypeScript)
+- **Entry**: `main.ts` → `app.ts` (mounts all sections and initializes signaling)
+- **State**: `state/store.ts` (lightweight pub/sub store replacing React hooks/context)
+- **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`
+- **Sections**: `header.ts`, `hero.ts`, `features.ts`, `how-it-works.ts`, `faq.ts`, `footer.ts`, `transfer.ts`, `trust-strip.ts`, `consent-modal.ts`
+- **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications)
+
+## Brand
+- **Primary color**: #A4E200 (previously #14FF6A)
 
 ## Roadmap
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
 - **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5] + deployed to Fly.io at wss://localbolt-signal.fly.dev [v3.0.11]
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
 - **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
+- **Phase V**: DONE — Vanilla TypeScript rewrite, React removal [v3.0.13]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -49,3 +62,4 @@
 | v3.0.10-faq-clean | 9d8068e | Remove bolt emoji from FAQ answer, use period |
 | v3.0.11-fly-deploy | c4a6753 | Deploy Rust signal server to Fly.io |
 | v3.0.12-signal-ping | b2d3788 | Handle keepalive pings and log signal relays |
+| v3.0.13-vanilla-ts | 7697d5b | Remove React, rewrite UI in vanilla TypeScript |
