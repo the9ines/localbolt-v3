@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.15-og-image-green — Update OG image to new brand green #A4E200 (2026-02-18, 4114d72)
+- Regenerated `og-image.png` with the correct chartreuse green (#A4E200) to match the v3.0.13 color rebrand (previously used old neon green #14FF6A)
+- Added `.netlify` directory to `.gitignore`
+- Files changed:
+  - `packages/localbolt-web/public/og-image.png` (updated)
+  - `.gitignore` (added `.netlify` entry)
+
 ## v3.0.14-netlify-deploy — Added Netlify deploy config (2026-02-18, 7ab2586)
 - Added `netlify.toml` with build configuration: base `packages/localbolt-web`, build command `npm install && npm run build`, publish directory `dist`
 - Added SPA redirect rule in `netlify.toml` (`/* -> /index.html` with status 200)

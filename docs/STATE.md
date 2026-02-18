@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.14-netlify-deploy
+- **Tag**: v3.0.15-og-image-green
 - **Branch**: main
-- **HEAD**: 7ab2586
+- **HEAD**: 4114d72
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -65,3 +65,4 @@
 | v3.0.12-signal-ping | b2d3788 | Handle keepalive pings and log signal relays |
 | v3.0.13-vanilla-ts | 7697d5b | Remove React, rewrite UI in vanilla TypeScript |
 | v3.0.14-netlify-deploy | 7ab2586 | Netlify deploy config (netlify.toml + _redirects) |
+| v3.0.15-og-image-green | 4114d72 | Update OG image to new brand green (#A4E200) |
