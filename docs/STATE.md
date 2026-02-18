@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.10-faq-clean
+- **Tag**: v3.0.11-fly-deploy
 - **Branch**: main
-- **HEAD**: 9d8068e
+- **HEAD**: c4a6753
 
 ## Architecture
 - **Frontend**: React 18 + TypeScript + Vite + Tailwind + shadcn/ui + TanStack Router/Query
@@ -15,7 +15,7 @@
 
 ## Packages
 - `packages/localbolt-web` — Production web app (React 18, fully functional)
-- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms, Dockerized)
+- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -25,7 +25,7 @@
 
 ## Roadmap
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
-- **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5]
+- **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5] + deployed to Fly.io at wss://localbolt-signal.fly.dev [v3.0.11]
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
 - **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
 - Phase E: Tauri native features (mDNS, local WS, file save)
@@ -47,3 +47,4 @@
 | v3.0.8-device-discovery | 5f86aa4 | AirDrop-style device discovery, peer code UI removed |
 | v3.0.9-discovery-polish | eff0bb2 | Visual refinement of discovery to match Transfer card |
 | v3.0.10-faq-clean | 9d8068e | Remove bolt emoji from FAQ answer, use period |
+| v3.0.11-fly-deploy | c4a6753 | Deploy Rust signal server to Fly.io |

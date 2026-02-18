@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.11-fly-deploy — Deploy Rust signal server to Fly.io (2026-02-18, c4a6753)
+- Bumped Rust base image from 1.82 to 1.85 in signal server Dockerfile
+- Fixed WebSocket callback return type from `tungstenite::error::Error` to `ErrorResponse` (imported `ErrorResponse` type)
+- Removed `Cargo.lock` from Dockerfile COPY (not committed to repo)
+- Added `fly.toml` config: app `localbolt-signal`, region `ewr`, 1 shared CPU, 1GB RAM, port 3001, force HTTPS, auto-stop/start machines
+- Files changed:
+  - `packages/localbolt-signal/Dockerfile`
+  - `packages/localbolt-signal/fly.toml` (new)
+  - `packages/localbolt-signal/src/server.rs`
+
 ## v3.0.10-faq-clean — Remove bolt emoji from FAQ answer, use period (2026-02-18, 9d8068e)
 - Removed bolt emoji (`⚡`) from the FAQ answer for "Is LocalBolt safer than WeTransfer or Google Drive?"
 - Replaced with a period and capitalized the following word for clean prose
