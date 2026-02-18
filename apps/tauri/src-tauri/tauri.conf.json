@@ -1,0 +1,47 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicosantangelo/tauri-schema/tauri-v2/schema.json",
+  "productName": "LocalBolt",
+  "version": "0.1.0",
+  "identifier": "com.the9ines.localbolt",
+  "build": {
+    "frontendDist": "../../packages/localbolt-web/dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev --workspace=packages/localbolt-web",
+    "beforeBuildCommand": "npm run build --workspace=packages/localbolt-web"
+  },
+  "app": {
+    "title": "LocalBolt",
+    "windows": [
+      {
+        "title": "LocalBolt",
+        "width": 1024,
+        "height": 768,
+        "minWidth": 480,
+        "minHeight": 600,
+        "center": true,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.png"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    },
+    "iOS": {
+      "developmentTeam": ""
+    }
+  },
+  "plugins": {
+    "opener": {
+      "openUrl": true
+    }
+  }
+}
