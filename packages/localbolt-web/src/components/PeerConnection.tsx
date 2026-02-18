@@ -1,15 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import WebRTCService from "@/services/webrtc/WebRTCService";
-import { SignalingError } from "@/types/webrtc-errors";
+import { WebRTCError, SignalingError } from "@/types/webrtc-errors";
 import { WebSocketSignaling, detectDeviceType, getDeviceName } from "@/services/signaling";
+import type { DiscoveredDevice } from "@/services/signaling/SignalingProvider";
 import { TransferProgressBar } from "./file-upload/TransferProgress";
-import { PeerCodeInput } from "./peer-connection/PeerCodeInput";
-import { TargetPeerInput } from "./peer-connection/TargetPeerInput";
 import { ConnectionStatus } from "./peer-connection/ConnectionStatus";
-import { usePeerCode } from "@/hooks/use-peer-code";
+import { DeviceDiscovery } from "./peer-connection/DeviceDiscovery";
 import { useTransferProgress } from "@/hooks/use-transfer-progress";
 import { usePeerConnection } from "@/hooks/use-peer-connection";
 import { generateSecurePeerCode } from "@/lib/crypto-utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface PeerConnectionProps {
   onConnectionChange: (connected: boolean, service?: WebRTCService) => void;
@@ -17,27 +17,36 @@ interface PeerConnectionProps {
 
 export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
   const {
-    targetPeerCode,
-    setTargetPeerCode,
-    connectedPeerCode,
     webrtc,
     setWebrtc,
     isConnected,
     setIsConnected,
-    handleConnect,
     handleDisconnect,
-    handleConnectionError
+    handleConnectionError,
   } = usePeerConnection(onConnectionChange);
 
-  const { peerCode, setPeerCode, copied, copyToClipboard } = usePeerCode();
-  const { 
-    transferProgress, 
-    handleProgress, 
+  const {
+    transferProgress,
+    handleProgress,
     handleCancelReceiving,
     handlePauseTransfer,
     handleResumeTransfer,
-    clearProgress 
+    clearProgress,
   } = useTransferProgress(webrtc);
+
+  const { toast } = useToast();
+
+  const [discoveredPeers, setDiscoveredPeers] = useState<DiscoveredDevice[]>([]);
+  const [connectingTo, setConnectingTo] = useState<string | null>(null);
+  const [connectedDevice, setConnectedDevice] = useState<DiscoveredDevice | null>(null);
+
+  const discoveredPeersRef = useRef<DiscoveredDevice[]>([]);
+  const signalingRef = useRef<WebSocketSignaling | null>(null);
+  const rtcServiceRef = useRef<WebRTCService | null>(null);
+
+  useEffect(() => {
+    discoveredPeersRef.current = discoveredPeers;
+  }, [discoveredPeers]);
 
   useEffect(() => {
     if (!isConnected && transferProgress) {
@@ -46,27 +55,33 @@ export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
   }, [isConnected, transferProgress, clearProgress]);
 
   useEffect(() => {
-    if (webrtc && isConnected) {
-      const remotePeer = webrtc.getRemotePeerCode();
-      console.log('[UI] Remote peer code updated:', remotePeer);
-    }
-  }, [webrtc, isConnected]);
-
-  const signalingRef = useRef<WebSocketSignaling | null>(null);
-  const rtcServiceRef = useRef<WebRTCService | null>(null);
-
-  useEffect(() => {
     if (!webrtc) {
       const code = generateSecurePeerCode();
-      setPeerCode(code);
       console.log('[WEBRTC] Creating new service with secure code:', code);
 
       const wsUrl = import.meta.env.VITE_SIGNAL_URL || 'ws://localhost:3001';
       const signaling = new WebSocketSignaling(wsUrl);
       signalingRef.current = signaling;
 
+      signaling.onPeerDiscovered((peer) => {
+        setDiscoveredPeers((prev) => {
+          if (prev.some((p) => p.peerCode === peer.peerCode)) return prev;
+          return [...prev, peer];
+        });
+      });
+
+      signaling.onPeerLost((peerCode) => {
+        setDiscoveredPeers((prev) => prev.filter((p) => p.peerCode !== peerCode));
+      });
+
       signaling.connect(code, getDeviceName(), detectDeviceType()).then(() => {
-        const rtcService = new WebRTCService(signaling, code, handleFileReceive, handleConnectionError, handleProgress);
+        const rtcService = new WebRTCService(
+          signaling,
+          code,
+          handleFileReceive,
+          handleConnectionError,
+          handleProgress,
+        );
         rtcService.setConnectionStateHandler(handleConnectionStateChange);
         rtcServiceRef.current = rtcService;
         setWebrtc(rtcService);
@@ -82,6 +97,9 @@ export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
         signalingRef.current?.disconnect();
         signalingRef.current = null;
         setIsConnected(false);
+        setDiscoveredPeers([]);
+        setConnectedDevice(null);
+        setConnectingTo(null);
         onConnectionChange(false);
         clearProgress();
       };
@@ -92,19 +110,53 @@ export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
     console.log('[UI] Connection state changed:', state);
     const connected = state === 'connected';
     setIsConnected(connected);
-    onConnectionChange(connected, webrtc || undefined);
-    
+    onConnectionChange(connected, rtcServiceRef.current || undefined);
+
+    if (connected && rtcServiceRef.current) {
+      const remotePeerCode = rtcServiceRef.current.getRemotePeerCode();
+      const device = discoveredPeersRef.current.find(
+        (p) => p.peerCode === remotePeerCode,
+      );
+      setConnectedDevice(device || null);
+      setConnectingTo(null);
+    } else {
+      setConnectedDevice(null);
+      setConnectingTo(null);
+    }
+
     if (!connected && transferProgress) {
       clearProgress();
     }
-    
-    if (connected && webrtc) {
-      const remotePeerCode = webrtc.getRemotePeerCode();
-      console.log('[UI] Setting connected peer code:', remotePeerCode);
-    } else {
-      setTargetPeerCode("");
-    }
   };
+
+  const handleSelectPeer = useCallback(
+    async (peerCode: string) => {
+      if (!webrtc || isConnected) return;
+      setConnectingTo(peerCode);
+
+      try {
+        await webrtc.connect(peerCode);
+      } catch (error) {
+        setConnectingTo(null);
+        if (error instanceof WebRTCError) {
+          handleConnectionError(error);
+        } else {
+          toast({
+            title: "Connection Failed",
+            description: "Unable to connect to device. Please try again.",
+            variant: "destructive",
+          });
+        }
+      }
+    },
+    [webrtc, isConnected, handleConnectionError, toast],
+  );
+
+  const handleDisconnectDevice = useCallback(() => {
+    setConnectedDevice(null);
+    setConnectingTo(null);
+    handleDisconnect();
+  }, [handleDisconnect]);
 
   const handleFileReceive = (file: Blob, filename: string) => {
     const url = URL.createObjectURL(file);
@@ -120,27 +172,21 @@ export const PeerConnection = ({ onConnectionChange }: PeerConnectionProps) => {
   return (
     <div className="space-y-4">
       <ConnectionStatus isConnected={isConnected} />
-      
-      <div className="space-y-4 touch-manipulation">
-        <PeerCodeInput 
-          peerCode={peerCode}
-          copied={copied}
-          onCopy={copyToClipboard}
-        />
 
-        <TargetPeerInput
-          targetPeerCode={targetPeerCode}
-          onTargetPeerCodeChange={setTargetPeerCode}
-          onConnect={handleConnect}
-          onDisconnect={handleDisconnect}
+      <div className="touch-manipulation">
+        <DeviceDiscovery
+          peers={discoveredPeers}
+          onSelectPeer={handleSelectPeer}
+          connectingTo={connectingTo}
           isConnected={isConnected}
-          remotePeerCode={webrtc?.getRemotePeerCode()}
+          connectedDevice={connectedDevice}
+          onDisconnect={handleDisconnectDevice}
         />
       </div>
 
       {transferProgress && (
         <div className="space-y-2 animate-fade-up">
-          <TransferProgressBar 
+          <TransferProgressBar
             progress={transferProgress}
             onCancel={handleCancelReceiving}
             onPause={handlePauseTransfer}
