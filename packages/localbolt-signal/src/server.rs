@@ -158,6 +158,7 @@ pub async fn handle_connection(
             Some(Ok(Message::Text(text))) => {
                 match serde_json::from_str::<ClientMessage>(&text) {
                     Ok(ClientMessage::Signal { to, payload }) => {
+                        info!(from = %peer_code, to = %to, "signal relay");
                         if let Some(target_sender) = room_manager.find_peer(&to) {
                             let relay_msg = ServerMessage::Signal {
                                 from: peer_code.clone(),
@@ -181,6 +182,10 @@ pub async fn handle_connection(
                             };
                             let _ = tx.send(err);
                         }
+                    }
+                    Ok(ClientMessage::Ping) => {
+                        // Keepalive — no-op, just prevents idle timeout.
+                        continue;
                     }
                     Ok(ClientMessage::Register { .. }) => {
                         warn!(peer_code = %peer_code, "duplicate register message");

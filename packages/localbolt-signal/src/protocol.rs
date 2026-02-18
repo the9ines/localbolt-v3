@@ -43,6 +43,8 @@ pub enum ClientMessage {
         to: String,
         payload: serde_json::Value,
     },
+    /// Keepalive ping from client (no-op, just prevents idle timeout).
+    Ping,
 }
 
 // ---------------------------------------------------------------------------
