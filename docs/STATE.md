@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.13-vanilla-ts
+- **Tag**: v3.0.14-netlify-deploy
 - **Branch**: main
-- **HEAD**: 7697d5b
+- **HEAD**: 7ab2586
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -17,6 +17,7 @@
 ## Packages
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
+- **Deployment**: Netlify (web app), Fly.io (signal server)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -63,3 +64,4 @@
 | v3.0.11-fly-deploy | c4a6753 | Deploy Rust signal server to Fly.io |
 | v3.0.12-signal-ping | b2d3788 | Handle keepalive pings and log signal relays |
 | v3.0.13-vanilla-ts | 7697d5b | Remove React, rewrite UI in vanilla TypeScript |
+| v3.0.14-netlify-deploy | 7ab2586 | Netlify deploy config (netlify.toml + _redirects) |

@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.14-netlify-deploy — Added Netlify deploy config (2026-02-18, 7ab2586)
+- Added `netlify.toml` with build configuration: base `packages/localbolt-web`, build command `npm install && npm run build`, publish directory `dist`
+- Added SPA redirect rule in `netlify.toml` (`/* -> /index.html` with status 200)
+- Added `_redirects` file in `packages/localbolt-web/public/` for Netlify SPA fallback
+- Files changed:
+  - `netlify.toml` (new)
+  - `packages/localbolt-web/public/_redirects` (new)
+
 ## v3.0.13-vanilla-ts — Remove React, rewrite UI in vanilla TypeScript (2026-02-18, 7697d5b)
 - Removed React, React DOM, all Radix UI primitives, TanStack Router/Query, shadcn/ui, lucide-react, and 50+ runtime dependencies
 - Runtime dependencies reduced from 54 to 2 (tweetnacl, tweetnacl-util); dev dependencies reduced to 7
