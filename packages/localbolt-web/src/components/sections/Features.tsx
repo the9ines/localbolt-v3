@@ -22,17 +22,17 @@ export const Features = () => {
     {
       icon: Shield,
       title: "End-to-End Encryption",
-      description: "Files remain private during transfer using WebCrypto API and modern cryptographic protocols."
+      description: "Every file is encrypted with NaCl/Curve25519 (same algorithms used by Signal and WireGuard) before transfer. Per-chunk random nonces prevent any pattern analysis."
     },
     {
       icon: Wifi,
       title: "WebRTC P2P Transfer",
-      description: "Direct device-to-device transfer — faster than traditional cloud uploads and downloads."
+      description: "Files transfer directly between devices over encrypted WebRTC data channels — faster and more private than cloud uploads."
     },
     {
       icon: Server,
       title: "Zero Server Storage",
-      description: "Files transfer directly between devices without ever touching a server."
+      description: "Your files never touch any server. Not during transfer, not after. Zero cloud storage means zero data exposure."
     },
     {
       icon: Laptop,
@@ -42,7 +42,7 @@ export const Features = () => {
     {
       icon: Lock,
       title: "Privacy Focused",
-      description: "No account required, no tracking, no data collection."
+      description: "No account, no tracking, no analytics, no data collection. We can't see your files because they never reach us."
     },
     {
       icon: Zap,
@@ -64,9 +64,9 @@ export const Features = () => {
   return (
     <section aria-label="Features" className="space-y-6 max-w-5xl mx-auto">
       <div className="text-center max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold mb-2">Advanced P2P Technology</h2>
+        <h2 className="text-2xl font-bold mb-2">Military-Grade Encryption, Zero Trust Architecture</h2>
         <p className="text-sm text-gray-500 leading-relaxed">
-          LocalBolt leverages WebRTC to transfer files directly between devices, outperforming cloud services while maintaining complete privacy.
+          LocalBolt uses NaCl/Curve25519 encryption — the same cryptographic standard trusted by Signal and WireGuard — to transfer files directly between devices with zero server storage.
         </p>
       </div>
 

@@ -12,7 +12,7 @@ export const faqs = [
   },
   {
     question: "Is LocalBolt safer than WeTransfer or Google Drive?",
-    answer: "LocalBolt keeps files off cloud storage and transfers them directly between devices. We use end-to-end encryption for file data. A small signaling message is used only to establish the peer connection."
+    answer: "Significantly. WeTransfer and Google Drive store your files on their servers. LocalBolt transfers files directly between your devices using NaCl/Curve25519 encryption (the same standard used by Signal and WireGuard). Your files never touch any server — not during transfer, not after."
   },
   {
     question: "Does LocalBolt work like AirDrop on Windows and Android?",
@@ -42,7 +42,7 @@ export const FAQ = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">FAQ</h2>
         <p className="text-sm text-gray-500">
-          Common questions about secure peer-to-peer file sharing
+          Common questions about encrypted peer-to-peer file transfer
         </p>
       </div>
 

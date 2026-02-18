@@ -2,8 +2,8 @@
 import { Shield, Server, Globe, UserX } from "lucide-react";
 
 const signals = [
-  { icon: Shield, label: "End-to-End Encrypted" },
-  { icon: Server, label: "No Cloud Storage" },
+  { icon: Shield, label: "NaCl/Curve25519 Encrypted" },
+  { icon: Server, label: "Zero Server Storage" },
   { icon: Globe, label: "Cross-Platform" },
   { icon: UserX, label: "No Account Needed" },
 ];

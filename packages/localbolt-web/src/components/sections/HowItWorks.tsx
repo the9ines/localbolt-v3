@@ -17,7 +17,7 @@ const steps = [
     icon: Zap,
     step: "3",
     title: "Transfer Instantly",
-    description: "Drag and drop files. Encrypted, peer-to-peer, no size limits."
+    description: "Drag and drop files. NaCl-encrypted, peer-to-peer, no size limits."
   }
 ];
 

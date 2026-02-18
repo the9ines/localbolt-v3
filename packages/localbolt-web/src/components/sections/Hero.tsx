@@ -7,12 +7,12 @@ interface HeroProps {
 
 export const Hero = ({ onStartSharing }: HeroProps) => {
   return (
-    <section id="secure-p2p-sharing" className="text-center space-y-4 animate-fade-up max-w-3xl mx-auto">
-      <h1 className="text-5xl sm:text-6xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent" aria-label="Secure P2P File Sharing">
-        Secure P2P File Sharing
+    <section id="encrypted-p2p-sharing" className="text-center space-y-4 animate-fade-up max-w-3xl mx-auto">
+      <h1 className="text-5xl sm:text-6xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent" aria-label="Encrypted P2P File Sharing">
+        Encrypted P2P File Sharing
       </h1>
       <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-        Like AirDrop, but for everyone on your network. End-to-end encrypted, no cloud storage.
+        Private, encrypted file transfer — directly between your devices. Files never touch a server.
       </p>
       <button
         onClick={onStartSharing}

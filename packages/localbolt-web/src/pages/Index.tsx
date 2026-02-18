@@ -46,14 +46,14 @@ const Index = () => {
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "Secure peer-to-peer file transfer on the same network with end-to-end encryption and no cloud file storage.",
+      "description": "End-to-end encrypted peer-to-peer file transfer. Files transfer directly between devices using NaCl/Curve25519 encryption — never stored on any server.",
       "featureList": [
-        "End-to-end encryption",
-        "Direct peer-to-peer transfer on same network",
-        "No server storage",
-        "Cross-platform compatibility",
+        "NaCl/Curve25519 end-to-end encryption",
+        "Direct peer-to-peer transfer — files never touch a server",
+        "Zero server storage — no cloud, no trace",
+        "Cross-platform — any modern browser",
         "No file size limits",
-        "Privacy focused"
+        "No account required — zero data collection"
       ]
     },
     {
@@ -62,7 +62,7 @@ const Index = () => {
       "name": "LocalBolt",
       "url": "https://localbolt.site",
       "logo": "https://localbolt.site/og-image.png",
-      "description": "Secure peer-to-peer file transfer service with end-to-end encryption"
+      "description": "Encrypted peer-to-peer file transfer service — NaCl/Curve25519 encryption, zero server storage"
     },
     {
       "@context": "https://schema.org",
@@ -87,13 +87,13 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>LocalBolt | Secure Same-Network File Transfer</title>
-        <meta name="description" content="Secure, encrypted file transfer between devices on the same network. No sign-up and no cloud file storage." />
-        <meta name="keywords" content="local file transfer, same network file sharing, p2p file transfer, secure file sharing, airdrop alternative" />
+        <title>LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud</title>
+        <meta name="description" content="End-to-end encrypted file transfer directly between your devices. Files never touch a server. No sign-up, no cloud, no trace." />
+        <meta name="keywords" content="encrypted file transfer, P2P file sharing, no cloud file transfer, end-to-end encrypted, private file sharing, secure file transfer, airdrop alternative, NaCl encryption" />
 
         {/* Open Graph / Social Media */}
-        <meta property="og:title" content="LocalBolt | Secure Same-Network File Transfer" />
-        <meta property="og:description" content="Transfer files directly between devices on the same network with end-to-end encryption and no cloud storage." />
+        <meta property="og:title" content="LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud" />
+        <meta property="og:description" content="End-to-end encrypted P2P file transfer. Files go directly between devices — never stored on any server. NaCl/Curve25519 encryption." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://localbolt.site" />
         <meta property="og:image" content="https://localbolt.site/og-image.png" />
@@ -107,10 +107,10 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@localbolt" />
         <meta name="twitter:creator" content="@the9ines" />
-        <meta name="twitter:title" content="LocalBolt | Secure Same-Network File Transfer" />
-        <meta name="twitter:description" content="Transfer files directly between devices on the same network with end-to-end encryption." />
+        <meta name="twitter:title" content="LocalBolt | Encrypted P2P File Transfer — No Servers, No Cloud" />
+        <meta name="twitter:description" content="End-to-end encrypted file transfer between your devices. No servers, no cloud, no trace." />
         <meta name="twitter:image" content="https://localbolt.site/og-image.png" />
-        <meta name="twitter:image:alt" content="LocalBolt - Secure P2P File Sharing platform with end-to-end encryption" />
+        <meta name="twitter:image:alt" content="LocalBolt — Encrypted P2P File Transfer with NaCl/Curve25519 encryption" />
 
         {/* Additional Social Media Meta Tags */}
         <meta property="fb:app_id" content="" />
