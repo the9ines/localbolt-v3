@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.6-bolt-separators
+- **Tag**: v3.0.7-bolt-title
 - **Branch**: main
-- **HEAD**: 4ead633
+- **HEAD**: 4471a2b
 
 ## Architecture
 - **Frontend**: React 18 + TypeScript + Vite + Tailwind + shadcn/ui + TanStack Router/Query
@@ -20,7 +20,7 @@
 
 ## Key Dependencies
 - **Web**: React 18, Vite, Tailwind CSS, shadcn/ui, TanStack Router/Query, TweetNaCl, lucide-react
-- **Signal**: Rust, tokio, warp, dashmap, serde
+- **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
 
 ## Roadmap
@@ -43,3 +43,4 @@
 | v3.0.4-tauri-scaffold | 3530e7a | Tauri v2 project structure |
 | v3.0.5-signaling-abstraction | fe14191 | Supabase types stub |
 | v3.0.6-bolt-separators | 4ead633 | Visual bolt icon separators in copy |
+| v3.0.7-bolt-title | 4471a2b | Bolt emoji in page title and meta tags |

@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.7-bolt-title — Bolt emoji in page title and meta tags (2026-02-18, 4471a2b)
+- Replaced em dash separators with bolt emoji (⚡) in HTML page title
+- Updated og:title and twitter:title meta tags with bolt emoji separators
+- Updated og:description and twitter:image:alt meta tags with bolt emoji
+- Files changed:
+  - `packages/localbolt-web/src/pages/Index.tsx`
+
 ## v3.0.6-bolt-separators — Visual separator icons in copy (2026-02-18, 4ead633)
 - Replaced em dash separators with inline grey Zap (lightning bolt) icons across Hero, HowItWorks, and Features sections
 - Changed FeatureCard `description` prop type from `string` to `ReactNode` to support inline JSX icons
