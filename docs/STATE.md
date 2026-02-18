@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.9-discovery-polish
+- **Tag**: v3.0.10-faq-clean
 - **Branch**: main
-- **HEAD**: eff0bb2
+- **HEAD**: 9d8068e
 
 ## Architecture
 - **Frontend**: React 18 + TypeScript + Vite + Tailwind + shadcn/ui + TanStack Router/Query
@@ -46,3 +46,4 @@
 | v3.0.7-bolt-title | 4471a2b | Bolt emoji in page title and meta tags |
 | v3.0.8-device-discovery | 5f86aa4 | AirDrop-style device discovery, peer code UI removed |
 | v3.0.9-discovery-polish | eff0bb2 | Visual refinement of discovery to match Transfer card |
+| v3.0.10-faq-clean | 9d8068e | Remove bolt emoji from FAQ answer, use period |

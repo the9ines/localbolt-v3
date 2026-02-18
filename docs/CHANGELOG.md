@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.10-faq-clean — Remove bolt emoji from FAQ answer, use period (2026-02-18, 9d8068e)
+- Removed bolt emoji (`⚡`) from the FAQ answer for "Is LocalBolt safer than WeTransfer or Google Drive?"
+- Replaced with a period and capitalized the following word for clean prose
+- Files changed:
+  - `packages/localbolt-web/src/components/sections/FAQ.tsx`
+
 ## v3.0.9-discovery-polish — Visual refinement of device discovery UI (2026-02-18, eff0bb2)
 - Replaced shadcn `Button` with a plain `<button>` for the Disconnect action to match Transfer card visual language
 - Replaced `<label>` elements with `<p>` tags for section headings (Nearby Devices, Connected Device) to remove form semantics
