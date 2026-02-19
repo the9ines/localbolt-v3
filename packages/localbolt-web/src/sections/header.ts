@@ -1,4 +1,5 @@
 import { icons } from '@/ui/icons';
+import { store } from '@/state/store';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -10,10 +11,25 @@ export function createHeader(): HTMLElement {
         <span style="font-family:'JetBrains Mono',monospace" class="text-[13px] font-bold tracking-tight text-white/90">LocalBolt</span>
       </a>
       <div class="flex items-center gap-1.5">
-        <div class="w-1.5 h-1.5 rounded-full bg-neon/70 animate-pulse"></div>
-        <span style="font-family:'JetBrains Mono',monospace" class="text-[10px] text-white/30 tracking-widest">ACTIVE</span>
+        <div class="status-dot w-1.5 h-1.5 rounded-full bg-red-500/70"></div>
+        <span style="font-family:'JetBrains Mono',monospace" class="status-label text-[10px] text-white/30 tracking-widest">OFFLINE</span>
       </div>
     </div>
   `;
+
+  const dot = header.querySelector('.status-dot') as HTMLElement;
+  const label = header.querySelector('.status-label') as HTMLElement;
+
+  store.subscribe(() => {
+    const { signalingConnected } = store.getState();
+    if (signalingConnected) {
+      dot.className = 'status-dot w-1.5 h-1.5 rounded-full bg-neon/70 animate-pulse';
+      label.textContent = 'ACTIVE';
+    } else {
+      dot.className = 'status-dot w-1.5 h-1.5 rounded-full bg-red-500/70';
+      label.textContent = 'OFFLINE';
+    }
+  });
+
   return header;
 }

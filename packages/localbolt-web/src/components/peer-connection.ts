@@ -272,6 +272,7 @@ export function createPeerConnection(): HTMLElement {
   signaling.onSignal(handleApprovalSignal);
 
   signaling.connect(peerCode, getDeviceName(), detectDeviceType()).then(() => {
+    store.setState({ signalingConnected: true });
     const rtcService = new WebRTCService(
       signaling,
       peerCode,
@@ -284,6 +285,7 @@ export function createPeerConnection(): HTMLElement {
     setWebrtcRef(rtcService);
   }).catch((err) => {
     console.error('[SIGNALING] Failed to connect:', err);
+    store.setState({ signalingConnected: false });
     handleConnectionError(new SignalingError('Signaling connection failed', err));
   });
 

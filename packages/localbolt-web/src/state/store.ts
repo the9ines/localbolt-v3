@@ -11,6 +11,7 @@ export interface AppState {
   peerCode: string;
   peers: DiscoveredDevice[];
   isConnected: boolean;
+  signalingConnected: boolean;
   connectingTo: string | null;
   connectedDevice: DiscoveredDevice | null;
   transferProgress: TransferProgress | null;
@@ -26,6 +27,7 @@ const initialState: AppState = {
   peerCode: '',
   peers: [],
   isConnected: false,
+  signalingConnected: false,
   connectingTo: null,
   connectedDevice: null,
   transferProgress: null,
