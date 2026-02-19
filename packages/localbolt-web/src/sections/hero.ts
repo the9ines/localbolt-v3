@@ -1,5 +1,3 @@
-import { icons } from '@/ui/icons';
-
 export function createHero(onStartSharing: () => void): HTMLElement {
   const section = document.createElement('section');
   section.id = 'encrypted-p2p-sharing';
@@ -10,10 +8,10 @@ export function createHero(onStartSharing: () => void): HTMLElement {
       Encrypted P2P File Sharing
     </h1>
     <p class="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-      Private, encrypted file transfer ${icons.zap('inline w-3.5 h-3.5 text-gray-500')} directly between your devices. Files never touch a server.
+      Private, encrypted file transfer directly between your devices. Same network or across the internet. Files never touch a server.
     </p>
     <button class="scroll-btn inline-flex items-center gap-1 text-sm text-neon/70 hover:text-neon transition-colors pt-2" aria-label="Scroll to file transfer">
-      ${icons.arrowDown('w-4 h-4 animate-bounce')}
+      <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
     </button>
   `;
   section.querySelector('.scroll-btn')!.addEventListener('click', onStartSharing);

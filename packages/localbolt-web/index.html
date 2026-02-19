@@ -17,7 +17,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="LocalBolt ⚡ Encrypted P2P File Transfer ⚡ No Servers, No Cloud" />
-    <meta property="og:description" content="End-to-end encrypted P2P file transfer. Files go directly between devices — never stored on any server. NaCl/Curve25519 encryption." />
+    <meta property="og:description" content="End-to-end encrypted P2P file transfer. Files go directly between devices, never stored on any server. NaCl/Curve25519 encryption." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://localbolt.site" />
     <meta property="og:image" content="https://localbolt.site/og-image.png" />
@@ -34,7 +34,7 @@
     <meta name="twitter:title" content="LocalBolt ⚡ Encrypted P2P File Transfer ⚡ No Servers, No Cloud" />
     <meta name="twitter:description" content="End-to-end encrypted file transfer between your devices. No servers, no cloud, no trace." />
     <meta name="twitter:image" content="https://localbolt.site/og-image.png" />
-    <meta name="twitter:image:alt" content="LocalBolt — Encrypted P2P File Transfer with NaCl/Curve25519 encryption" />
+    <meta name="twitter:image:alt" content="LocalBolt - Encrypted P2P File Transfer with NaCl/Curve25519 encryption" />
 
     <!-- App -->
     <meta name="application-name" content="LocalBolt" />
@@ -59,14 +59,16 @@
         "applicationCategory": "File Transfer",
         "operatingSystem": "Cross-platform",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "description": "End-to-end encrypted peer-to-peer file transfer. Files transfer directly between devices using NaCl/Curve25519 encryption — never stored on any server.",
+        "description": "End-to-end encrypted peer-to-peer file transfer. Files transfer directly between devices using NaCl/Curve25519 encryption. Never stored on any server.",
         "featureList": [
           "NaCl/Curve25519 end-to-end encryption",
-          "Direct peer-to-peer transfer — files never touch a server",
-          "Zero server storage — no cloud, no trace",
-          "Cross-platform — any modern browser",
+          "Direct peer-to-peer transfer. Files never touch a server",
+          "Zero server storage. No cloud, no trace",
+          "Cross-platform: browser, desktop app, or self-hosted",
+          "Works across networks: same LAN or different networks",
           "No file size limits",
-          "No account required — zero data collection"
+          "No account required. Zero data collection",
+          "Open source. Self-host your own instance"
         ]
       },
       {
@@ -75,7 +77,7 @@
         "name": "LocalBolt",
         "url": "https://localbolt.site",
         "logo": "https://localbolt.site/og-image.png",
-        "description": "Encrypted peer-to-peer file transfer service — NaCl/Curve25519 encryption, zero server storage"
+        "description": "Encrypted peer-to-peer file transfer service. NaCl/Curve25519 encryption, zero server storage"
       },
       {
         "@context": "https://schema.org",
@@ -90,7 +92,7 @@
           {
             "@type": "Question",
             "name": "How do I send large files without email?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Open LocalBolt on both devices, share the 6-character code, and connect. Once connected, drag and drop files to transfer directly between devices with no account required." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Open LocalBolt on both devices. They can be on the same network or different networks. Devices appear automatically. Tap to connect, then drag and drop files to transfer directly with no account required." }
           },
           {
             "@type": "Question",
@@ -100,12 +102,12 @@
           {
             "@type": "Question",
             "name": "Does LocalBolt work like AirDrop on Windows and Android?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt works in modern browsers on Windows, macOS, Linux, Android, and iOS, so you can share across mixed device types." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt works in modern browsers on Windows, macOS, Linux, Android, and iOS. Unlike AirDrop, it also works across different networks, not just devices near you." }
           },
           {
             "@type": "Question",
             "name": "How do I transfer files between iPhone and Android?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Open localbolt.site on both devices on the same network, enter the shown 6-character code, and connect. Then send files directly between iPhone and Android from the browser." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Open localbolt.site on both devices. They will discover each other automatically. Tap the device to connect, then send files directly between iPhone and Android from the browser." }
           },
           {
             "@type": "Question",
@@ -120,7 +122,12 @@
           {
             "@type": "Question",
             "name": "Does LocalBolt work across different networks?",
-            "acceptedAnswer": { "@type": "Answer", "text": "LocalBolt is designed for peers on the same network. Connections can fail on segmented or isolated networks." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt uses dual signaling to discover devices both on your local network and across the internet. Same-network transfers are the fastest since data stays on your LAN." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I self-host LocalBolt?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt is fully open source. Clone the repo from GitHub, run the start script, and you have your own private instance with its own signaling server. Works offline on your LAN with no internet required." }
           }
         ]
       }
