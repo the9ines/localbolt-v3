@@ -1,5 +1,20 @@
 # LocalBolt v3 Changelog
 
+## v3.0.25-hero-layout-pulse — Hero-first layout with pulsating grid centered on transfer card (2026-02-18, 79aebdd)
+- Removed standalone `hero.ts` section file; hero content (h1 title, subtitle, animated down-arrow) is now inlined directly in `app.ts`
+- Removed imports and usage of `createHero`, `createHowItWorks`, `createTrustStrip`, `createFeatures`, and `createFAQ` from `app.ts` — the page is now hero + transfer card + footer only
+- Removed the old above-the-fold / below-the-fold split layout; replaced with a single linear flow: header, hero (text-center with pt-20/pt-28 padding), transfer section, bottom spacer, footer
+- Pulsating grid background (`radial-gradient` + `grid.svg`) is now scoped to the transfer card section instead of spanning the full viewport; uses `radial-gradient(ellipse at 50% 50%, ...)` mask to fade out around the card
+- Transfer card section uses generous vertical padding (`py-32 lg:py-48`) to float the card in the center of the viewport
+- Removed the `min-h-screen` class from the wrapper; wrapper is now just `relative bg-dark text-white`
+- Removed the `h2` title and subtitle from the transfer card component (`transfer.ts`) since the hero section now provides the page heading
+- Hero h1 uses `animate-fade-up` with staggered animation delay (100ms) on the subtitle
+- Added a bottom spacer (`h-48 lg:h-64`) where FAQ content previously lived
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+  - `packages/localbolt-web/src/sections/hero.ts` (deleted)
+  - `packages/localbolt-web/src/sections/transfer.ts`
+
 ## v3.0.24-crypto-comment-fix — Fix outdated backward-compatibility comment in crypto-utils (2026-02-18, b5b2abd)
 - Updated JSDoc comment for `generateSecurePeerCode()` function: changed "Returns 6-character code for backward compatibility" to "Returns a 6-character alphanumeric code"
 - Comment now accurately describes function behavior without legacy context
