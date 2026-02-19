@@ -1,23 +1,24 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.28-mobile-bg-fix
+- **Tag**: v3.0.29-security-hardening
 - **Branch**: main
-- **HEAD**: 36973b9
+- **HEAD**: 8034539
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
 - **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Custom Rust WebSocket server backend (IP-based room grouping, replaced Supabase)
-- **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305)
-- **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
-- **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect)
+- **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
+- **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
+- **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation
+- **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
-- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
+- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
@@ -32,7 +33,7 @@
 - **State**: `state/store.ts` (lightweight pub/sub store replacing React hooks/context)
 - **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`
 - **Sections**: `header.ts`, `footer.ts`, `transfer.ts`, `how-it-works.ts`, `features.ts`, `faq.ts`, `consent-modal.ts` (hero content is inlined in `app.ts`; `hero.ts` and `trust-strip.ts` have been removed; how-it-works, features, and FAQ restored as SEO content below transfer card)
-- **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications)
+- **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications), `lib/sanitize.ts` (XSS escapeHTML)
 
 ## Brand
 - **Primary color**: #A4E200 (previously #14FF6A)
@@ -50,6 +51,7 @@
 - **Phase W**: DONE — Copy refresh for dual signaling/cross-network, logo, README, self-hosting FAQ, em dash removal [v3.0.22]
 - **Phase X**: DONE — Hero-first layout simplification: removed how-it-works, features, FAQ, trust-strip sections; hero + transfer card only; pulsating grid centered on card [v3.0.25]
 - **Phase Y**: DONE — Full-viewport transfer card: 3-screen layout (hero, card, SEO content); green neon scroll arrow; restored how-it-works, features, FAQ below the fold; section-level pulsating bg [v3.0.26, v3.0.27, v3.0.28]
+- **Phase Z**: DONE — Security hardening: SAS verification, XSS sanitization, peer code validation/collision detection, relay ICE filtering, CSP meta tag, base64 fix, private IP room grouping [v3.0.29]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -87,3 +89,4 @@
 | v3.0.26-fullscreen-card | baea528 | Full-viewport transfer card with restored SEO content below |
 | v3.0.27-card-centered-bg | de36a55 | Pulsating bg anchored to card wrapper with responsive spread |
 | v3.0.28-mobile-bg-fix | 36973b9 | Pulsating bg moved to section-level, fixing mobile cutoff |
+| v3.0.29-security-hardening | 8034539 | Security hardening: SAS, XSS, peer validation, CSP, ICE filtering, private IP rooms |

@@ -1,5 +1,26 @@
 # LocalBolt v3 Changelog
 
+## v3.0.29-security-hardening — Security hardening across web + signal: SAS verification, XSS sanitization, peer validation, relay ICE filtering, CSP, base64 fix, private IP detection (2026-02-18, 8034539)
+- **SAS verification**: Added `getVerificationCode()` method to `WebRTCService` that computes a 6-character Short Authentication String from both peers' public keys (sorted, SHA-256 hashed); both sides produce the same code if keys were exchanged correctly, allowing users to confirm before transferring sensitive files
+- **XSS sanitization**: New `escapeHTML()` utility in `src/lib/sanitize.ts`; all innerHTML injections of user-controlled data (device names, file names) now escape `&`, `<`, `>`, `"`, `'` to prevent cross-site scripting
+  - `device-discovery.ts`: 4 instances of `${peer.deviceName}` / `${deviceName}` escaped
+  - `file-upload.ts`: 1 instance of `${file.name}` escaped
+- **Peer code validation (signal server)**: New `validate_peer_code()` function in `server.rs` — rejects empty, >16 char, or non-alphanumeric peer codes at registration time
+- **Peer code collision detection (signal server)**: `add_peer()` in `room.rs` now returns `Result<Vec<PeerData>, String>` and rejects duplicate peer codes within the same room; server sends error and disconnects on collision
+- **Relay ICE candidate filtering**: `WebRTCService` now blocks relay-type ICE candidates (`event.candidate.type === 'relay'`) proactively instead of post-connection filtering, enforcing the same-network policy earlier in the connection process
+- **Content Security Policy**: Added CSP `<meta>` tag to `index.html` — `default-src 'self'`; `script-src 'self'`; `style-src 'self' 'unsafe-inline' fonts.googleapis.com`; `font-src 'self' fonts.gstatic.com`; `connect-src 'self' ws: wss:`; `img-src 'self' data:`; `frame-ancestors 'none'`; `base-uri 'self'`
+- **Base64 encoding fix**: Replaced manual `btoa(String.fromCharCode(...))` / `Uint8Array.from(atob(...))` in `encryptChunk`/`decryptChunk` with `encodeBase64`/`decodeBase64` from tweetnacl-util, fixing potential issues with large binary chunks exceeding the call stack
+- **Private IP detection (signal server)**: New `is_private_ip()` function in `server.rs` — detects RFC 1918 (10.x, 172.16-31.x, 192.168.x), loopback (127.0.0.1, ::1), link-local (169.254.x, fe80::), and IPv6 unique local (fc/fd) addresses; all private/loopback IPs now share a single "local" room so devices on the same LAN discover each other even when the host connects via 127.0.0.1 and others via 192.168.x.x
+- **Code reformatting**: Flattened nested `match` arms in registration loop (`server.rs`) for cleaner Rust style; replaced `or_insert_with(Vec::new)` with `or_default()` in `room.rs`
+- Files changed:
+  - `packages/localbolt-signal/src/room.rs`
+  - `packages/localbolt-signal/src/server.rs`
+  - `packages/localbolt-web/index.html`
+  - `packages/localbolt-web/src/components/device-discovery.ts`
+  - `packages/localbolt-web/src/components/file-upload.ts`
+  - `packages/localbolt-web/src/lib/sanitize.ts` (new)
+  - `packages/localbolt-web/src/services/webrtc/WebRTCService.ts`
+
 ## v3.0.28-mobile-bg-fix — Pulsating bg moved to section-level absolute positioning, fixing mobile cutoff (2026-02-18, 36973b9)
 - Pulsating background (`bgGlow`) moved from card-anchored negative insets (`-inset-24 sm:-inset-40 lg:-inset-64` on `cardWrap`) to section-level `absolute inset-0` on the transfer section itself
 - `bgGlow` is now appended to `transferSection` instead of `cardWrap`, so the radial gradient and grid SVG fill the entire section viewport without negative inset overflow
