@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.16-layout-spacing — Increase how-it-works to transfer spacing, constrain bg to viewport (2026-02-18, 5da86c5)
+- Added `!mt-16` to the transfer card element for more vertical gap after the how-it-works section
+- Wrapped radial gradient and grid background effects in a new `h-screen` container (`bgContainer`) so the pulsating background is constrained to the above-the-fold viewport area and does not bleed into the FAQ section below
+- Changed wrapper className to `relative` to support the new absolute-positioned background container
+- Moved `pointer-events-none` from grid background to the container level; background elements now append to `bgContainer` instead of directly to `wrapper`
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+
 ## v3.0.15-og-image-green — Update OG image to new brand green #A4E200 (2026-02-18, 4114d72)
 - Regenerated `og-image.png` with the correct chartreuse green (#A4E200) to match the v3.0.13 color rebrand (previously used old neon green #14FF6A)
 - Added `.netlify` directory to `.gitignore`

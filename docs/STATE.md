@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.15-og-image-green
+- **Tag**: v3.0.16-layout-spacing
 - **Branch**: main
-- **HEAD**: 4114d72
+- **HEAD**: 5da86c5
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -66,3 +66,4 @@
 | v3.0.13-vanilla-ts | 7697d5b | Remove React, rewrite UI in vanilla TypeScript |
 | v3.0.14-netlify-deploy | 7ab2586 | Netlify deploy config (netlify.toml + _redirects) |
 | v3.0.15-og-image-green | 4114d72 | Update OG image to new brand green (#A4E200) |
+| v3.0.16-layout-spacing | 5da86c5 | Increase how-it-works to transfer spacing, constrain bg to viewport |
