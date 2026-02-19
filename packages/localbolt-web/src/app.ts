@@ -37,20 +37,20 @@ export function createApp(root: HTMLElement) {
   const transferSection = document.createElement('section');
   transferSection.className = 'relative min-h-screen flex items-center justify-center px-4';
 
-  // Pulsating grid background centered on card
-  const bgContainer = document.createElement('div');
-  bgContainer.className = 'absolute inset-0 pointer-events-none';
-  bgContainer.style.maskImage = 'radial-gradient(ellipse at 50% 50%, white 30%, transparent 70%)';
-  bgContainer.style.webkitMaskImage = 'radial-gradient(ellipse at 50% 50%, white 30%, transparent 70%)';
-  const radialBg = document.createElement('div');
-  radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.07),rgba(0,0,0,0))] animate-pulse';
-  const gridBg = document.createElement('div');
-  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_80%)]";
-  bgContainer.append(radialBg, gridBg);
-  transferSection.appendChild(bgContainer);
-
+  // Card wrapper — bg is anchored to the card, not the section
   const cardWrap = document.createElement('div');
-  cardWrap.className = 'relative w-full';
+  cardWrap.className = 'relative w-full max-w-2xl mx-auto';
+
+  // Pulsating circular bg centered behind card — responsive spread
+  const bgGlow = document.createElement('div');
+  bgGlow.className = 'absolute -inset-24 sm:-inset-40 lg:-inset-64 pointer-events-none';
+  const radialBg = document.createElement('div');
+  radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.09),transparent_60%)] animate-pulse';
+  const gridBg = document.createElement('div');
+  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(circle,white_20%,transparent_65%)]";
+  bgGlow.append(radialBg, gridBg);
+  cardWrap.appendChild(bgGlow);
+
   const transferCard = createTransfer();
   cardWrap.appendChild(transferCard);
   transferSection.appendChild(cardWrap);
