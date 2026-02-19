@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.27-card-centered-bg — Pulsating bg anchored to card wrapper with responsive spread sizes (2026-02-18, de36a55)
+- Pulsating grid background is now anchored to the card wrapper (`cardWrap`) instead of the full transfer section, so the glow stays centered behind the transfer card regardless of viewport size
+- Introduced a `bgGlow` container with responsive negative inset classes (`-inset-24 sm:-inset-40 lg:-inset-64`) so the background spread scales up on larger screens
+- Removed the old `bgContainer` div that spanned `absolute inset-0` on the section with a mask-image fade; background sizing is now controlled entirely by the responsive insets on `bgGlow`
+- Radial gradient opacity bumped from `0.07` to `0.09` and outer stop changed from `rgba(0,0,0,0)` to `transparent_60%` for a tighter, brighter glow
+- Grid SVG mask updated from `radial-gradient(white,transparent_80%)` to `radial-gradient(circle,white_20%,transparent_65%)` for a more focused grid reveal
+- `cardWrap` now includes `max-w-2xl mx-auto` to constrain the card width and center it horizontally (previously just `relative w-full`)
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+
 ## v3.0.26-fullscreen-card — Full-viewport transfer card with restored SEO content (2026-02-18, baea528)
 - Hero section upgraded to a full-viewport screen (`min-h-[calc(100vh-3rem)]`) with flex centering; h1 enlarged to `text-5xl sm:text-6xl`; subtitle enlarged to `text-lg`
 - Replaced static animated SVG down-arrow with a clickable green neon scroll button (`.scroll-btn`) that smooth-scrolls the transfer card into view (`scrollIntoView({ behavior: 'smooth', block: 'center' })`)
