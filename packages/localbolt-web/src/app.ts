@@ -14,9 +14,11 @@ export function createApp(root: HTMLElement) {
   const wrapper = document.createElement('div');
   wrapper.className = 'relative min-h-screen bg-dark text-white';
 
-  // Background effects — constrained to above-the-fold area only
+  // Background effects — fade out before below-the-fold content
   const bgContainer = document.createElement('div');
-  bgContainer.className = 'absolute inset-x-0 top-0 h-screen overflow-hidden pointer-events-none';
+  bgContainer.className = 'absolute inset-x-0 top-0 h-screen pointer-events-none';
+  bgContainer.style.maskImage = 'linear-gradient(to bottom, white 60%, transparent 100%)';
+  bgContainer.style.webkitMaskImage = 'linear-gradient(to bottom, white 60%, transparent 100%)';
   const radialBg = document.createElement('div');
   radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.07),rgba(0,0,0,0))] animate-pulse';
   const gridBg = document.createElement('div');
