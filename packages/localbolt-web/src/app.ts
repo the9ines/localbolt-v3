@@ -1,10 +1,5 @@
 import { createHeader } from '@/sections/header';
-import { createHero } from '@/sections/hero';
-import { createHowItWorks } from '@/sections/how-it-works';
 import { createTransfer } from '@/sections/transfer';
-import { createTrustStrip } from '@/sections/trust-strip';
-import { createFeatures } from '@/sections/features';
-import { createFAQ } from '@/sections/faq';
 import { createFooter } from '@/sections/footer';
 import { createConsentModal } from '@/sections/consent-modal';
 
@@ -12,18 +7,7 @@ export function createApp(root: HTMLElement) {
   root.innerHTML = '';
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'relative min-h-screen bg-dark text-white';
-
-  // Background effects — fade out before below-the-fold content
-  const bgContainer = document.createElement('div');
-  bgContainer.className = 'absolute inset-x-0 top-0 h-screen pointer-events-none';
-  bgContainer.style.maskImage = 'linear-gradient(to bottom, white 60%, transparent 100%)';
-  bgContainer.style.webkitMaskImage = 'linear-gradient(to bottom, white 60%, transparent 100%)';
-  const radialBg = document.createElement('div');
-  radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.07),rgba(0,0,0,0))] animate-pulse';
-  const gridBg = document.createElement('div');
-  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_80%)]";
-  bgContainer.append(radialBg, gridBg);
+  wrapper.className = 'relative bg-dark text-white';
 
   const zLayer = document.createElement('div');
   zLayer.className = 'relative z-10';
@@ -31,39 +15,56 @@ export function createApp(root: HTMLElement) {
   // Header
   zLayer.appendChild(createHeader());
 
-  // Main
   const main = document.createElement('main');
-  main.className = 'container mx-auto px-4';
 
-  // Above the fold
-  const aboveFold = document.createElement('div');
-  aboveFold.className = 'py-12 lg:py-16 space-y-8';
+  // Hero — SEO title + subtitle + down arrow
+  const hero = document.createElement('div');
+  hero.className = 'text-center pt-20 lg:pt-28 pb-6 px-4';
+  hero.innerHTML = `
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent pb-3 animate-fade-up">Encrypted P2P File Sharing</h1>
+    <p class="text-sm sm:text-base text-gray-400 max-w-lg mx-auto leading-relaxed animate-fade-up [animation-delay:100ms]">Private, encrypted file transfer directly between your devices. Same network or across the internet. Files never touch a server.</p>
+    <div class="mt-8">
+      <svg class="w-5 h-5 mx-auto text-neon/40 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+      </svg>
+    </div>
+  `;
+  main.appendChild(hero);
 
-  const transferEl = createTransfer();
+  // Transfer card section — centered with pulsating grid bg
+  const transferSection = document.createElement('div');
+  transferSection.className = 'relative py-32 lg:py-48 px-4';
 
-  aboveFold.appendChild(createHero(() => {
-    transferEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }));
-  aboveFold.appendChild(createHowItWorks());
-  transferEl.classList.add('!mt-16');
-  aboveFold.appendChild(transferEl);
-  aboveFold.appendChild(createTrustStrip());
+  // Pulsating grid background centered on card
+  const bgContainer = document.createElement('div');
+  bgContainer.className = 'absolute inset-0 pointer-events-none';
+  bgContainer.style.maskImage = 'radial-gradient(ellipse at 50% 50%, white 30%, transparent 70%)';
+  bgContainer.style.webkitMaskImage = 'radial-gradient(ellipse at 50% 50%, white 30%, transparent 70%)';
+  const radialBg = document.createElement('div');
+  radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.07),rgba(0,0,0,0))] animate-pulse';
+  const gridBg = document.createElement('div');
+  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_80%)]";
+  bgContainer.append(radialBg, gridBg);
+  transferSection.appendChild(bgContainer);
 
-  main.appendChild(aboveFold);
+  // Card
+  const cardWrap = document.createElement('div');
+  cardWrap.className = 'relative';
+  cardWrap.appendChild(createTransfer());
+  transferSection.appendChild(cardWrap);
 
-  // Below the fold
-  const belowFold = document.createElement('div');
-  belowFold.className = 'border-t border-white/5 py-16 lg:py-20 space-y-16';
-  belowFold.appendChild(createFeatures());
-  belowFold.appendChild(createFAQ());
-  main.appendChild(belowFold);
+  main.appendChild(transferSection);
+
+  // Bottom spacer — as if FAQ content was here
+  const bottomSpacer = document.createElement('div');
+  bottomSpacer.className = 'h-48 lg:h-64';
+  main.appendChild(bottomSpacer);
 
   zLayer.appendChild(main);
   zLayer.appendChild(createFooter());
 
-  wrapper.append(bgContainer, zLayer);
+  wrapper.appendChild(zLayer);
   root.appendChild(wrapper);
 
-  // Consent modal
   createConsentModal();
 }

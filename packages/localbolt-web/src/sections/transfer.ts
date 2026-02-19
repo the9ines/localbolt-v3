@@ -18,14 +18,6 @@ export function createTransfer(): HTMLElement {
   const gradientT = document.createElement('div');
   gradientT.className = 'absolute inset-0 bg-gradient-to-t from-dark/20 via-transparent to-transparent';
 
-  // Title
-  const titleWrap = document.createElement('div');
-  titleWrap.className = 'relative space-y-2 text-center';
-  titleWrap.innerHTML = `
-    <h2 class="text-2xl font-semibold tracking-tight">Fast, Private File Transfer</h2>
-    <p class="text-sm text-gray-400">Share files directly between devices on the same network</p>
-  `;
-
   // Content area
   const content = document.createElement('div');
   content.className = 'relative';
@@ -47,6 +39,6 @@ export function createTransfer(): HTMLElement {
     fileUploadWrap.hidden = !isConnected;
   });
 
-  card.append(gradientBr, gradientT, titleWrap, content);
+  card.append(gradientBr, gradientT, content);
   return card;
 }
