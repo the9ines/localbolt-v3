@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.19-signaling-status
+- **Tag**: v3.0.20-remove-signal-toast
 - **Branch**: main
-- **HEAD**: 95318c0
+- **HEAD**: 16a5b70
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -71,3 +71,4 @@
 | v3.0.17-bg-fade | 7c51418 | Smooth background fade-out instead of hard cutoff |
 | v3.0.18-header-footer-redesign | c29acf0 | Port lite header and footer design to v3 |
 | v3.0.19-signaling-status | 95318c0 | Reactive signaling status indicator in header |
+| v3.0.20-remove-signal-toast | 16a5b70 | Remove redundant signaling error toast |

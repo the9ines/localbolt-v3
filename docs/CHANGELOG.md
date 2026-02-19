@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.20-remove-signal-toast — Remove redundant signaling error toast (2026-02-18, 16a5b70)
+- Removed `handleConnectionError(new SignalingError(...))` call from the signaling connect catch block in `peer-connection.ts`
+- The red OFFLINE dot in the header (added in v3.0.19) already communicates signaling failure to the user
+- Eliminates a redundant error toast popup that duplicated the header status indicator
+- Files changed:
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+
 ## v3.0.19-signaling-status — Reactive signaling status indicator in header (2026-02-18, 95318c0)
 - Added `signalingConnected` boolean to `AppState` interface and initial state in the store
 - Header now subscribes to store state changes and reactively updates the status indicator
