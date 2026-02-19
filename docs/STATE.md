@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.25-hero-layout-pulse
+- **Tag**: v3.0.26-fullscreen-card
 - **Branch**: main
-- **HEAD**: 79aebdd
+- **HEAD**: baea528
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -28,10 +28,10 @@
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
 
 ## UI Components (vanilla TypeScript)
-- **Entry**: `main.ts` → `app.ts` (mounts header, inline hero, transfer card with pulsating grid bg, footer)
+- **Entry**: `main.ts` → `app.ts` (mounts header, 3-screen layout: hero with scroll arrow, full-viewport transfer card with pulsating grid bg, SEO content below, footer)
 - **State**: `state/store.ts` (lightweight pub/sub store replacing React hooks/context)
 - **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`
-- **Sections**: `header.ts`, `footer.ts`, `transfer.ts`, `consent-modal.ts` (hero content is inlined in `app.ts`; `hero.ts`, `features.ts`, `how-it-works.ts`, `faq.ts`, `trust-strip.ts` have been removed)
+- **Sections**: `header.ts`, `footer.ts`, `transfer.ts`, `how-it-works.ts`, `features.ts`, `faq.ts`, `consent-modal.ts` (hero content is inlined in `app.ts`; `hero.ts` and `trust-strip.ts` have been removed; how-it-works, features, and FAQ restored as SEO content below transfer card)
 - **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications)
 
 ## Brand
@@ -49,6 +49,7 @@
 - **Phase V**: DONE — Vanilla TypeScript rewrite, React removal [v3.0.13]
 - **Phase W**: DONE — Copy refresh for dual signaling/cross-network, logo, README, self-hosting FAQ, em dash removal [v3.0.22]
 - **Phase X**: DONE — Hero-first layout simplification: removed how-it-works, features, FAQ, trust-strip sections; hero + transfer card only; pulsating grid centered on card [v3.0.25]
+- **Phase Y**: DONE — Full-viewport transfer card: 3-screen layout (hero, card, SEO content); green neon scroll arrow; restored how-it-works, features, FAQ below the fold [v3.0.26]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -83,3 +84,4 @@
 | v3.0.23-revert-logo | 70c35ed | Revert logo SVG, restore zap icon + text header |
 | v3.0.24-crypto-comment-fix | b5b2abd | Fix outdated backward-compatibility comment in crypto-utils |
 | v3.0.25-hero-layout-pulse | 79aebdd | Hero-first layout with pulsating grid centered on transfer card |
+| v3.0.26-fullscreen-card | baea528 | Full-viewport transfer card with restored SEO content below |

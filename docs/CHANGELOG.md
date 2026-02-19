@@ -1,5 +1,17 @@
 # LocalBolt v3 Changelog
 
+## v3.0.26-fullscreen-card — Full-viewport transfer card with restored SEO content (2026-02-18, baea528)
+- Hero section upgraded to a full-viewport screen (`min-h-[calc(100vh-3rem)]`) with flex centering; h1 enlarged to `text-5xl sm:text-6xl`; subtitle enlarged to `text-lg`
+- Replaced static animated SVG down-arrow with a clickable green neon scroll button (`.scroll-btn`) that smooth-scrolls the transfer card into view (`scrollIntoView({ behavior: 'smooth', block: 'center' })`)
+- Transfer card section now occupies its own full-viewport screen (`min-h-screen flex items-center justify-center`) instead of using fixed vertical padding
+- Restored SEO content sections below the transfer card: How It Works, Features, and FAQ — re-imported `createHowItWorks`, `createFeatures`, and `createFAQ` into `app.ts`
+- SEO content wrapped in a container with generous spacing (`py-24 lg:py-32 space-y-20`), positioned below the fold so it does not interfere with the transfer card screen
+- Removed the placeholder bottom spacer (`h-48 lg:h-64`) that was added in v3.0.25
+- Layout is now a clean 3-screen flow: Screen 1 (hero with scroll arrow), Screen 2 (full-viewport transfer card with pulsating grid), Screen 3 (SEO content: how-it-works + features + FAQ)
+- Hero and transfer section elements changed from `div` to semantic `section` tags
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+
 ## v3.0.25-hero-layout-pulse — Hero-first layout with pulsating grid centered on transfer card (2026-02-18, 79aebdd)
 - Removed standalone `hero.ts` section file; hero content (h1 title, subtitle, animated down-arrow) is now inlined directly in `app.ts`
 - Removed imports and usage of `createHero`, `createHowItWorks`, `createTrustStrip`, `createFeatures`, and `createFAQ` from `app.ts` — the page is now hero + transfer card + footer only
