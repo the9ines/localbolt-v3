@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.17-bg-fade — Smooth background fade-out instead of hard cutoff (2026-02-18, 7c51418)
+- Replaced `overflow-hidden` on the background container (`bgContainer`) with a CSS `mask-image` linear gradient that fades from opaque at 60% to transparent at 100%
+- Added both `maskImage` and `webkitMaskImage` properties for cross-browser support
+- Updated comment from "constrained to above-the-fold area only" to "fade out before below-the-fold content"
+- Result: the radial gradient and grid background effects now smoothly fade out instead of ending abruptly at the viewport edge
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+
 ## v3.0.16-layout-spacing — Increase how-it-works to transfer spacing, constrain bg to viewport (2026-02-18, 5da86c5)
 - Added `!mt-16` to the transfer card element for more vertical gap after the how-it-works section
 - Wrapped radial gradient and grid background effects in a new `h-screen` container (`bgContainer`) so the pulsating background is constrained to the above-the-fold viewport area and does not bleed into the FAQ section below

@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.16-layout-spacing
+- **Tag**: v3.0.17-bg-fade
 - **Branch**: main
-- **HEAD**: 5da86c5
+- **HEAD**: 7c51418
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -67,3 +67,4 @@
 | v3.0.14-netlify-deploy | 7ab2586 | Netlify deploy config (netlify.toml + _redirects) |
 | v3.0.15-og-image-green | 4114d72 | Update OG image to new brand green (#A4E200) |
 | v3.0.16-layout-spacing | 5da86c5 | Increase how-it-works to transfer spacing, constrain bg to viewport |
+| v3.0.17-bg-fade | 7c51418 | Smooth background fade-out instead of hard cutoff |
