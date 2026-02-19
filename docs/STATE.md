@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.29-security-hardening
+- **Tag**: v3.0.30-scorecard-hardening
 - **Branch**: main
-- **HEAD**: 8034539
+- **HEAD**: 234710a
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -20,11 +20,12 @@
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
+- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS build), CodeQL SAST (javascript-typescript, weekly + push/PR), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
 - **Web runtime** (2): tweetnacl, tweetnacl-util
-- **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite
+- **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7)
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
 
@@ -52,6 +53,7 @@
 - **Phase X**: DONE — Hero-first layout simplification: removed how-it-works, features, FAQ, trust-strip sections; hero + transfer card only; pulsating grid centered on card [v3.0.25]
 - **Phase Y**: DONE — Full-viewport transfer card: 3-screen layout (hero, card, SEO content); green neon scroll arrow; restored how-it-works, features, FAQ below the fold; section-level pulsating bg [v3.0.26, v3.0.27, v3.0.28]
 - **Phase Z**: DONE — Security hardening: SAS verification, XSS sanitization, peer code validation/collision detection, relay ICE filtering, CSP meta tag, base64 fix, private IP room grouping [v3.0.29]
+- **Phase SC**: DONE — OpenSSF Scorecard hardening: pinned GitHub Actions by SHA, CodeQL SAST, Dependabot, CI workflow, vite 5->7 (esbuild CVE fix), minimatch override (ReDoS CVE fix) [v3.0.30]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -90,3 +92,4 @@
 | v3.0.27-card-centered-bg | de36a55 | Pulsating bg anchored to card wrapper with responsive spread |
 | v3.0.28-mobile-bg-fix | 36973b9 | Pulsating bg moved to section-level, fixing mobile cutoff |
 | v3.0.29-security-hardening | 8034539 | Security hardening: SAS, XSS, peer validation, CSP, ICE filtering, private IP rooms |
+| v3.0.30-scorecard-hardening | 234710a | OpenSSF Scorecard: pinned Actions, CodeQL SAST, Dependabot, vite 7, minimatch override |

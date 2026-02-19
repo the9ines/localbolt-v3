@@ -1,5 +1,22 @@
 # LocalBolt v3 Changelog
 
+## v3.0.30-scorecard-hardening — OpenSSF Scorecard hardening: pinned GitHub Actions, SAST, Dependabot, vite/esbuild upgrade, minimatch override (2026-02-18, 234710a)
+- **GitHub Actions pinned by SHA**: All workflow `uses:` entries pinned to full commit SHAs instead of mutable tags — `actions/checkout@34e1148...`, `dtolnay/rust-toolchain@631a55b...`, `Swatinem/rust-cache@779680d...`, `actions/setup-node@49933ea...`, `github/codeql-action/*@f5c2471...`
+- **CI workflow** (`.github/workflows/ci.yml`, new): Runs on push/PR to main with `permissions: read-all`; two jobs — Signal Server (Rust: fmt check, clippy, test, release build) and Web App (TypeScript: npm ci, npm run build)
+- **CodeQL SAST workflow** (`.github/workflows/codeql.yml`, new): Runs on push/PR to main + weekly cron schedule; analyzes `javascript-typescript` language; `permissions: read-all` with `security-events: write` for the analyze job
+- **Dependabot config** (`.github/dependabot.yml`, new): Weekly updates for npm (/), cargo (/packages/localbolt-signal), and github-actions (/); PR limits of 10/5/5 respectively
+- **Vite 5 to 7 upgrade**: `vite` bumped from `^5.4.1` to `^7.3.1` in `packages/localbolt-web/package.json`; pulls in `esbuild` 0.27.3 (up from 0.21.5), fixing esbuild CVE
+- **minimatch override**: Added `"overrides": { "minimatch": "^10.2.1" }` in `packages/localbolt-web/package.json` to fix ReDoS CVE in older minimatch versions
+- **cargo fmt fix**: Reformatted `SocketAddr` parse chain in `packages/localbolt-signal/src/main.rs` (flattened `unwrap_or_else` closure formatting)
+- **package-lock.json**: Updated with new esbuild 0.27.3 platform binaries (added netbsd-arm64, openbsd-arm64, openharmony-arm64), vite 7.3.1 with new dependencies (fdir, picomatch), and minimatch override
+- Files changed:
+  - `.github/dependabot.yml` (new)
+  - `.github/workflows/ci.yml` (new)
+  - `.github/workflows/codeql.yml` (new)
+  - `package-lock.json`
+  - `packages/localbolt-signal/src/main.rs`
+  - `packages/localbolt-web/package.json`
+
 ## v3.0.29-security-hardening — Security hardening across web + signal: SAS verification, XSS sanitization, peer validation, relay ICE filtering, CSP, base64 fix, private IP detection (2026-02-18, 8034539)
 - **SAS verification**: Added `getVerificationCode()` method to `WebRTCService` that computes a 6-character Short Authentication String from both peers' public keys (sorted, SHA-256 hashed); both sides produce the same code if keys were exchanged correctly, allowing users to confirm before transferring sensitive files
 - **XSS sanitization**: New `escapeHTML()` utility in `src/lib/sanitize.ts`; all innerHTML injections of user-controlled data (device names, file names) now escape `&`, `<`, `>`, `"`, `'` to prevent cross-site scripting
