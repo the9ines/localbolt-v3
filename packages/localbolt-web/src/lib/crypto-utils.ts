@@ -9,7 +9,7 @@ const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 /**
  * Generate a cryptographically secure peer code
  * Uses crypto.getRandomValues() instead of Math.random()
- * Returns 6-character code for backward compatibility
+ * Returns a 6-character alphanumeric code
  */
 export function generateSecurePeerCode(): string {
   const array = new Uint8Array(6);
