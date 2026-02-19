@@ -1,5 +1,26 @@
 # LocalBolt v3 Changelog
 
+## v3.0.21-dual-signaling-icons — Dual signaling with LAN+cloud and PWA icon overhaul (2026-02-18, 5160235)
+- Added `DualSignaling` class that connects to both a local signal server (LAN discovery) and a cloud signal server (internet discovery) simultaneously
+- `DualSignaling` implements `SignalingProvider` interface: merges peer lists, tracks peer source (local vs cloud), routes signals to the correct server
+- Graceful degradation: if either server connection fails, the other still works; at least one must succeed
+- `peer-connection.ts` now imports `DualSignaling` instead of `WebSocketSignaling`; constructs with `VITE_LOCAL_SIGNAL_URL` (default `ws://<hostname>:3001`) and `VITE_SIGNAL_URL` (default `wss://localbolt-signal.fly.dev`)
+- Added `setConnectionStateHandler()` on `DualSignaling` to update header status indicator when connection state changes
+- Exported `DualSignaling` from the signaling module barrel (`index.ts`)
+- Replaced old Lovable `favicon.ico` with custom green bolt PWA icons: `icon-192.png` (192x192), `icon-512.png` (512x512), `apple-touch-icon.png` (180x180)
+- Updated `manifest.json`: replaced single `favicon.ico` entry with three properly sized PNG icon entries; changed `background_color` from `#ffffff` to `#121212` to match dark theme
+- Added `<link rel="apple-touch-icon">` to `index.html` for iOS home screen support
+- Files changed:
+  - `packages/localbolt-web/src/services/signaling/DualSignaling.ts` (new, 191 lines)
+  - `packages/localbolt-web/src/services/signaling/index.ts` (added DualSignaling export)
+  - `packages/localbolt-web/src/components/peer-connection.ts` (switched to DualSignaling, dual URLs, connection state handler)
+  - `packages/localbolt-web/index.html` (added apple-touch-icon link)
+  - `packages/localbolt-web/public/manifest.json` (new icon entries, dark background)
+  - `packages/localbolt-web/public/icon-192.png` (new)
+  - `packages/localbolt-web/public/icon-512.png` (new)
+  - `packages/localbolt-web/public/apple-touch-icon.png` (new)
+  - `packages/localbolt-web/public/favicon.ico` (deleted)
+
 ## v3.0.20-remove-signal-toast — Remove redundant signaling error toast (2026-02-18, 16a5b70)
 - Removed `handleConnectionError(new SignalingError(...))` call from the signaling connect catch block in `peer-connection.ts`
 - The red OFFLINE dot in the header (added in v3.0.19) already communicates signaling failure to the user

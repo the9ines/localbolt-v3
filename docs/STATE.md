@@ -1,16 +1,16 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.20-remove-signal-toast
+- **Tag**: v3.0.21-dual-signaling-icons
 - **Branch**: main
-- **HEAD**: 16a5b70
+- **HEAD**: 5160235
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
-- **Signaling**: Custom Rust WebSocket server (IP-based room grouping, replaced Supabase)
+- **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Custom Rust WebSocket server backend (IP-based room grouping, replaced Supabase)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; mDNS planned for Tauri offline mode
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
@@ -72,3 +72,4 @@
 | v3.0.18-header-footer-redesign | c29acf0 | Port lite header and footer design to v3 |
 | v3.0.19-signaling-status | 95318c0 | Reactive signaling status indicator in header |
 | v3.0.20-remove-signal-toast | 16a5b70 | Remove redundant signaling error toast |
+| v3.0.21-dual-signaling-icons | 5160235 | Dual signaling (LAN+cloud) and PWA icon overhaul |
