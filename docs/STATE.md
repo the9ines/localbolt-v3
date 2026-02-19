@@ -1,17 +1,18 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.21-dual-signaling-icons
+- **Tag**: v3.0.22-copy-logo-readme
 - **Branch**: main
-- **HEAD**: 5160235
+- **HEAD**: 9115b28
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
 - **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Custom Rust WebSocket server backend (IP-based room grouping, replaced Supabase)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect)
+- **Logo**: Custom SVG wordmark (`public/logo.svg`) displayed in header via `<img>` tag
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
@@ -35,7 +36,10 @@
 
 ## Brand
 - **Primary color**: #A4E200 (previously #14FF6A)
+- **Logo**: Custom SVG wordmark (`logo.svg`) — brand green (#B8CD1A) on transparent; replaces previous Zap icon + text
 - **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
+- **Copy style**: No em dashes; commas, periods, or hyphens only. Cross-network and dual signaling emphasized throughout.
+- **README**: Repo root `README.md` with project description, features, dev/deploy instructions, architecture overview, and related project links
 
 ## Roadmap
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
@@ -43,6 +47,7 @@
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
 - **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
 - **Phase V**: DONE — Vanilla TypeScript rewrite, React removal [v3.0.13]
+- **Phase W**: DONE — Copy refresh for dual signaling/cross-network, logo, README, self-hosting FAQ, em dash removal [v3.0.22]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -73,3 +78,4 @@
 | v3.0.19-signaling-status | 95318c0 | Reactive signaling status indicator in header |
 | v3.0.20-remove-signal-toast | 16a5b70 | Remove redundant signaling error toast |
 | v3.0.21-dual-signaling-icons | 5160235 | Dual signaling (LAN+cloud) and PWA icon overhaul |
+| v3.0.22-copy-logo-readme | 9115b28 | Logo, copy refresh for dual signaling/cross-network, README |

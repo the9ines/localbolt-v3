@@ -1,5 +1,26 @@
 # LocalBolt v3 Changelog
 
+## v3.0.22-copy-logo-readme — Logo, copy refresh for dual signaling/cross-network, README added (2026-02-18, 9115b28)
+- Added `logo.svg` to `packages/localbolt-web/public/` — custom LocalBolt wordmark in brand green (#B8CD1A on dark)
+- Header: replaced inline Zap SVG icon + text brand with `<img src="/logo.svg">` logo; removed `icons` import from header
+- Hero: rewrote subtitle to mention cross-network support ("Same network or across the internet"); replaced inline Zap icon separator with plain text; replaced `icons.arrowDown` with inline chevron SVG; removed `icons` import from hero
+- Features section: updated copy to reflect dual signaling and cross-network capability; "Same-Network First" renamed to "Works Everywhere" with new description; "Lightning Fast" updated to mention LAN-only transfers; "Universal Compatibility" now mentions desktop app and self-hosting; replaced inline Zap icon separators with commas in section header; removed bolt icon from "WebRTC P2P Transfer" description
+- How It Works: updated step descriptions for cross-network ("Same network or different networks"); replaced inline Zap icon separator with period in subheading
+- FAQ: rewrote answers to reflect dual signaling and cross-network discovery; updated "How do I send large files" to mention automatic device discovery; updated "AirDrop on Windows/Android" to mention cross-network advantage over AirDrop; updated "transfer between iPhone and Android" to mention auto-discovery; updated "Does LocalBolt work across different networks?" answer from "no" to "yes" with dual signaling explanation; added new FAQ: "Can I self-host LocalBolt?" with GitHub/start-script instructions
+- Structured data (JSON-LD in `index.html`): updated `featureList` to include cross-platform, cross-network, open source, self-host entries; updated FAQ answers to match new copy; added self-hosting FAQ; updated Organization and SoftwareApplication descriptions
+- Open Graph / Twitter meta tags: removed em dashes from `og:description` and `twitter:image:alt`, replaced with commas/hyphens
+- Removed all em dash (`—`) usage from copy across all changed files, replaced with commas, periods, or hyphens
+- Added `README.md` at repo root: project description, directory structure, features list (dual signaling, cross-network), dev instructions, deployment info, architecture overview (DualSignaling explanation), related project links, MIT license
+- Files changed:
+  - `README.md` (new)
+  - `packages/localbolt-web/public/logo.svg` (new)
+  - `packages/localbolt-web/index.html` (structured data, meta tags, FAQ schema)
+  - `packages/localbolt-web/src/sections/header.ts` (logo image, removed icons import)
+  - `packages/localbolt-web/src/sections/hero.ts` (cross-network copy, inline SVG, removed icons import)
+  - `packages/localbolt-web/src/sections/features.ts` (dual signaling copy, "Works Everywhere", removed bolt separators)
+  - `packages/localbolt-web/src/sections/how-it-works.ts` (cross-network step descriptions)
+  - `packages/localbolt-web/src/sections/faq.ts` (cross-network answers, self-hosting FAQ)
+
 ## v3.0.21-dual-signaling-icons — Dual signaling with LAN+cloud and PWA icon overhaul (2026-02-18, 5160235)
 - Added `DualSignaling` class that connects to both a local signal server (LAN discovery) and a cloud signal server (internet discovery) simultaneously
 - `DualSignaling` implements `SignalingProvider` interface: merges peer lists, tracks peer source (local vs cloud), routes signals to the correct server
