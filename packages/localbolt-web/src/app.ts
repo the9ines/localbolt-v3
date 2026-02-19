@@ -1,5 +1,8 @@
 import { createHeader } from '@/sections/header';
+import { createHowItWorks } from '@/sections/how-it-works';
 import { createTransfer } from '@/sections/transfer';
+import { createFeatures } from '@/sections/features';
+import { createFAQ } from '@/sections/faq';
 import { createFooter } from '@/sections/footer';
 import { createConsentModal } from '@/sections/consent-modal';
 
@@ -12,28 +15,27 @@ export function createApp(root: HTMLElement) {
   const zLayer = document.createElement('div');
   zLayer.className = 'relative z-10';
 
-  // Header
   zLayer.appendChild(createHeader());
 
   const main = document.createElement('main');
 
-  // Hero — SEO title + subtitle + down arrow
-  const hero = document.createElement('div');
-  hero.className = 'text-center pt-20 lg:pt-28 pb-6 px-4';
+  // Screen 1: Hero title + subtitle + green down arrow
+  const hero = document.createElement('section');
+  hero.className = 'min-h-[calc(100vh-3rem)] flex flex-col items-center justify-center text-center px-4 animate-fade-up';
   hero.innerHTML = `
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent pb-3 animate-fade-up">Encrypted P2P File Sharing</h1>
-    <p class="text-sm sm:text-base text-gray-400 max-w-lg mx-auto leading-relaxed animate-fade-up [animation-delay:100ms]">Private, encrypted file transfer directly between your devices. Same network or across the internet. Files never touch a server.</p>
-    <div class="mt-8">
-      <svg class="w-5 h-5 mx-auto text-neon/40 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-      </svg>
+    <div class="max-w-3xl space-y-4">
+      <h1 class="text-5xl sm:text-6xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent pb-1 leading-[1.15]">Encrypted P2P File Sharing</h1>
+      <p class="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">Private, encrypted file transfer directly between your devices. Same network or across the internet. Files never touch a server.</p>
     </div>
+    <button class="scroll-btn inline-flex items-center gap-1 text-sm text-neon/70 hover:text-neon transition-colors pt-6" aria-label="Scroll to file transfer">
+      <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
   `;
   main.appendChild(hero);
 
-  // Transfer card section — centered with pulsating grid bg
-  const transferSection = document.createElement('div');
-  transferSection.className = 'relative py-32 lg:py-48 px-4';
+  // Screen 2: Transfer card — own full viewport, pulsating grid bg
+  const transferSection = document.createElement('section');
+  transferSection.className = 'relative min-h-screen flex items-center justify-center px-4';
 
   // Pulsating grid background centered on card
   const bgContainer = document.createElement('div');
@@ -47,18 +49,26 @@ export function createApp(root: HTMLElement) {
   bgContainer.append(radialBg, gridBg);
   transferSection.appendChild(bgContainer);
 
-  // Card
   const cardWrap = document.createElement('div');
-  cardWrap.className = 'relative';
-  cardWrap.appendChild(createTransfer());
+  cardWrap.className = 'relative w-full';
+  const transferCard = createTransfer();
+  cardWrap.appendChild(transferCard);
   transferSection.appendChild(cardWrap);
 
   main.appendChild(transferSection);
 
-  // Bottom spacer — as if FAQ content was here
-  const bottomSpacer = document.createElement('div');
-  bottomSpacer.className = 'h-48 lg:h-64';
-  main.appendChild(bottomSpacer);
+  // Arrow click scrolls to transfer card centered
+  hero.querySelector('.scroll-btn')!.addEventListener('click', () => {
+    transferCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Screen 3: SEO content — below the fold, not visible from card screen
+  const seoContent = document.createElement('div');
+  seoContent.className = 'container mx-auto px-4 py-24 lg:py-32 space-y-20';
+  seoContent.appendChild(createHowItWorks());
+  seoContent.appendChild(createFeatures());
+  seoContent.appendChild(createFAQ());
+  main.appendChild(seoContent);
 
   zLayer.appendChild(main);
   zLayer.appendChild(createFooter());
