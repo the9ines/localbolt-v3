@@ -286,7 +286,6 @@ export function createPeerConnection(): HTMLElement {
   }).catch((err) => {
     console.error('[SIGNALING] Failed to connect:', err);
     store.setState({ signalingConnected: false });
-    handleConnectionError(new SignalingError('Signaling connection failed', err));
   });
 
   return container;
