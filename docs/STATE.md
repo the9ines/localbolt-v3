@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.18-header-footer-redesign
+- **Tag**: v3.0.19-signaling-status
 - **Branch**: main
-- **HEAD**: c29acf0
+- **HEAD**: 95318c0
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -70,3 +70,4 @@
 | v3.0.16-layout-spacing | 5da86c5 | Increase how-it-works to transfer spacing, constrain bg to viewport |
 | v3.0.17-bg-fade | 7c51418 | Smooth background fade-out instead of hard cutoff |
 | v3.0.18-header-footer-redesign | c29acf0 | Port lite header and footer design to v3 |
+| v3.0.19-signaling-status | 95318c0 | Reactive signaling status indicator in header |

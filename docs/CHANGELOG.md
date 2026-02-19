@@ -1,5 +1,19 @@
 # LocalBolt v3 Changelog
 
+## v3.0.19-signaling-status — Reactive signaling status indicator in header (2026-02-18, 95318c0)
+- Added `signalingConnected` boolean to `AppState` interface and initial state in the store
+- Header now subscribes to store state changes and reactively updates the status indicator
+- Status dot and label start as red `OFFLINE` (previously was always green `ACTIVE`)
+- On successful signaling connection: dot becomes green pulsing `ACTIVE` (`bg-neon/70 animate-pulse`)
+- On signaling connection failure: dot becomes red `OFFLINE` (`bg-red-500/70`)
+- Peer connection component sets `signalingConnected: true` after `signaling.connect()` resolves, and `false` on catch
+- Header imports store and uses `store.subscribe()` to react to signaling state changes
+- Status dot and label use `.status-dot` / `.status-label` class selectors for DOM queries
+- Files changed:
+  - `packages/localbolt-web/src/state/store.ts`
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+  - `packages/localbolt-web/src/sections/header.ts`
+
 ## v3.0.18-header-footer-redesign — Port lite header and footer design to v3 (2026-02-18, c29acf0)
 - Redesigned header: reduced height from 64px (`h-16`) to 48px (`h-12`), switched brand text and ACTIVE label to JetBrains Mono monospace font
 - Header brand icon shrunk from `w-8 h-8` to `w-4 h-4`; brand text set to 13px bold with tight tracking; removed nested `div` wrapper for flatter markup
