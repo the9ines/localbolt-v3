@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.17-bg-fade
+- **Tag**: v3.0.18-header-footer-redesign
 - **Branch**: main
-- **HEAD**: 7c51418
+- **HEAD**: c29acf0
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -35,6 +35,7 @@
 
 ## Brand
 - **Primary color**: #A4E200 (previously #14FF6A)
+- **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
 
 ## Roadmap
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
@@ -68,3 +69,4 @@
 | v3.0.15-og-image-green | 4114d72 | Update OG image to new brand green (#A4E200) |
 | v3.0.16-layout-spacing | 5da86c5 | Increase how-it-works to transfer spacing, constrain bg to viewport |
 | v3.0.17-bg-fade | 7c51418 | Smooth background fade-out instead of hard cutoff |
+| v3.0.18-header-footer-redesign | c29acf0 | Port lite header and footer design to v3 |

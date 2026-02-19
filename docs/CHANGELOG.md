@@ -1,5 +1,18 @@
 # LocalBolt v3 Changelog
 
+## v3.0.18-header-footer-redesign — Port lite header and footer design to v3 (2026-02-18, c29acf0)
+- Redesigned header: reduced height from 64px (`h-16`) to 48px (`h-12`), switched brand text and ACTIVE label to JetBrains Mono monospace font
+- Header brand icon shrunk from `w-8 h-8` to `w-4 h-4`; brand text set to 13px bold with tight tracking; removed nested `div` wrapper for flatter markup
+- ACTIVE indicator: replaced "Network Active" text badge (glass card with border) with minimal `ACTIVE` label in 10px JetBrains Mono with widest tracking; dot reduced from `w-2 h-2` to `w-1.5 h-1.5` at 70% opacity
+- Header border opacity reduced from `white/10` to `white/[0.06]`; backdrop blur changed from `backdrop-blur-md` to `backdrop-blur-sm`
+- Footer redesigned: stripped GitHub SVG icon, separator pipes, and the9ines zap icon; replaced with compact monospaced links (GitHub / Privacy / the9ines) at 10px JetBrains Mono with `0.05em` letter-spacing
+- Footer padding reduced from `py-8` to `py-4`; removed top border; link colors changed to `white/20` with `white/50` hover (the9ines link retains pink hover)
+- Added JetBrains Mono (weights 500, 700) to Google Fonts preload in `index.html` alongside existing Inter font
+- Files changed:
+  - `packages/localbolt-web/index.html`
+  - `packages/localbolt-web/src/sections/header.ts`
+  - `packages/localbolt-web/src/sections/footer.ts`
+
 ## v3.0.17-bg-fade — Smooth background fade-out instead of hard cutoff (2026-02-18, 7c51418)
 - Replaced `overflow-hidden` on the background container (`bgContainer`) with a CSS `mask-image` linear gradient that fades from opaque at 60% to transparent at 100%
 - Added both `maskImage` and `webkitMaskImage` properties for cross-browser support
