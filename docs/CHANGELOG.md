@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.28-mobile-bg-fix — Pulsating bg moved to section-level absolute positioning, fixing mobile cutoff (2026-02-18, 36973b9)
+- Pulsating background (`bgGlow`) moved from card-anchored negative insets (`-inset-24 sm:-inset-40 lg:-inset-64` on `cardWrap`) to section-level `absolute inset-0` on the transfer section itself
+- `bgGlow` is now appended to `transferSection` instead of `cardWrap`, so the radial gradient and grid SVG fill the entire section viewport without negative inset overflow
+- `cardWrap` is created after the background and keeps its `relative w-full max-w-2xl mx-auto` classes, sitting above the background layer
+- Fixes mobile cutoff where negative insets caused the pulsating glow to be clipped on small screens
+- Files changed:
+  - `packages/localbolt-web/src/app.ts`
+
 ## v3.0.27-card-centered-bg — Pulsating bg anchored to card wrapper with responsive spread sizes (2026-02-18, de36a55)
 - Pulsating grid background is now anchored to the card wrapper (`cardWrap`) instead of the full transfer section, so the glow stays centered behind the transfer card regardless of viewport size
 - Introduced a `bgGlow` container with responsive negative inset classes (`-inset-24 sm:-inset-40 lg:-inset-64`) so the background spread scales up on larger screens
