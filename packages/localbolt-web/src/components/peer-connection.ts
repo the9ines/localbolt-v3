@@ -1,6 +1,6 @@
 import { store } from '@/state/store';
 import { showToast } from '@/ui/toast';
-import { WebSocketSignaling, detectDeviceType, getDeviceName } from '@/services/signaling';
+import { DualSignaling, detectDeviceType, getDeviceName } from '@/services/signaling';
 import { generateSecurePeerCode } from '@/lib/crypto-utils';
 import WebRTCService from '@/services/webrtc/WebRTCService';
 import { WebRTCError, SignalingError } from '@/types/webrtc-errors';
@@ -11,7 +11,7 @@ import { setWebrtcRef } from './file-upload';
 import type { TransferProgress } from '@/services/webrtc/WebRTCService';
 import type { SignalMessage } from '@/services/signaling/SignalingProvider';
 
-let signalingRef: WebSocketSignaling | null = null;
+let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;
 
 function handleConnectionError(error: WebRTCError) {
@@ -244,9 +244,16 @@ export function createPeerConnection(): HTMLElement {
   store.setState({ peerCode });
   console.log('[WEBRTC] Peer code:', peerCode);
 
-  const wsUrl = import.meta.env.VITE_SIGNAL_URL || 'ws://localhost:3001';
-  const signaling = new WebSocketSignaling(wsUrl);
+  // Dual signaling: cloud (internet) + local (LAN)
+  const cloudUrl = import.meta.env.VITE_SIGNAL_URL || 'wss://localbolt-signal.fly.dev';
+  const localUrl = import.meta.env.VITE_LOCAL_SIGNAL_URL || `ws://${window.location.hostname}:3001`;
+  const signaling = new DualSignaling(localUrl, cloudUrl);
   signalingRef = signaling;
+
+  // Update header indicator when connection state changes
+  signaling.setConnectionStateHandler(() => {
+    store.setState({ signalingConnected: signaling.isConnected() });
+  });
 
   signaling.onPeerDiscovered((peer) => {
     const { peers } = store.getState();
