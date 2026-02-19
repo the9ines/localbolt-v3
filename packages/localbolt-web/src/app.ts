@@ -12,13 +12,16 @@ export function createApp(root: HTMLElement) {
   root.innerHTML = '';
 
   const wrapper = document.createElement('div');
-  wrapper.className = 'min-h-screen bg-dark text-white';
+  wrapper.className = 'relative min-h-screen bg-dark text-white';
 
-  // Background effects
+  // Background effects — constrained to above-the-fold area only
+  const bgContainer = document.createElement('div');
+  bgContainer.className = 'absolute inset-x-0 top-0 h-screen overflow-hidden pointer-events-none';
   const radialBg = document.createElement('div');
   radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.07),rgba(0,0,0,0))] animate-pulse';
   const gridBg = document.createElement('div');
-  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_80%)] pointer-events-none";
+  gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_80%)]";
+  bgContainer.append(radialBg, gridBg);
 
   const zLayer = document.createElement('div');
   zLayer.className = 'relative z-10';
@@ -40,6 +43,7 @@ export function createApp(root: HTMLElement) {
     transferEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }));
   aboveFold.appendChild(createHowItWorks());
+  transferEl.classList.add('!mt-16');
   aboveFold.appendChild(transferEl);
   aboveFold.appendChild(createTrustStrip());
 
@@ -55,7 +59,7 @@ export function createApp(root: HTMLElement) {
   zLayer.appendChild(main);
   zLayer.appendChild(createFooter());
 
-  wrapper.append(radialBg, gridBg, zLayer);
+  wrapper.append(bgContainer, zLayer);
   root.appendChild(wrapper);
 
   // Consent modal
