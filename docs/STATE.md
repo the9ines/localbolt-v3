@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.22-copy-logo-readme
+- **Tag**: v3.0.24-crypto-comment-fix
 - **Branch**: main
-- **HEAD**: 9115b28
+- **HEAD**: b5b2abd
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -12,7 +12,7 @@
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered
 - **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect)
-- **Logo**: Custom SVG wordmark (`public/logo.svg`) displayed in header via `<img>` tag
+- **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
@@ -36,7 +36,7 @@
 
 ## Brand
 - **Primary color**: #A4E200 (previously #14FF6A)
-- **Logo**: Custom SVG wordmark (`logo.svg`) — brand green (#B8CD1A) on transparent; replaces previous Zap icon + text
+- **Logo**: Inline Zap icon + "LocalBolt" text brand in header (JetBrains Mono, no external SVG)
 - **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
 - **Copy style**: No em dashes; commas, periods, or hyphens only. Cross-network and dual signaling emphasized throughout.
 - **README**: Repo root `README.md` with project description, features, dev/deploy instructions, architecture overview, and related project links
@@ -79,3 +79,5 @@
 | v3.0.20-remove-signal-toast | 16a5b70 | Remove redundant signaling error toast |
 | v3.0.21-dual-signaling-icons | 5160235 | Dual signaling (LAN+cloud) and PWA icon overhaul |
 | v3.0.22-copy-logo-readme | 9115b28 | Logo, copy refresh for dual signaling/cross-network, README |
+| v3.0.23-revert-logo | 70c35ed | Revert logo SVG, restore zap icon + text header |
+| v3.0.24-crypto-comment-fix | b5b2abd | Fix outdated backward-compatibility comment in crypto-utils |

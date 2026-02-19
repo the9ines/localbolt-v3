@@ -1,5 +1,20 @@
 # LocalBolt v3 Changelog
 
+## v3.0.24-crypto-comment-fix — Fix outdated backward-compatibility comment in crypto-utils (2026-02-18, b5b2abd)
+- Updated JSDoc comment for `generateSecurePeerCode()` function: changed "Returns 6-character code for backward compatibility" to "Returns a 6-character alphanumeric code"
+- Comment now accurately describes function behavior without legacy context
+- Files changed:
+  - `packages/localbolt-web/src/lib/crypto-utils.ts`
+
+## v3.0.23-revert-logo — Revert logo SVG, restore zap icon + text header (2026-02-18, 70c35ed)
+- Deleted custom logo SVG (`packages/localbolt-web/public/logo.svg`)
+- Header: restored inline Zap icon + "LocalBolt" text brand (replaces logo image tag)
+- Header brand row now uses `gap-2` spacing, Zap icon sized `w-4 h-4` with `text-neon` color, text uses JetBrains Mono `font-bold tracking-tight text-white/90`
+- Simplified header markup by removing external logo dependency
+- Files changed:
+  - `packages/localbolt-web/public/logo.svg` (deleted)
+  - `packages/localbolt-web/src/sections/header.ts`
+
 ## v3.0.22-copy-logo-readme — Logo, copy refresh for dual signaling/cross-network, README added (2026-02-18, 9115b28)
 - Added `logo.svg` to `packages/localbolt-web/public/` — custom LocalBolt wordmark in brand green (#B8CD1A on dark)
 - Header: replaced inline Zap SVG icon + text brand with `<img src="/logo.svg">` logo; removed `icons` import from header
