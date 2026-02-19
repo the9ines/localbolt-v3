@@ -1,5 +1,18 @@
 # LocalBolt v3 Changelog
 
+## v3.0.31-security-headers — Add Netlify security headers for Observatory A+ rating; commit Cargo.lock for reproducible builds (2026-02-19, 1b42a4a)
+- **Netlify security headers**: Added `[[headers]]` block in `netlify.toml` applying to all routes (`/*`) with 6 HTTP security headers for an Observatory A+ rating:
+  - `X-Content-Type-Options: nosniff` — prevents MIME-type sniffing
+  - `X-Frame-Options: DENY` — blocks framing (clickjacking protection)
+  - `Referrer-Policy: strict-origin-when-cross-origin` — limits referrer info on cross-origin requests
+  - `Permissions-Policy: camera=(), microphone=(), geolocation=()` — disables unused browser APIs
+  - `Cross-Origin-Opener-Policy: same-origin` — isolates browsing context from cross-origin popups
+  - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` — enforces HTTPS for 2 years with HSTS preload
+- **Cargo.lock committed**: Added `packages/localbolt-signal/Cargo.lock` (1,130 lines) to version control for deterministic, reproducible Rust signal server builds
+- Files changed:
+  - `netlify.toml`
+  - `packages/localbolt-signal/Cargo.lock` (new)
+
 ## v3.0.30-scorecard-hardening — OpenSSF Scorecard hardening: pinned GitHub Actions, SAST, Dependabot, vite/esbuild upgrade, minimatch override (2026-02-18, 234710a)
 - **GitHub Actions pinned by SHA**: All workflow `uses:` entries pinned to full commit SHAs instead of mutable tags — `actions/checkout@34e1148...`, `dtolnay/rust-toolchain@631a55b...`, `Swatinem/rust-cache@779680d...`, `actions/setup-node@49933ea...`, `github/codeql-action/*@f5c2471...`
 - **CI workflow** (`.github/workflows/ci.yml`, new): Runs on push/PR to main with `permissions: read-all`; two jobs — Signal Server (Rust: fmt check, clippy, test, release build) and Web App (TypeScript: npm ci, npm run build)
