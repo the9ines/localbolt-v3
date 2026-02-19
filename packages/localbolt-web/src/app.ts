@@ -37,20 +37,18 @@ export function createApp(root: HTMLElement) {
   const transferSection = document.createElement('section');
   transferSection.className = 'relative min-h-screen flex items-center justify-center px-4';
 
-  // Card wrapper — bg is anchored to the card, not the section
-  const cardWrap = document.createElement('div');
-  cardWrap.className = 'relative w-full max-w-2xl mx-auto';
-
-  // Pulsating circular bg centered behind card — responsive spread
+  // Pulsating circular bg — fills section, centered on card (card is flex-centered)
   const bgGlow = document.createElement('div');
-  bgGlow.className = 'absolute -inset-24 sm:-inset-40 lg:-inset-64 pointer-events-none';
+  bgGlow.className = 'absolute inset-0 pointer-events-none';
   const radialBg = document.createElement('div');
   radialBg.className = 'absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(164,226,0,0.09),transparent_60%)] animate-pulse';
   const gridBg = document.createElement('div');
   gridBg.className = "absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(circle,white_20%,transparent_65%)]";
   bgGlow.append(radialBg, gridBg);
-  cardWrap.appendChild(bgGlow);
+  transferSection.appendChild(bgGlow);
 
+  const cardWrap = document.createElement('div');
+  cardWrap.className = 'relative w-full max-w-2xl mx-auto';
   const transferCard = createTransfer();
   cardWrap.appendChild(transferCard);
   transferSection.appendChild(cardWrap);
