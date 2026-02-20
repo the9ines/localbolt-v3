@@ -20,7 +20,7 @@ export function createFeatures(): HTMLElement {
 
   section.innerHTML = `
     <div class="text-center max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">Military-Grade Encryption, Zero Trust Architecture</h2>
+      <h2 class="text-2xl font-bold mb-2">End-to-End Encrypted, Zero Trust by Design</h2>
       <p class="text-sm text-gray-500 leading-relaxed">
         LocalBolt uses NaCl/Curve25519 encryption, the same cryptographic standard trusted by Signal and WireGuard, to transfer files directly between devices with zero server storage.
       </p>
