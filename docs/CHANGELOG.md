@@ -1,5 +1,10 @@
 # LocalBolt v3 Changelog
 
+## v3.0.37-copy-fix — Replace military-grade copy with accurate encryption description (2026-02-19, a681f13)
+- **Features section copy**: Replaced the heading "Military-Grade Encryption, Zero Trust Architecture" with "End-to-End Encrypted, Zero Trust by Design" in the features section. The term "military-grade" is a marketing cliche with no technical meaning; the new copy accurately describes the encryption model (end-to-end encrypted, zero trust).
+- Files changed:
+  - `packages/localbolt-web/src/sections/features.ts`
+
 ## v3.0.36-remove-codeql — Remove CodeQL workflow from private repo (2026-02-19, f27d092)
 - **CodeQL workflow removed**: Deleted `.github/workflows/codeql.yml` entirely. Private repos cannot use GitHub code scanning (CodeQL) without GitHub Advanced Security, which requires a paid license. Rather than carrying a broken workflow, it has been removed.
 - The CI workflow (`.github/workflows/ci.yml`) and Dependabot config remain unchanged.

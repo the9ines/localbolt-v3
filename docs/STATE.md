@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.36-remove-codeql
+- **Tag**: v3.0.37-copy-fix
 - **Branch**: main
-- **HEAD**: f27d092
+- **HEAD**: a681f13
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -40,7 +40,7 @@
 - **Primary color**: #A4E200 (previously #14FF6A)
 - **Logo**: Inline Zap icon + "LocalBolt" text brand in header (JetBrains Mono, no external SVG)
 - **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
-- **Copy style**: No em dashes; commas, periods, or hyphens only. Cross-network and dual signaling emphasized throughout.
+- **Copy style**: No em dashes; commas, periods, or hyphens only. No "military-grade" marketing language; use accurate technical descriptions (e.g. "end-to-end encrypted"). Cross-network and dual signaling emphasized throughout.
 - **README**: Repo root `README.md` with project description, features, dev/deploy instructions, architecture overview, and related project links
 
 ## Roadmap
@@ -101,3 +101,4 @@
 | v3.0.34-codeql-fix | bc1255c | Fix CodeQL checkout failure on private repo |
 | v3.0.35-codeql-perms | c1e9a76 | Add actions: read permission to CodeQL workflow |
 | v3.0.36-remove-codeql | f27d092 | Remove CodeQL workflow (private repo, no Advanced Security) |
+| v3.0.37-copy-fix | a681f13 | Replace military-grade copy with accurate encryption description |
