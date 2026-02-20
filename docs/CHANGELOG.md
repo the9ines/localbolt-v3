@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.32-cgnat-tailscale — Add CGNAT/Tailscale IP range (100.64.0.0/10) to private IP detection (2026-02-19, 7535d55)
+- **Signal server (Rust)**: Added `100.64.0.0/10` (100.64.0.0 - 100.127.255.255) to `is_private_ip()` in `server.rs` — IPv4 CGNAT / shared address space used by Tailscale, WireGuard meshes, and carrier-grade NAT. Devices on the same Tailscale/WireGuard mesh are now treated as "local" to each other and grouped into the same signaling room.
+- **Web client (TypeScript)**: Added regex `/^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./` to the `isPrivateIP()` function in `platform-utils.ts`, matching the same CGNAT/Tailscale/WireGuard range on the client side.
+- **Effect**: Users connected via Tailscale or WireGuard mesh networks now automatically discover each other as local peers, enabling direct P2P file transfers without cloud signaling.
+- Files changed:
+  - `packages/localbolt-signal/src/server.rs`
+  - `packages/localbolt-web/src/lib/platform-utils.ts`
+
 ## v3.0.31-security-headers — Add Netlify security headers for Observatory A+ rating; commit Cargo.lock for reproducible builds (2026-02-19, 1b42a4a)
 - **Netlify security headers**: Added `[[headers]]` block in `netlify.toml` applying to all routes (`/*`) with 6 HTTP security headers for an Observatory A+ rating:
   - `X-Content-Type-Options: nosniff` — prevents MIME-type sniffing

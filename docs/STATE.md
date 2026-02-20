@@ -1,16 +1,16 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.31-security-headers
+- **Tag**: v3.0.32-cgnat-tailscale
 - **Branch**: main
-- **HEAD**: 1b42a4a
+- **HEAD**: 7535d55
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
 - **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Custom Rust WebSocket server backend (IP-based room grouping, replaced Supabase)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
@@ -55,6 +55,7 @@
 - **Phase Z**: DONE — Security hardening: SAS verification, XSS sanitization, peer code validation/collision detection, relay ICE filtering, CSP meta tag, base64 fix, private IP room grouping [v3.0.29]
 - **Phase SC**: DONE — OpenSSF Scorecard hardening: pinned GitHub Actions by SHA, CodeQL SAST, Dependabot, CI workflow, vite 5->7 (esbuild CVE fix), minimatch override (ReDoS CVE fix) [v3.0.30]
 - **Phase SH**: DONE — Security headers: Netlify HTTP security headers (HSTS, X-Frame-Options, COOP, Referrer-Policy, Permissions-Policy, X-Content-Type-Options) for Observatory A+ rating; Cargo.lock committed for reproducible builds [v3.0.31]
+- **Phase CG**: DONE — CGNAT/Tailscale support: added 100.64.0.0/10 (CGNAT/shared address space) to private IP detection on both signal server (Rust) and web client (TypeScript); Tailscale/WireGuard mesh peers now auto-discover as local [v3.0.32]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -95,3 +96,4 @@
 | v3.0.29-security-hardening | 8034539 | Security hardening: SAS, XSS, peer validation, CSP, ICE filtering, private IP rooms |
 | v3.0.30-scorecard-hardening | 234710a | OpenSSF Scorecard: pinned Actions, CodeQL SAST, Dependabot, vite 7, minimatch override |
 | v3.0.31-security-headers | 1b42a4a | Security headers (Observatory A+), Cargo.lock committed |
+| v3.0.32-cgnat-tailscale | 7535d55 | CGNAT/Tailscale IP range (100.64.0.0/10) added to private IP detection |
