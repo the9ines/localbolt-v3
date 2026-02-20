@@ -1,5 +1,18 @@
 # LocalBolt v3 Changelog
 
+## v3.0.36-remove-codeql — Remove CodeQL workflow from private repo (2026-02-19, f27d092)
+- **CodeQL workflow removed**: Deleted `.github/workflows/codeql.yml` entirely. Private repos cannot use GitHub code scanning (CodeQL) without GitHub Advanced Security, which requires a paid license. Rather than carrying a broken workflow, it has been removed.
+- The CI workflow (`.github/workflows/ci.yml`) and Dependabot config remain unchanged.
+- Files changed:
+  - `.github/workflows/codeql.yml` (deleted)
+
+## v3.0.35-codeql-perms — Add actions: read permission to CodeQL workflow (2026-02-19, c1e9a76)
+- **CodeQL workflow**: Added `actions: read` permission to the `Analyze` job in `.github/workflows/codeql.yml`, alongside the existing `contents: read` and `security-events: write` permissions, to fix a permissions error during CodeQL analysis initialization.
+- One-line fix: added `actions: read` to the job-level `permissions` block.
+- Note: This fix was superseded by v3.0.36 which removed the CodeQL workflow entirely (private repo cannot use code scanning without GitHub Advanced Security).
+- Files changed:
+  - `.github/workflows/codeql.yml`
+
 ## v3.0.34-codeql-fix — Fix CodeQL checkout failure on private repo (2026-02-19, bc1255c)
 - **CodeQL workflow**: Added `contents: read` permission to the `Analyze` job in `.github/workflows/codeql.yml` so the `actions/checkout` step has read access to the repository contents, fixing checkout failures on private repos.
 - One-line fix: added `contents: read` alongside existing `security-events: write` in the job-level `permissions` block.

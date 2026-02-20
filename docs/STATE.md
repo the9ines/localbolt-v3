@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.34-codeql-fix
+- **Tag**: v3.0.36-remove-codeql
 - **Branch**: main
-- **HEAD**: bc1255c
+- **HEAD**: f27d092
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -20,7 +20,7 @@
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
-- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS build), CodeQL SAST (javascript-typescript, weekly + push/PR), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA
+- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -53,7 +53,7 @@
 - **Phase X**: DONE — Hero-first layout simplification: removed how-it-works, features, FAQ, trust-strip sections; hero + transfer card only; pulsating grid centered on card [v3.0.25]
 - **Phase Y**: DONE — Full-viewport transfer card: 3-screen layout (hero, card, SEO content); green neon scroll arrow; restored how-it-works, features, FAQ below the fold; section-level pulsating bg [v3.0.26, v3.0.27, v3.0.28]
 - **Phase Z**: DONE — Security hardening: SAS verification, XSS sanitization, peer code validation/collision detection, relay ICE filtering, CSP meta tag, base64 fix, private IP room grouping [v3.0.29]
-- **Phase SC**: DONE — OpenSSF Scorecard hardening: pinned GitHub Actions by SHA, CodeQL SAST, Dependabot, CI workflow, vite 5->7 (esbuild CVE fix), minimatch override (ReDoS CVE fix) [v3.0.30]
+- **Phase SC**: DONE — OpenSSF Scorecard hardening: pinned GitHub Actions by SHA, Dependabot, CI workflow, vite 5->7 (esbuild CVE fix), minimatch override (ReDoS CVE fix) [v3.0.30]. CodeQL SAST was added in v3.0.30 but later removed in v3.0.36 (private repo cannot use code scanning without GitHub Advanced Security)
 - **Phase SH**: DONE — Security headers: Netlify HTTP security headers (HSTS, X-Frame-Options, COOP, Referrer-Policy, Permissions-Policy, X-Content-Type-Options) for Observatory A+ rating; Cargo.lock committed for reproducible builds [v3.0.31]
 - **Phase CG**: DONE — CGNAT/Tailscale support: added 100.64.0.0/10 (CGNAT/shared address space) to private IP detection on both signal server (Rust) and web client (TypeScript); Tailscale/WireGuard mesh peers now auto-discover as local [v3.0.32]
 - Phase E: Tauri native features (mDNS, local WS, file save)
@@ -99,3 +99,5 @@
 | v3.0.32-cgnat-tailscale | 7535d55 | CGNAT/Tailscale IP range (100.64.0.0/10) added to private IP detection |
 | v3.0.33-clippy-fix | 9ae4d5b | Fix clippy useless_conversion warning in signal server |
 | v3.0.34-codeql-fix | bc1255c | Fix CodeQL checkout failure on private repo |
+| v3.0.35-codeql-perms | c1e9a76 | Add actions: read permission to CodeQL workflow |
+| v3.0.36-remove-codeql | f27d092 | Remove CodeQL workflow (private repo, no Advanced Security) |
