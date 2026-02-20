@@ -53,12 +53,28 @@ The website connects to both the cloud signal server and any local signal server
 - Devices running the self-hosted version on the same LAN (via local signaling)
 - Devices running the native desktop app (via either)
 
+## Ecosystem
+
+LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-protocol) ecosystem.
+
+| Relationship | Repository |
+|-------------|-----------|
+| Protocol spec | [bolt-protocol](https://github.com/the9ines/bolt-protocol) |
+| SDK dependency | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) (TypeScript) |
+| Hosted rendezvous | [bolt-rendezvous](https://github.com/the9ines/bolt-rendezvous) (endpoint only) |
+| Lite self-hosted | [localbolt](https://github.com/the9ines/localbolt) |
+| Native app | [localbolt-app](https://github.com/the9ines/localbolt-app) |
+
+This repo does **not** bundle the rendezvous server or daemon. It connects to a hosted endpoint only.
+
+This is an **open-source** project.
+
 ## Related
 
-- **[localbolt.site](https://localbolt.site)** - use it now
-- **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** - download and run on your own network
-- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** - native desktop app with embedded signal server
+- **[localbolt.site](https://localbolt.site)** — use it now
+- **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
+- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app with embedded signal server
 
 ## License
 
-MIT - built by [the9ines](https://the9ines.com)
+MIT — built by [the9ines](https://the9ines.com)
