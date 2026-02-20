@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.33-clippy-fix — Fix clippy useless_conversion warning in signal server (2026-02-19, 9ae4d5b)
+- **Signal server (Rust)**: Removed redundant `.into()` call on a `String` value passed to `Message::Text()` in `handle_connection()` — clippy flagged this as a `useless_conversion` since the value is already the expected type.
+- One-line fix: `Message::Text(json.into())` changed to `Message::Text(json)`.
+- Files changed:
+  - `packages/localbolt-signal/src/server.rs`
+
 ## v3.0.32-cgnat-tailscale — Add CGNAT/Tailscale IP range (100.64.0.0/10) to private IP detection (2026-02-19, 7535d55)
 - **Signal server (Rust)**: Added `100.64.0.0/10` (100.64.0.0 - 100.127.255.255) to `is_private_ip()` in `server.rs` — IPv4 CGNAT / shared address space used by Tailscale, WireGuard meshes, and carrier-grade NAT. Devices on the same Tailscale/WireGuard mesh are now treated as "local" to each other and grouped into the same signaling room.
 - **Web client (TypeScript)**: Added regex `/^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./` to the `isPrivateIP()` function in `platform-utils.ts`, matching the same CGNAT/Tailscale/WireGuard range on the client side.
