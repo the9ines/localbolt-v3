@@ -5,7 +5,7 @@ const faqs = [
   { q: 'How do I transfer files between iPhone and Android?', a: 'Open localbolt.site on both devices. They will discover each other automatically. Tap the device to connect, then send files directly between iPhone and Android from the browser.' },
   { q: 'Do I need to create an account?', a: 'No account is needed. LocalBolt works instantly in your browser with zero signup. Just open the website and start sharing. No email, no password, no personal information required.' },
   { q: "What's the maximum file size I can send?", a: 'LocalBolt does not enforce a file size cap. Practical limits are your device storage, memory, and network quality.' },
-  { q: 'Does LocalBolt work across different networks?', a: 'Yes. LocalBolt uses dual signaling to discover devices both on your local network and across the internet. Same-network transfers are the fastest since data stays on your LAN.' },
+  { q: 'Does LocalBolt work without internet?', a: 'Yes. LocalBolt ships its own signaling server. When you self-host or run the desktop app, devices on your local network find each other with no internet connection needed. When internet is available, the same signaling server running in the cloud also lets you discover and transfer files to devices on other networks. Both local and cloud discovery happen at the same time, so you always see every reachable device.' },
   { q: 'Can I self-host LocalBolt?', a: 'Yes. LocalBolt is fully open source. Clone the repo from GitHub, run the start script, and you have your own private instance with its own signaling server. Works offline on your LAN with no internet required.' },
 ];
 

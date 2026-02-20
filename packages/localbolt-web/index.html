@@ -98,7 +98,7 @@
           {
             "@type": "Question",
             "name": "Is LocalBolt safer than WeTransfer or Google Drive?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Significantly. WeTransfer and Google Drive store your files on their servers. LocalBolt transfers files directly between your devices using NaCl/Curve25519 encryption (the same standard used by Signal and WireGuard). Your files never touch any server." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Significantly. WeTransfer and Google Drive store your files on their servers. LocalBolt transfers files directly between your devices using NaCl/Curve25519 encryption (the same standard used by Signal and WireGuard). Your files never touch any server. Not during transfer, not after." }
           },
           {
             "@type": "Question",
@@ -113,7 +113,7 @@
           {
             "@type": "Question",
             "name": "Do I need to create an account?",
-            "acceptedAnswer": { "@type": "Answer", "text": "No account is needed. LocalBolt works instantly in your browser with zero signup." }
+            "acceptedAnswer": { "@type": "Answer", "text": "No account is needed. LocalBolt works instantly in your browser with zero signup. Just open the website and start sharing. No email, no password, no personal information required." }
           },
           {
             "@type": "Question",
@@ -122,8 +122,8 @@
           },
           {
             "@type": "Question",
-            "name": "Does LocalBolt work across different networks?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt uses dual signaling to discover devices both on your local network and across the internet. Same-network transfers are the fastest since data stays on your LAN." }
+            "name": "Does LocalBolt work without internet?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LocalBolt ships its own signaling server. When you self-host or run the desktop app, devices on your local network find each other with no internet connection needed. When internet is available, the same signaling server running in the cloud also lets you discover and transfer files to devices on other networks. Both local and cloud discovery happen at the same time, so you always see every reachable device." }
           },
           {
             "@type": "Question",
