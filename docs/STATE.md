@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.37-copy-fix
+- **Tag**: v3.0.38-faq-sync
 - **Branch**: main
-- **HEAD**: a681f13
+- **HEAD**: 1c24c0b
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -102,3 +102,4 @@
 | v3.0.35-codeql-perms | c1e9a76 | Add actions: read permission to CodeQL workflow |
 | v3.0.36-remove-codeql | f27d092 | Remove CodeQL workflow (private repo, no Advanced Security) |
 | v3.0.37-copy-fix | a681f13 | Replace military-grade copy with accurate encryption description |
+| v3.0.38-faq-sync | 1c24c0b | Sync FAQ copy: expand answers, reword network question for offline emphasis |

@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.38-faq-sync — Sync FAQ copy: expand answers and reword network question for offline emphasis (2026-02-20, 1c24c0b)
+- **FAQ structured data (index.html)**: Updated three FAQ entries in the JSON-LD FAQPage schema:
+  - "Is LocalBolt safer than WeTransfer or Google Drive?" — appended "Not during transfer, not after." to reinforce the zero-server-storage point
+  - "Do I need to create an account?" — expanded answer with "Just open the website and start sharing. No email, no password, no personal information required."
+  - Renamed "Does LocalBolt work across different networks?" to "Does LocalBolt work without internet?" with a new answer explaining the self-hosted/desktop signaling server for LAN-only operation, cloud signaling for cross-network, and simultaneous local+cloud discovery
+- **FAQ section (faq.ts)**: Updated the matching FAQ entry from "Does LocalBolt work across different networks?" to "Does LocalBolt work without internet?" with the same expanded answer covering local signaling server, cloud discovery, and dual discovery behavior
+- Files changed:
+  - `packages/localbolt-web/index.html`
+  - `packages/localbolt-web/src/sections/faq.ts`
+
 ## v3.0.37-copy-fix — Replace military-grade copy with accurate encryption description (2026-02-19, a681f13)
 - **Features section copy**: Replaced the heading "Military-Grade Encryption, Zero Trust Architecture" with "End-to-End Encrypted, Zero Trust by Design" in the features section. The term "military-grade" is a marketing cliche with no technical meaning; the new copy accurately describes the encryption model (end-to-end encrypted, zero trust).
 - Files changed:
