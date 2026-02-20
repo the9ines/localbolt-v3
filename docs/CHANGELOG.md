@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.34-codeql-fix — Fix CodeQL checkout failure on private repo (2026-02-19, bc1255c)
+- **CodeQL workflow**: Added `contents: read` permission to the `Analyze` job in `.github/workflows/codeql.yml` so the `actions/checkout` step has read access to the repository contents, fixing checkout failures on private repos.
+- One-line fix: added `contents: read` alongside existing `security-events: write` in the job-level `permissions` block.
+- Files changed:
+  - `.github/workflows/codeql.yml`
+
 ## v3.0.33-clippy-fix — Fix clippy useless_conversion warning in signal server (2026-02-19, 9ae4d5b)
 - **Signal server (Rust)**: Removed redundant `.into()` call on a `String` value passed to `Message::Text()` in `handle_connection()` — clippy flagged this as a `useless_conversion` since the value is already the expected type.
 - One-line fix: `Message::Text(json.into())` changed to `Message::Text(json)`.

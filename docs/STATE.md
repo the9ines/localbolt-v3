@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.33-clippy-fix
+- **Tag**: v3.0.34-codeql-fix
 - **Branch**: main
-- **HEAD**: 9ae4d5b
+- **HEAD**: bc1255c
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -98,3 +98,4 @@
 | v3.0.31-security-headers | 1b42a4a | Security headers (Observatory A+), Cargo.lock committed |
 | v3.0.32-cgnat-tailscale | 7535d55 | CGNAT/Tailscale IP range (100.64.0.0/10) added to private IP detection |
 | v3.0.33-clippy-fix | 9ae4d5b | Fix clippy useless_conversion warning in signal server |
+| v3.0.34-codeql-fix | bc1255c | Fix CodeQL checkout failure on private repo |
