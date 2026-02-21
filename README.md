@@ -55,11 +55,11 @@ The website connects to both the cloud signal server and any local signal server
 
 ## Ecosystem
 
-LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-protocol) ecosystem. See the [bolt-ecosystem](https://github.com/the9ines/bolt-ecosystem) repo for governance documents, PRD, and roadmap.
+LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-protocol) ecosystem. See [PRD.md](PRD.md) and [ROADMAP.md](ROADMAP.md) in this repo for product requirements and roadmap.
 
 | Relationship | Repository |
 |-------------|-----------|
-| Ecosystem governance | [bolt-ecosystem](https://github.com/the9ines/bolt-ecosystem) |
+| Ecosystem governance (mirror) | [bolt-ecosystem](https://github.com/the9ines/bolt-ecosystem) |
 | Protocol spec | [bolt-protocol](https://github.com/the9ines/bolt-protocol) |
 | SDK dependency | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) (TypeScript) |
 | Hosted rendezvous | [bolt-rendezvous](https://github.com/the9ines/bolt-rendezvous) (endpoint only) |
