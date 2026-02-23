@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.52-sas-verification-deps — Bump bolt-transport-web to 0.3.0 (SAS verification surface) (2026-02-23, 17c6d3f)
+- **Dependency bump**: Updated `@the9ines/bolt-transport-web` from `0.2.0` to `0.3.0` in `packages/localbolt-web/package.json`
+- Picks up Phase 7B SAS verification surface from bolt-core-sdk
+- Files changed:
+  - `packages/localbolt-web/package.json`
+
 ## v3.0.51-hello-tofu-deps — Bump bolt-core to 0.2.0 and bolt-transport-web to 0.2.0 (2026-02-23, 01a0e1f)
 - **Dependency bump**: Updated `@the9ines/bolt-core` from `0.0.5` to `0.2.0` and `@the9ines/bolt-transport-web` from `0.1.1` to `0.2.0` in `packages/localbolt-web/package.json`
 - Picks up encrypted HELLO + TOFU (Trust On First Use) identity pinning from bolt-core-sdk Phase 7A

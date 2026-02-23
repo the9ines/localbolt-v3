@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.51-hello-tofu-deps
+- **Tag**: v3.0.52-sas-verification-deps
 - **Branch**: main
-- **HEAD**: 01a0e1f
+- **HEAD**: 17c6d3f
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -24,7 +24,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (4): @the9ines/bolt-core (0.2.0), @the9ines/bolt-transport-web (0.2.0), tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.2.0), @the9ines/bolt-transport-web (0.3.0), tweetnacl, tweetnacl-util
 - **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7)
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -104,3 +104,4 @@
 | v3.0.37-copy-fix | a681f13 | Replace military-grade copy with accurate encryption description |
 | v3.0.38-faq-sync | 1c24c0b | Sync FAQ copy: expand answers, reword network question for offline emphasis |
 | v3.0.51-hello-tofu-deps | 01a0e1f | Bump bolt-core to 0.2.0, bolt-transport-web to 0.2.0 (encrypted HELLO + TOFU) |
+| v3.0.52-sas-verification-deps | 17c6d3f | Bump bolt-transport-web to 0.3.0 (Phase 7B SAS verification surface) |
