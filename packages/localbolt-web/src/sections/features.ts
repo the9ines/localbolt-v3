@@ -1,4 +1,4 @@
-import { icons } from '@/ui/icons';
+import { icons } from '@the9ines/bolt-transport-web';
 
 export function createFeatures(): HTMLElement {
   const section = document.createElement('section');

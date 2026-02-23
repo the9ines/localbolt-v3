@@ -1,4 +1,4 @@
-import { icons } from '@/ui/icons';
+import { icons } from '@the9ines/bolt-transport-web';
 
 function createPrivacyDialog(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
