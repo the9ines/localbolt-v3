@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.38-faq-sync
+- **Tag**: v3.0.51-hello-tofu-deps
 - **Branch**: main
-- **HEAD**: 1c24c0b
+- **HEAD**: 01a0e1f
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -24,7 +24,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (2): tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.2.0), @the9ines/bolt-transport-web (0.2.0), tweetnacl, tweetnacl-util
 - **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7)
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -103,3 +103,4 @@
 | v3.0.36-remove-codeql | f27d092 | Remove CodeQL workflow (private repo, no Advanced Security) |
 | v3.0.37-copy-fix | a681f13 | Replace military-grade copy with accurate encryption description |
 | v3.0.38-faq-sync | 1c24c0b | Sync FAQ copy: expand answers, reword network question for offline emphasis |
+| v3.0.51-hello-tofu-deps | 01a0e1f | Bump bolt-core to 0.2.0, bolt-transport-web to 0.2.0 (encrypted HELLO + TOFU) |

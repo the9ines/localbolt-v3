@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.51-hello-tofu-deps — Bump bolt-core to 0.2.0 and bolt-transport-web to 0.2.0 (2026-02-23, 01a0e1f)
+- **Dependency bump**: Updated `@the9ines/bolt-core` from `0.0.5` to `0.2.0` and `@the9ines/bolt-transport-web` from `0.1.1` to `0.2.0` in `packages/localbolt-web/package.json`
+- Picks up encrypted HELLO + TOFU (Trust On First Use) identity pinning from bolt-core-sdk Phase 7A
+- Files changed:
+  - `packages/localbolt-web/package.json`
+
 ## v3.0.38-faq-sync — Sync FAQ copy: expand answers and reword network question for offline emphasis (2026-02-20, 1c24c0b)
 - **FAQ structured data (index.html)**: Updated three FAQ entries in the JSON-LD FAQPage schema:
   - "Is LocalBolt safer than WeTransfer or Google Drive?" — appended "Not during transfer, not after." to reinforce the zero-server-storage point
