@@ -39,9 +39,13 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@the9ines'
           cache: npm
+      - name: Transport version pin guard
+        run: bash scripts/check-transport-version-pin.sh
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Transport single-install guard
+        run: bash scripts/check-transport-single-install.sh
       - run: npm run build -w packages/localbolt-web
       - name: Transport drift guard
         run: bash scripts/check-transport-drift.sh
