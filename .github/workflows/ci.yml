@@ -42,4 +42,6 @@ jobs:
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm run build
+      - run: npm run build -w packages/localbolt-web
+      - name: Transport drift guard
+        run: bash scripts/check-transport-drift.sh
