@@ -14,5 +14,14 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     include: ["src/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      thresholds: {
+        statements: 45,
+        branches: 5,
+        functions: 31,
+        lines: 48,
+      },
+    },
   },
 });
