@@ -1,5 +1,16 @@
 # LocalBolt v3 Changelog
 
+## v3.0.55-coverage-thresholds — Enforce coverage thresholds (Q6 close) (2026-02-24, fa59742)
+- **Coverage enforcement**: Added `@vitest/coverage-v8` and coverage threshold block to `vite.config.ts`
+- **Thresholds**: statements 45%, branches 5%, functions 31%, lines 48% (current floor minus 2%, prevents regression)
+- **Audit item Q6**: Closed — localbolt-v3 now has coverage enforcement matching localbolt policy
+- 4/4 tests pass, coverage above all thresholds
+- Files changed:
+  - `.gitignore` (added `coverage/`)
+  - `packages/localbolt-web/vite.config.ts`
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.54-sdk-upgrade — Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 (2026-02-24, 463e963)
 - **Dependency bump**: Updated `@the9ines/bolt-core` from `0.2.0` to `0.3.0` and `@the9ines/bolt-transport-web` from `0.3.0` to `0.6.0` in `packages/localbolt-web/package.json`
 - **Merge**: Branch `feature/sdk-upgrade-0.3.0-0.6.0` merged to main at 463e963
