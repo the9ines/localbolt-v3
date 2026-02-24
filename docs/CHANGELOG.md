@@ -1,5 +1,18 @@
 # LocalBolt v3 Changelog
 
+## v3.0.57-signal-parity-gate — Bolt-core parity gate for signal peer code validation (2026-02-24, 59db709)
+- **Merge**: bolt-core parity gate for signal peer code validation (native-3b)
+- **Dev dependency**: Added `bolt-core` (0.4.0, path reference) as a dev-only dependency to `packages/localbolt-signal` for test-time peer code validation cross-checking
+- **3 parity tests**: Codify intentional divergence between server validation (broad: ASCII alphanumeric, 1..16 chars) and bolt-core strict rules (31-char unambiguous alphabet, length 6 or 8 only)
+  - `server_accepts_codes_bolt_core_rejects` — ambiguous chars, length 16, lowercase all accepted by server but rejected by bolt-core
+  - `canonical_codes_accepted_by_both` — 6-char and 8-char codes from the canonical alphabet pass both validators
+  - `both_reject_empty` — empty string rejected by both
+- **No runtime behavior change**: bolt-core is dev-only; server validation rules unchanged
+- Files changed:
+  - `packages/localbolt-signal/Cargo.toml`
+  - `packages/localbolt-signal/Cargo.lock`
+  - `packages/localbolt-signal/src/server.rs`
+
 ## v3.0.57-bolt-core-bump — Bump bolt-core to 0.4.0 (A1 adoption) (2026-02-24, 14927d7)
 - **Dependency bump**: Updated `@the9ines/bolt-core` from `0.3.0` to `0.4.0` in `packages/localbolt-web/package.json`
 - **No behavior changes**: Dead constant exports removed upstream; no consumer impact

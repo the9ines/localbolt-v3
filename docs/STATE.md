@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.57-bolt-core-bump
+- **Tag**: v3.0.57-signal-parity-gate
 - **Branch**: main
-- **HEAD**: 14927d7
+- **HEAD**: 59db709
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -18,7 +18,7 @@
 
 ## Packages
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
-- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
+- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev); bolt-core (0.4.0) as dev-only dependency for peer code parity tests (3 tests codify intentional divergence between server-broad and bolt-core-strict validation)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
@@ -59,6 +59,7 @@
 - **Phase TP**: DONE — Test pipeline: vitest + jsdom smoke tests (4 tests: FAQ structure + app render), CI test step before build [v3.0.53]
 - **Phase Q6**: DONE — Coverage thresholds: @vitest/coverage-v8, regression-prevention thresholds enforced (45/5/31/48%) [v3.0.55]
 - **Phase A3**: DONE — ADR for signaling integration model: native workspace crate (not subtree), drift control policy [v3.0.56]
+- **Phase N3B**: DONE — Bolt-core parity gate: bolt-core as dev dep in localbolt-signal, 3 tests codifying server-broad vs bolt-core-strict peer code validation divergence [v3.0.57-signal-parity-gate]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -112,4 +113,5 @@
 | v3.0.54-sdk-upgrade | 463e963 | Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 |
 | v3.0.55-coverage-thresholds | fa59742 | Coverage threshold enforcement (Q6 close) |
 | v3.0.56-signaling-adr | 6c8b422 | ADR for signaling integration model (A3 close) |
+| v3.0.57-signal-parity-gate | 59db709 | Bolt-core parity gate for signal peer code validation (native-3b) |
 | v3.0.57-bolt-core-bump | 14927d7 | Bump bolt-core to 0.4.0 (A1 adoption) |
