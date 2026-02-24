@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.56-signaling-adr
+- **Tag**: v3.0.57-bolt-core-bump
 - **Branch**: main
-- **HEAD**: 75e35ed
+- **HEAD**: 14927d7
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -24,7 +24,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (4): @the9ines/bolt-core (0.3.0), @the9ines/bolt-transport-web (0.6.0), tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.4.0), @the9ines/bolt-transport-web (0.6.0), tweetnacl, tweetnacl-util
 - **Web dev** (10): @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -112,3 +112,4 @@
 | v3.0.54-sdk-upgrade | 463e963 | Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 |
 | v3.0.55-coverage-thresholds | fa59742 | Coverage threshold enforcement (Q6 close) |
 | v3.0.56-signaling-adr | 6c8b422 | ADR for signaling integration model (A3 close) |
+| v3.0.57-bolt-core-bump | 14927d7 | Bump bolt-core to 0.4.0 (A1 adoption) |

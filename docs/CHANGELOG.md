@@ -1,5 +1,14 @@
 # LocalBolt v3 Changelog
 
+## v3.0.57-bolt-core-bump — Bump bolt-core to 0.4.0 (A1 adoption) (2026-02-24, 14927d7)
+- **Dependency bump**: Updated `@the9ines/bolt-core` from `0.3.0` to `0.4.0` in `packages/localbolt-web/package.json`
+- **No behavior changes**: Dead constant exports removed upstream; no consumer impact
+- **transport-web**: Remains at `0.6.0`
+- **Validation**: 4/4 tests pass, `vite build` passes
+- Files changed:
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.56-signaling-adr — ADR for signaling integration model (A3 close) (2026-02-24, 6c8b422)
 - **ADR-0001**: Documents architecture decision that localbolt-v3 uses `packages/localbolt-signal` as a native workspace crate, not a git subtree from bolt-rendezvous
 - **Rationale**: Workspace co-versioning, Fly.io deployment ownership, Rust crate layout divergence, product-specific features
