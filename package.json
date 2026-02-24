@@ -7,6 +7,7 @@
     "apps/*"
   ],
   "scripts": {
+    "test": "npm run test --workspace=packages/localbolt-web",
     "dev": "npm run dev --workspace=packages/localbolt-web",
     "build": "npm run build --workspace=packages/localbolt-web",
     "typecheck": "npm run typecheck --workspace=packages/localbolt-web",
