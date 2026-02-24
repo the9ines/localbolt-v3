@@ -1,5 +1,24 @@
 # LocalBolt v3 Changelog
 
+## v3.0.53-test-pipeline — Establish test pipeline with vitest + jsdom smoke tests (2026-02-23, 8cba99f)
+- **Test framework**: Added `vitest` (v4.0.0) and `jsdom` (v26.0.0) as dev dependencies to `packages/localbolt-web`
+- **Vite config**: Added `test` block to `vite.config.ts` with `environment: "jsdom"` and `include: ["src/**/*.test.ts"]`
+- **FAQ smoke test** (`src/sections/__tests__/faq.test.ts`): 2 tests verifying `createFAQ()` returns a `<section>` with correct aria-label, and that FAQ items render as `<details>` elements with `<summary>` and `<p>` children
+- **App smoke test** (`src/__tests__/app.test.ts`): 2 tests with full mocks of `@the9ines/bolt-core` and `@the9ines/bolt-transport-web`; verifies `createApp()` renders without throwing and populates the root element
+- **CI pipeline**: Added `npm test -w packages/localbolt-web` step to GitHub Actions CI workflow, running before the build step
+- **Root test script**: Added `"test"` script to root `package.json` delegating to the `packages/localbolt-web` workspace
+- **Package scripts**: Added `"test": "vitest run"` and `"test:watch": "vitest"` scripts to `packages/localbolt-web/package.json`
+- **Registry resolution**: All `@the9ines/*` packages now resolve from `npm.pkg.github.com` (no `file:` refs in lockfile)
+- 4 tests pass: 2 FAQ + 2 app render
+- Files changed:
+  - `.github/workflows/ci.yml`
+  - `package.json`
+  - `package-lock.json`
+  - `packages/localbolt-web/package.json`
+  - `packages/localbolt-web/vite.config.ts`
+  - `packages/localbolt-web/src/__tests__/app.test.ts` (new)
+  - `packages/localbolt-web/src/sections/__tests__/faq.test.ts` (new)
+
 ## v3.0.52-sas-verification-deps — Bump bolt-transport-web to 0.3.0 (SAS verification surface) (2026-02-23, 17c6d3f)
 - **Dependency bump**: Updated `@the9ines/bolt-transport-web` from `0.2.0` to `0.3.0` in `packages/localbolt-web/package.json`
 - Picks up Phase 7B SAS verification surface from bolt-core-sdk

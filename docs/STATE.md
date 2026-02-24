@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.52-sas-verification-deps
+- **Tag**: v3.0.53-test-pipeline
 - **Branch**: main
-- **HEAD**: 17c6d3f
+- **HEAD**: 8cba99f
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -20,12 +20,12 @@
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
-- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
+- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
 - **Web runtime** (4): @the9ines/bolt-core (0.2.0), @the9ines/bolt-transport-web (0.3.0), tweetnacl, tweetnacl-util
-- **Web dev** (7): @types/node, autoprefixer, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7)
+- **Web dev** (9): @types/node, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
 
@@ -56,6 +56,7 @@
 - **Phase SC**: DONE — OpenSSF Scorecard hardening: pinned GitHub Actions by SHA, Dependabot, CI workflow, vite 5->7 (esbuild CVE fix), minimatch override (ReDoS CVE fix) [v3.0.30]. CodeQL SAST was added in v3.0.30 but later removed in v3.0.36 (private repo cannot use code scanning without GitHub Advanced Security)
 - **Phase SH**: DONE — Security headers: Netlify HTTP security headers (HSTS, X-Frame-Options, COOP, Referrer-Policy, Permissions-Policy, X-Content-Type-Options) for Observatory A+ rating; Cargo.lock committed for reproducible builds [v3.0.31]
 - **Phase CG**: DONE — CGNAT/Tailscale support: added 100.64.0.0/10 (CGNAT/shared address space) to private IP detection on both signal server (Rust) and web client (TypeScript); Tailscale/WireGuard mesh peers now auto-discover as local [v3.0.32]
+- **Phase TP**: DONE — Test pipeline: vitest + jsdom smoke tests (4 tests: FAQ structure + app render), CI test step before build [v3.0.53]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -105,3 +106,4 @@
 | v3.0.38-faq-sync | 1c24c0b | Sync FAQ copy: expand answers, reword network question for offline emphasis |
 | v3.0.51-hello-tofu-deps | 01a0e1f | Bump bolt-core to 0.2.0, bolt-transport-web to 0.2.0 (encrypted HELLO + TOFU) |
 | v3.0.52-sas-verification-deps | 17c6d3f | Bump bolt-transport-web to 0.3.0 (Phase 7B SAS verification surface) |
+| v3.0.53-test-pipeline | 8cba99f | Establish test pipeline with vitest + jsdom smoke tests |
