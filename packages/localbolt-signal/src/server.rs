@@ -318,3 +318,54 @@ fn is_private_ip(ip: &str) -> bool {
     }
     false
 }
+
+// ── Tests ───────────────────────────────────────────────────────────────
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── Peer code policy parity (NATIVE-3B) ─────────────────────
+    //
+    // Server validation: non-empty, <=16 chars, ASCII alphanumeric.
+    // bolt-core: 31-char unambiguous alphabet, length 6 or 8 only.
+    // The server MUST remain permissive — tightening would break
+    // wire compatibility with existing clients.
+
+    /// Server accepts codes that bolt-core rejects (intentional divergence).
+    #[test]
+    fn server_accepts_codes_bolt_core_rejects() {
+        // Ambiguous chars (I, L, O, 0, 1) — excluded from bolt-core alphabet.
+        assert!(validate_peer_code("IL0O1X").is_ok());
+        assert!(!bolt_core::peer_code::is_valid_peer_code("IL0O1X"));
+
+        // Length 16 (max server allows) — bolt-core only accepts 6 or 8.
+        assert!(validate_peer_code("ABCDEF1234567890").is_ok());
+        assert!(!bolt_core::peer_code::is_valid_peer_code(
+            "ABCDEF1234567890"
+        ));
+
+        // Lowercase alphanumeric — server accepts as-is.
+        assert!(validate_peer_code("a1b2c3").is_ok());
+        assert!(!bolt_core::peer_code::is_valid_peer_code("a1b2c3"));
+    }
+
+    /// When a code is within the canonical alphabet and length, both agree.
+    #[test]
+    fn canonical_codes_accepted_by_both() {
+        // 6-char code using only unambiguous alphabet chars.
+        assert!(validate_peer_code("ABCDEF").is_ok());
+        assert!(bolt_core::peer_code::is_valid_peer_code("ABCDEF"));
+
+        // 8-char code (no dash — server rejects hyphens).
+        assert!(validate_peer_code("ABCDEFGH").is_ok());
+        assert!(bolt_core::peer_code::is_valid_peer_code("ABCDEFGH"));
+    }
+
+    /// Both reject empty codes.
+    #[test]
+    fn both_reject_empty() {
+        assert!(validate_peer_code("").is_err());
+        assert!(!bolt_core::peer_code::is_valid_peer_code(""));
+    }
+}
