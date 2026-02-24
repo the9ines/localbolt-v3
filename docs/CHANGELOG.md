@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.54-sdk-upgrade — Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 (2026-02-24, 463e963)
+- **Dependency bump**: Updated `@the9ines/bolt-core` from `0.2.0` to `0.3.0` and `@the9ines/bolt-transport-web` from `0.3.0` to `0.6.0` in `packages/localbolt-web/package.json`
+- **Merge**: Branch `feature/sdk-upgrade-0.3.0-0.6.0` merged to main at 463e963
+- **Registry**: Both packages resolve from `npm.pkg.github.com`
+- **Validation**: 4/4 tests pass, `vite build` passes, `tsc --noEmit` passes
+- **No application code changes** -- only package.json and package-lock.json modified
+- Files changed:
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.53-test-pipeline — Establish test pipeline with vitest + jsdom smoke tests (2026-02-23, 8cba99f)
 - **Test framework**: Added `vitest` (v4.0.0) and `jsdom` (v26.0.0) as dev dependencies to `packages/localbolt-web`
 - **Vite config**: Added `test` block to `vite.config.ts` with `environment: "jsdom"` and `include: ["src/**/*.test.ts"]`

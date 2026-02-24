@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.53-test-pipeline
+- **Tag**: v3.0.54-sdk-upgrade
 - **Branch**: main
-- **HEAD**: 8cba99f
+- **HEAD**: 463e963
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -24,7 +24,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (4): @the9ines/bolt-core (0.2.0), @the9ines/bolt-transport-web (0.3.0), tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.3.0), @the9ines/bolt-transport-web (0.6.0), tweetnacl, tweetnacl-util
 - **Web dev** (9): @types/node, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
 - **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -107,3 +107,4 @@
 | v3.0.51-hello-tofu-deps | 01a0e1f | Bump bolt-core to 0.2.0, bolt-transport-web to 0.2.0 (encrypted HELLO + TOFU) |
 | v3.0.52-sas-verification-deps | 17c6d3f | Bump bolt-transport-web to 0.3.0 (Phase 7B SAS verification surface) |
 | v3.0.53-test-pipeline | 8cba99f | Establish test pipeline with vitest + jsdom smoke tests |
+| v3.0.54-sdk-upgrade | 463e963 | Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 |
