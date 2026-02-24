@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.56-signaling-adr — ADR for signaling integration model (A3 close) (2026-02-24, 6c8b422)
+- **ADR-0001**: Documents architecture decision that localbolt-v3 uses `packages/localbolt-signal` as a native workspace crate, not a git subtree from bolt-rendezvous
+- **Rationale**: Workspace co-versioning, Fly.io deployment ownership, Rust crate layout divergence, product-specific features
+- **Drift control**: Wire protocol changes in bolt-rendezvous must be propagated; Fly.io deployment owned by localbolt-v3; subtree repos continue pulling bolt-rendezvous canonical
+- **Audit item A3**: Closed — docs-only, no code changes
+- Files changed:
+  - `docs/adr/ADR-0001-signaling-integration-model.md` (new)
+
 ## v3.0.55-coverage-thresholds — Enforce coverage thresholds (Q6 close) (2026-02-24, fa59742)
 - **Coverage enforcement**: Added `@vitest/coverage-v8` and coverage threshold block to `vite.config.ts`
 - **Thresholds**: statements 45%, branches 5%, functions 31%, lines 48% (current floor minus 2%, prevents regression)

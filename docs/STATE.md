@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.55-coverage-thresholds
+- **Tag**: v3.0.56-signaling-adr
 - **Branch**: main
-- **HEAD**: d9284f1
+- **HEAD**: 75e35ed
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -58,6 +58,7 @@
 - **Phase CG**: DONE — CGNAT/Tailscale support: added 100.64.0.0/10 (CGNAT/shared address space) to private IP detection on both signal server (Rust) and web client (TypeScript); Tailscale/WireGuard mesh peers now auto-discover as local [v3.0.32]
 - **Phase TP**: DONE — Test pipeline: vitest + jsdom smoke tests (4 tests: FAQ structure + app render), CI test step before build [v3.0.53]
 - **Phase Q6**: DONE — Coverage thresholds: @vitest/coverage-v8, regression-prevention thresholds enforced (45/5/31/48%) [v3.0.55]
+- **Phase A3**: DONE — ADR for signaling integration model: native workspace crate (not subtree), drift control policy [v3.0.56]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -110,3 +111,4 @@
 | v3.0.53-test-pipeline | 8cba99f | Establish test pipeline with vitest + jsdom smoke tests |
 | v3.0.54-sdk-upgrade | 463e963 | Upgrade SDK: bolt-core 0.3.0, bolt-transport-web 0.6.0 |
 | v3.0.55-coverage-thresholds | fa59742 | Coverage threshold enforcement (Q6 close) |
+| v3.0.56-signaling-adr | 6c8b422 | ADR for signaling integration model (A3 close) |
