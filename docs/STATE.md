@@ -1,9 +1,9 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.57-signal-parity-gate
+- **Tag**: v3.0.58-sig-3-url-hygiene
 - **Branch**: main
-- **HEAD**: 59db709
+- **HEAD**: c3d058e
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -18,7 +18,7 @@
 
 ## Packages
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
-- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io at wss://localbolt-signal.fly.dev); bolt-core (0.4.0) as dev-only dependency for peer code parity tests (3 tests codify intentional divergence between server-broad and bolt-core-strict validation)
+- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io); bolt-core (0.4.0) as dev-only dependency for peer code parity tests (3 tests codify intentional divergence between server-broad and bolt-core-strict validation). Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)

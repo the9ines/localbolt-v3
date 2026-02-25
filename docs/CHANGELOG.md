@@ -1,5 +1,17 @@
 # LocalBolt v3 Changelog
 
+## v3.0.58-sig-3-url-hygiene — Remove hardcoded cloud signaling fallback (2026-02-24, c3d058e)
+- **SIG-3**: Remove hardcoded `wss://localbolt-signal.fly.dev` fallback from `peer-connection.ts`
+- Cloud signaling URL (`VITE_SIGNAL_URL`) now required via explicit configuration
+- If unset, cloud signaling is disabled with console warning — local-only mode
+- Local signaling fallback (`ws://<hostname>:3001`) preserved unchanged
+- DualSignaling handles missing cloud URL gracefully via `Promise.allSettled`
+- Production `.env` already sets `VITE_SIGNAL_URL` — deployed behavior unchanged
+- Updated `.env.example` to document new behavior
+- Files changed:
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+  - `packages/localbolt-web/.env.example`
+
 ## v3.0.57-signal-parity-gate — Bolt-core parity gate for signal peer code validation (2026-02-24, 59db709)
 - **Merge**: bolt-core parity gate for signal peer code validation (native-3b)
 - **Dev dependency**: Added `bolt-core` (0.4.0, path reference) as a dev-only dependency to `packages/localbolt-signal` for test-time peer code validation cross-checking
