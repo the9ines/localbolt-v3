@@ -1,5 +1,14 @@
 # LocalBolt v3 Changelog
 
+## v3.0.59-signal-hardening — H1 Signal server trust-boundary hardening (2026-02-25, ac5110c)
+- **H1**: Port trust-boundary hardening from bolt-rendezvous into localbolt-v3 signal server
+- Hardens the Rust WebSocket signaling server with bolt-rendezvous-grade trust boundary enforcement
+- Files changed:
+  - `packages/localbolt-signal/Cargo.toml`
+  - `packages/localbolt-signal/src/server.rs` (+449/-26 lines)
+- **Tag:** `v3.0.59-signal-hardening`
+- **Branch:** `feature/h1-signal-hardening` (not yet merged to main)
+
 ## v3.0.58-sig-3-url-hygiene — Remove hardcoded cloud signaling fallback (2026-02-24, c3d058e)
 - **SIG-3**: Remove hardcoded `wss://localbolt-signal.fly.dev` fallback from `peer-connection.ts`
 - Cloud signaling URL (`VITE_SIGNAL_URL`) now required via explicit configuration
