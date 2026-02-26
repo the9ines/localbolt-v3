@@ -1,9 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.58-sig-3-url-hygiene
+- **Tag**: v3.0.60-h6-ci-enforcement
 - **Branch**: main
-- **HEAD**: c3d058e
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)

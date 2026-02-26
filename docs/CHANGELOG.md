@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.60-h6-ci-enforcement — H6 CI enforcement audit (2026-02-25)
+- **H6**: CI enforcement audit — all gates verified present and correct
+- Existing CI already enforces: Rust fmt, clippy -D warnings, cargo test, cargo build --release, TS transport guards, npm test, npm build, coverage thresholds (statements:45, branches:5, functions:31, lines:48)
+- No code changes required — audit-only tag confirming enforcement posture
+- Files changed:
+  - `docs/CHANGELOG.md` (this entry)
+  - `docs/STATE.md` (updated version)
+
 ## v3.0.59-signal-hardening — H1 Signal server trust-boundary hardening (2026-02-25, ac5110c)
 - **H1**: Port trust-boundary hardening from bolt-rendezvous into localbolt-v3 signal server
 - Hardens the Rust WebSocket signaling server with bolt-rendezvous-grade trust boundary enforcement
