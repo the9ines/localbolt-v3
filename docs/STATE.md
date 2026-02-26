@@ -1,7 +1,7 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.61-h5v3-tofu-sas-pinning
+- **Tag**: v3.0.62-h1-mainline-merge
 - **Branch**: main
 
 ## Architecture
@@ -123,3 +123,4 @@
 | v3.0.59-signal-hardening | ac5110c | H1: Signal server trust-boundary hardening |
 | v3.0.60-h6-ci-enforcement | 3b12f73 | H6: CI enforcement audit |
 | v3.0.61-h5v3-tofu-sas-pinning | 532d391 | H5-v3: TOFU/SAS wiring + identity/pin store |
+| v3.0.62-h1-mainline-merge | 7571d35 | Merge H1 signal hardening into main (mainline convergence) |

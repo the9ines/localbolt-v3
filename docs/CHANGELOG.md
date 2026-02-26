@@ -1,5 +1,14 @@
 # LocalBolt v3 Changelog
 
+## v3.0.62-h1-mainline-merge — Merge H1 signal hardening into main (2026-02-25, 7571d35)
+- **Mainline convergence**: Merged `feature/h1-signal-hardening` into main via `--no-ff`
+- H1 signal server trust-boundary hardening (v3.0.59-signal-hardening, ac5110c) now on main
+- Conflicts resolved in docs only (CHANGELOG.md, STATE.md) — preserved H5v3 + H6 entries alongside H1
+- All gates pass: npm test (26/26), npm build, typecheck, cargo fmt/clippy/test (31+1), cargo build --release
+- Files changed:
+  - `docs/CHANGELOG.md` (conflict resolution + this entry)
+  - `docs/STATE.md` (conflict resolution + version bump)
+
 ## v3.0.61-h5v3-tofu-sas-pinning — H5-v3: TOFU/SAS wiring + identity/pin store (2026-02-25)
 - **H5-v3**: Wire SDK-provided identity, pinning, and SAS verification into localbolt-v3
 - **Identity persistence**: Local X25519 identity keypair persisted in IndexedDB via `IndexedDBIdentityStore` + `getOrCreateIdentity` (SDK). Survives page reloads. Shared-device risk documented (IndexedDB not encrypted-at-rest).
