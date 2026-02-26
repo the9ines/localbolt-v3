@@ -60,6 +60,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "bolt-rendezvous"
+version = "0.1.1"
+source = "git+https://github.com/the9ines/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
+dependencies = [
+ "bolt-rendezvous-protocol",
+ "dashmap",
+ "futures-util",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
+name = "bolt-rendezvous-protocol"
+version = "0.1.0"
+source = "git+https://github.com/the9ines/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.20.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -417,18 +443,13 @@ checksum = "6800badb6cb2082ffd7b6a67e6125bb39f18782f793520caee8cb8846be06112"
 
 [[package]]
 name = "localbolt-signal"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bolt-core",
- "dashmap",
- "futures-util",
- "serde",
+ "bolt-rendezvous",
  "serde_json",
  "tokio",
- "tokio-tungstenite",
- "tracing",
  "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]
