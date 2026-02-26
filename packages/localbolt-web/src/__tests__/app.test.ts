@@ -51,9 +51,28 @@ vi.mock('@the9ines/bolt-transport-web', () => {
       setConnectionStateHandler() {}
       getRemotePeerCode() { return ''; }
       disconnect() {}
+      markPeerVerified() { return Promise.resolve(); }
     },
     WebRTCError: class extends Error { details?: string; },
     SignalingError: class extends Error {},
+    IndexedDBIdentityStore: class {
+      load() { return Promise.resolve(null); }
+      save() { return Promise.resolve(); }
+    },
+    getOrCreateIdentity: vi.fn().mockResolvedValue({
+      publicKey: new Uint8Array(32),
+      secretKey: new Uint8Array(32),
+    }),
+    IndexedDBPinStore: class {
+      getPin() { return Promise.resolve(null); }
+      setPin() { return Promise.resolve(); }
+      removePin() { return Promise.resolve(); }
+      markVerified() { return Promise.resolve(); }
+    },
+    createVerificationStatus: () => ({
+      element: document.createElement('div'),
+      update: vi.fn(),
+    }),
   };
 });
 

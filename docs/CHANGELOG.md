@@ -1,5 +1,32 @@
 # LocalBolt v3 Changelog
 
+## v3.0.61-h5v3-tofu-sas-pinning — H5-v3: TOFU/SAS wiring + identity/pin store (2026-02-25)
+- **H5-v3**: Wire SDK-provided identity, pinning, and SAS verification into localbolt-v3
+- **Identity persistence**: Local X25519 identity keypair persisted in IndexedDB via `IndexedDBIdentityStore` + `getOrCreateIdentity` (SDK). Survives page reloads. Shared-device risk documented (IndexedDB not encrypted-at-rest).
+- **Pin store**: `IndexedDBPinStore` (SDK) stores TOFU peer identity pins with verified/unverified status.
+- **WebRTCService integration**: `peer-connection.ts` now passes `identityPublicKey`, `pinStore`, and `onVerificationState` callback to WebRTCService constructor. Identity loaded in parallel with signaling connect.
+- **Verification UX states**:
+  - `verified`: green badge, file transfer allowed
+  - `unverified`: SAS code shown + "Mark Verified" / "Reject" buttons, file transfer blocked until user verifies
+  - `legacy`: gray "Legacy Peer" badge, file transfer allowed with visible unverified warning
+  - `mismatch`: fail-closed — automatic disconnect + "Security Alert: Identity Mismatch" error toast
+- **Transfer gating**: File upload visibility now requires `isConnected` AND (`verified` OR `legacy`). Unverified peers cannot send/receive files.
+- **Verification state bus**: New `services/verification-state.ts` — lightweight pub/sub that decouples verification state from SDK store. Components subscribe independently.
+- **Key mismatch detection**: `handleConnectionError` detects TOFU violation errors and shows targeted security alert instead of generic "Connection Failed".
+- **Disconnect cleanup**: `resetVerificationState()` called on disconnect and connection state changes to non-connected.
+- **LAN-only support preserved**: No cloud-only requirements added. Works with `VITE_LOCAL_SIGNAL_URL` only.
+- **Tests**: 22 new deterministic tests in `h5-tofu-verification.test.ts` covering: identity persistence stability, verification state bus transitions, transfer gating (unverified blocks, verified allows, legacy allows), accept/reject flows, pin mismatch fail-closed, legacy peer handling. All mocked (no real WebRTC/IndexedDB).
+- **Coverage**: 51/9/40/53% (exceeds thresholds 45/5/31/48%). New services at 100% coverage.
+- Files changed:
+  - `packages/localbolt-web/src/services/identity.ts` (NEW)
+  - `packages/localbolt-web/src/services/verification-state.ts` (NEW)
+  - `packages/localbolt-web/src/components/peer-connection.ts` (MODIFIED)
+  - `packages/localbolt-web/src/sections/transfer.ts` (MODIFIED)
+  - `packages/localbolt-web/src/__tests__/h5-tofu-verification.test.ts` (NEW)
+  - `packages/localbolt-web/src/__tests__/app.test.ts` (MODIFIED — mock updated)
+  - `docs/STATE.md` (MODIFIED)
+  - `docs/CHANGELOG.md` (this entry)
+
 ## v3.0.60-h6-ci-enforcement — H6 CI enforcement audit (2026-02-25)
 - **H6**: CI enforcement audit — all gates verified present and correct
 - Existing CI already enforces: Rust fmt, clippy -D warnings, cargo test, cargo build --release, TS transport guards, npm test, npm build, coverage thresholds (statements:45, branches:5, functions:31, lines:48)

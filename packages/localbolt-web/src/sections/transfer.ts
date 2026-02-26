@@ -1,5 +1,6 @@
 import { createPeerConnection } from '@/components/peer-connection';
 import { createFileUpload, store } from '@the9ines/bolt-transport-web';
+import { getVerificationState, onVerificationStateChange } from '@/services/verification-state';
 
 export function createTransfer(): HTMLElement {
   const card = document.createElement('div');
@@ -24,7 +25,7 @@ export function createTransfer(): HTMLElement {
   const peerConnectionEl = createPeerConnection();
   content.appendChild(peerConnectionEl);
 
-  // File upload (shown when connected)
+  // File upload (shown when connected AND transfer is allowed)
   const fileUploadWrap = document.createElement('div');
   fileUploadWrap.className = 'animate-fade-in mt-6';
   fileUploadWrap.hidden = true;
@@ -33,10 +34,18 @@ export function createTransfer(): HTMLElement {
   fileUploadWrap.appendChild(fileUploadEl);
   content.appendChild(fileUploadWrap);
 
-  store.subscribe(() => {
+  // Gate: file transfer requires connection + verification (verified or legacy)
+  function updateFileUploadVisibility() {
     const { isConnected } = store.getState();
-    fileUploadWrap.hidden = !isConnected;
-  });
+    const vState = getVerificationState().state;
+    // Allow transfer for verified peers and legacy peers (with warning).
+    // Block for unverified peers (TOFU first-contact, must verify first).
+    const transferAllowed = vState === 'verified' || vState === 'legacy';
+    fileUploadWrap.hidden = !isConnected || !transferAllowed;
+  }
+
+  store.subscribe(updateFileUploadVisibility);
+  onVerificationStateChange(updateFileUploadVisibility);
 
   card.append(gradientBr, gradientT, content);
   return card;

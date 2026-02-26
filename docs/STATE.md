@@ -1,7 +1,7 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.60-h6-ci-enforcement
+- **Tag**: v3.0.61-h5v3-tofu-sas-pinning
 - **Branch**: main
 
 ## Architecture
@@ -10,7 +10,9 @@
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
 - **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
-- **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation
+- **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation; TOFU identity pinning with fail-closed key mismatch
+- **Identity**: Persistent X25519 identity keypair stored in IndexedDB via SDK (`IndexedDBIdentityStore`). Created once, reused across sessions. Not encrypted-at-rest (shared-device risk documented). TOFU peer pins stored via `IndexedDBPinStore`.
+- **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer blocked until verified), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error)
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
@@ -31,7 +33,8 @@
 ## UI Components (vanilla TypeScript)
 - **Entry**: `main.ts` → `app.ts` (mounts header, 3-screen layout: hero with scroll arrow, full-viewport transfer card with section-level pulsating bg, SEO content below, footer)
 - **State**: `state/store.ts` (lightweight pub/sub store replacing React hooks/context)
-- **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`
+- **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`, `verification-status.ts` (SDK)
+- **Services**: `services/identity.ts` (local identity persistence), `services/verification-state.ts` (verification state pub/sub bus)
 - **Sections**: `header.ts`, `footer.ts`, `transfer.ts`, `how-it-works.ts`, `features.ts`, `faq.ts`, `consent-modal.ts` (hero content is inlined in `app.ts`; `hero.ts` and `trust-strip.ts` have been removed; how-it-works, features, and FAQ restored as SEO content below transfer card)
 - **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications), `lib/sanitize.ts` (XSS escapeHTML)
 
@@ -60,6 +63,7 @@
 - **Phase A3**: DONE — ADR for signaling integration model: native workspace crate (not subtree), drift control policy [v3.0.56]
 - **Phase N3B**: DONE — Bolt-core parity gate: bolt-core as dev dep in localbolt-signal, 3 tests codifying server-broad vs bolt-core-strict peer code validation divergence [v3.0.57-signal-parity-gate]
 - **Phase H1**: DONE — Signal server trust-boundary hardening: bolt-rendezvous-grade enforcement ported to localbolt-signal [v3.0.59-signal-hardening] (on `feature/h1-signal-hardening`, not yet merged to main)
+- **Phase H5-v3**: DONE — TOFU/SAS wiring + identity/pin store: SDK identity persistence (IndexedDB), TOFU peer pinning, SAS verification UX, fail-closed key mismatch, legacy peer handling, transfer gating by verification state; 22 tests [v3.0.61-h5v3-tofu-sas-pinning]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -117,3 +121,5 @@
 | v3.0.57-bolt-core-bump | 14927d7 | Bump bolt-core to 0.4.0 (A1 adoption) |
 | v3.0.58-sig-3-url-hygiene | c3d058e | Remove hardcoded cloud signaling fallback (SIG-3) |
 | v3.0.59-signal-hardening | ac5110c | H1: Signal server trust-boundary hardening (feature branch) |
+| v3.0.60-h6-ci-enforcement | 3b12f73 | H6: CI enforcement audit |
+| v3.0.61-h5v3-tofu-sas-pinning | TBD | H5-v3: TOFU/SAS wiring + identity/pin store |
