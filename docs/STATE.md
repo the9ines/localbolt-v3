@@ -62,7 +62,7 @@
 - **Phase Q6**: DONE — Coverage thresholds: @vitest/coverage-v8, regression-prevention thresholds enforced (45/5/31/48%) [v3.0.55]
 - **Phase A3**: DONE — ADR for signaling integration model: native workspace crate (not subtree), drift control policy [v3.0.56]
 - **Phase N3B**: DONE — Bolt-core parity gate: bolt-core as dev dep in localbolt-signal, 3 tests codifying server-broad vs bolt-core-strict peer code validation divergence [v3.0.57-signal-parity-gate]
-- **Phase H1**: DONE — Signal server trust-boundary hardening: bolt-rendezvous-grade enforcement ported to localbolt-signal [v3.0.59-signal-hardening] (on `feature/h1-signal-hardening`, not yet merged to main)
+- **Phase H1**: DONE — Signal server trust-boundary hardening: bolt-rendezvous-grade enforcement ported to localbolt-signal [v3.0.59-signal-hardening]
 - **Phase H5-v3**: DONE — TOFU/SAS wiring + identity/pin store: SDK identity persistence (IndexedDB), TOFU peer pinning, SAS verification UX, fail-closed key mismatch, legacy peer handling, transfer gating by verification state; 22 tests [v3.0.61-h5v3-tofu-sas-pinning]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
@@ -120,6 +120,6 @@
 | v3.0.57-signal-parity-gate | 59db709 | Bolt-core parity gate for signal peer code validation (native-3b) |
 | v3.0.57-bolt-core-bump | 14927d7 | Bump bolt-core to 0.4.0 (A1 adoption) |
 | v3.0.58-sig-3-url-hygiene | c3d058e | Remove hardcoded cloud signaling fallback (SIG-3) |
-| v3.0.59-signal-hardening | ac5110c | H1: Signal server trust-boundary hardening (feature branch) |
+| v3.0.59-signal-hardening | ac5110c | H1: Signal server trust-boundary hardening |
 | v3.0.60-h6-ci-enforcement | 3b12f73 | H6: CI enforcement audit |
 | v3.0.61-h5v3-tofu-sas-pinning | 532d391 | H5-v3: TOFU/SAS wiring + identity/pin store |

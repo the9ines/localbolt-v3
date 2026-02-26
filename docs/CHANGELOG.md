@@ -35,6 +35,7 @@
   - `docs/CHANGELOG.md` (this entry)
   - `docs/STATE.md` (updated version)
 
+
 ## v3.0.59-signal-hardening — H1 Signal server trust-boundary hardening (2026-02-25, ac5110c)
 - **H1**: Port trust-boundary hardening from bolt-rendezvous into localbolt-v3 signal server
 - Hardens the Rust WebSocket signaling server with bolt-rendezvous-grade trust boundary enforcement
