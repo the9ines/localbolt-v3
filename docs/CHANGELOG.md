@@ -1,5 +1,23 @@
 # LocalBolt v3 Changelog
 
+## v3.0.63-s0-canonical-rendezvous — S0 canonical rendezvous integration (2026-02-26, 2963539)
+- **S0**: Replaced localbolt-signal local implementation with canonical `bolt-rendezvous` wrapper
+- Removed `protocol.rs`, `server.rs`, `room.rs` — all signaling logic now delegated to the `bolt-rendezvous` crate (git dep, tag `rendezvous-v0.2.2-s0-canonical-lib-verified`)
+- `lib.rs` rewritten as a thin wrapper: configures `bolt-rendezvous` server with LocalBolt-specific IP-based room grouping, private IP detection, CGNAT/Tailscale support, peer code validation, and keepalive
+- Crate version bumped to 0.1.1; direct dependencies reduced (dashmap, futures-util, serde, tokio-tungstenite, tracing, uuid removed — now transitive via bolt-rendezvous)
+- Wire-format parity preserved — existing clients connect without changes
+- LAN-only compatible — no cloud-only requirements introduced
+- Dockerfile updated: installs `git` for cargo git dependency resolution; strips `[dev-dependencies]` (path deps unavailable in Docker build context)
+- 36 tests pass (up from 32): cargo test suite validates room logic, IP grouping, peer code validation, keepalive, and bolt-core parity
+- Files changed:
+  - `packages/localbolt-signal/Cargo.toml` (bolt-rendezvous dep, version bump, deps reduced)
+  - `packages/localbolt-signal/Cargo.lock` (bolt-rendezvous + bolt-rendezvous-protocol added)
+  - `packages/localbolt-signal/src/lib.rs` (rewritten as canonical wrapper)
+  - `packages/localbolt-signal/src/protocol.rs` (REMOVED)
+  - `packages/localbolt-signal/src/server.rs` (REMOVED)
+  - `packages/localbolt-signal/src/room.rs` (REMOVED)
+  - `packages/localbolt-signal/Dockerfile` (git install + dev-dep stripping)
+
 ## v3.0.62-h1-mainline-merge — Merge H1 signal hardening into main (2026-02-25, 7571d35)
 - **Mainline convergence**: Merged `feature/h1-signal-hardening` into main via `--no-ff`
 - H1 signal server trust-boundary hardening (v3.0.59-signal-hardening, ac5110c) now on main

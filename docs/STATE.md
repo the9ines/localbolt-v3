@@ -1,12 +1,13 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.62-h1-mainline-merge
+- **Tag**: v3.0.63-s0-canonical-rendezvous
+- **Commit**: 2963539
 - **Branch**: main
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
-- **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Custom Rust WebSocket server backend (IP-based room grouping, replaced Supabase)
+- **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Rust WebSocket server backend is a thin wrapper around canonical `bolt-rendezvous` crate (IP-based room grouping, replaced local protocol/server/room implementation)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
 - **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); mDNS planned for Tauri offline mode
@@ -19,7 +20,7 @@
 
 ## Packages
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
-- `packages/localbolt-signal` — Rust WS signaling server (implemented, IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io); bolt-core (0.4.0) as dev-only dependency for peer code parity tests (3 tests codify intentional divergence between server-broad and bolt-core-strict validation). Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
+- `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
@@ -27,7 +28,7 @@
 ## Key Dependencies
 - **Web runtime** (4): @the9ines/bolt-core (0.4.0), @the9ines/bolt-transport-web (0.6.0), tweetnacl, tweetnacl-util
 - **Web dev** (10): @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
-- **Signal**: Rust, tokio, tokio-tungstenite, dashmap, serde, futures-util, tracing
+- **Signal**: Rust, bolt-rendezvous (canonical, git dep @ rendezvous-v0.2.2-s0-canonical-lib-verified), tokio, tracing-subscriber
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
 
 ## UI Components (vanilla TypeScript)
@@ -64,6 +65,7 @@
 - **Phase N3B**: DONE — Bolt-core parity gate: bolt-core as dev dep in localbolt-signal, 3 tests codifying server-broad vs bolt-core-strict peer code validation divergence [v3.0.57-signal-parity-gate]
 - **Phase H1**: DONE — Signal server trust-boundary hardening: bolt-rendezvous-grade enforcement ported to localbolt-signal [v3.0.59-signal-hardening]
 - **Phase H5-v3**: DONE — TOFU/SAS wiring + identity/pin store: SDK identity persistence (IndexedDB), TOFU peer pinning, SAS verification UX, fail-closed key mismatch, legacy peer handling, transfer gating by verification state; 22 tests [v3.0.61-h5v3-tofu-sas-pinning]
+- **Phase S0**: DONE — Canonical rendezvous integration: replaced local protocol.rs/server.rs/room.rs with bolt-rendezvous crate wrapper; wire-format parity preserved; 36 tests; LAN-only compatible; Docker build updated for git dependency [v3.0.63-s0-canonical-rendezvous]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -124,3 +126,4 @@
 | v3.0.60-h6-ci-enforcement | 3b12f73 | H6: CI enforcement audit |
 | v3.0.61-h5v3-tofu-sas-pinning | 532d391 | H5-v3: TOFU/SAS wiring + identity/pin store |
 | v3.0.62-h1-mainline-merge | 7571d35 | Merge H1 signal hardening into main (mainline convergence) |
+| v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |
