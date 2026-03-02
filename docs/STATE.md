@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.63-s0-canonical-rendezvous
-- **Commit**: 2963539
+- **Tag**: v3.0.64-ac4-coverage-enforced
+- **Commit**: a5d0237
 - **Branch**: main
 
 ## Architecture
@@ -22,7 +22,7 @@
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional)
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app), Fly.io (signal server)
-- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
+- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -126,4 +126,5 @@
 | v3.0.60-h6-ci-enforcement | 3b12f73 | H6: CI enforcement audit |
 | v3.0.61-h5v3-tofu-sas-pinning | 532d391 | H5-v3: TOFU/SAS wiring + identity/pin store |
 | v3.0.62-h1-mainline-merge | 7571d35 | Merge H1 signal hardening into main (mainline convergence) |
+| v3.0.64-ac4-coverage-enforced | a5d0237 | AC-4: CI coverage enforcement + jsdom showModal polyfill |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

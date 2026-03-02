@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.64-ac4-coverage-enforced — AC-4: CI coverage enforcement (2026-03-02, a5d0237)
+- CI now enforces coverage thresholds via `vitest run --coverage` (previously ran tests without `--coverage` flag, so thresholds were not checked in CI)
+- Added jsdom polyfill for `HTMLDialogElement.showModal()` to fix v8 instrumentation exit code: under v8 coverage instrumentation, deferred `requestAnimationFrame` callbacks fire and call `showModal()` on jsdom (which does not implement it), producing an uncaught TypeError that exits vitest non-zero even though all tests and thresholds pass
+- Added `setupFiles` entry in vite.config.ts to load the new polyfill setup file
+- Closes AC-4
+- Files changed:
+  - `.github/workflows/ci.yml` (`--coverage` flag added to test step)
+  - `packages/localbolt-web/vite.config.ts` (setupFiles added)
+  - `packages/localbolt-web/src/__tests__/setup.ts` (new: jsdom polyfill for HTMLDialogElement.showModal/close)
+
 ## v3.0.63-s0-canonical-rendezvous — S0 canonical rendezvous integration (2026-02-26, 2963539)
 - **S0**: Replaced localbolt-signal local implementation with canonical `bolt-rendezvous` wrapper
 - Removed `protocol.rs`, `server.rs`, `room.rs` — all signaling logic now delegated to the `bolt-rendezvous` crate (git dep, tag `rendezvous-v0.2.2-s0-canonical-lib-verified`)
