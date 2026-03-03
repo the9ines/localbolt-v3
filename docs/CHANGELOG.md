@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.66-dp6-transport-web-bump — Bump bolt-transport-web to 0.6.1 (DP-6 fix) (2026-03-03, 8f98716)
+- **DP-6**: Bump `@the9ines/bolt-transport-web` from 0.6.0 to 0.6.1. Fixes responder send button permanently disabled after receiving a file.
+- Files changed:
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.65-dp3b-dp4-phantom-transfer — DP-3b + DP-4: Phantom device fix and transfer gate removal (2026-03-03, 08382f1)
 - **DP-3b**: Persist peer code in `sessionStorage` so page refreshes reuse the same code. Previously, each refresh generated a new peer code; if the old WebSocket had not been cleaned up on the server yet, the stale code appeared as a phantom device entry. Now the code is stored under `bolt_peer_code` in sessionStorage and only regenerated when no existing code is found.
 - **DP-4**: Remove verification-based gate on file upload. All three TOFU states (verified, unverified, legacy) have working end-to-end encryption. The SAS verification step is an optional MITM confirmation, not a prerequisite for secure transfer. The file upload visibility now depends only on `isConnected`, removing the previous requirement for `verified` or `legacy` verification state.
