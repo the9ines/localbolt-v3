@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.66-dp6-transport-web-bump
-- **Commit**: 8f98716
+- **Tag**: v3.0.67-dp7-bolt-core-050
+- **Commit**: 6bb21b3
 - **Branch**: main
 
 ## Architecture
@@ -26,7 +26,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (4): @the9ines/bolt-core (0.4.0), @the9ines/bolt-transport-web (0.6.1), tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.5.0), @the9ines/bolt-transport-web (0.6.1), tweetnacl, tweetnacl-util
 - **Web dev** (10): @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
 - **Signal**: Rust, bolt-rendezvous (canonical, git dep @ rendezvous-v0.2.2-s0-canonical-lib-verified), tokio, tracing-subscriber
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -128,5 +128,6 @@
 | v3.0.62-h1-mainline-merge | 7571d35 | Merge H1 signal hardening into main (mainline convergence) |
 | v3.0.65-dp3b-dp4-phantom-transfer | 08382f1 | DP-3b: sessionStorage peer code persistence (phantom device fix) + DP-4: remove verification gate on file upload |
 | v3.0.64-ac4-coverage-enforced | a5d0237 | AC-4: CI coverage enforcement + jsdom showModal polyfill |
+| v3.0.67-dp7-bolt-core-050 | 6bb21b3 | DP-7: Bump bolt-core to 0.5.0 (wire error code registry, unblocks Netlify deploy) |
 | v3.0.66-dp6-transport-web-bump | 8f98716 | DP-6: Bump bolt-transport-web to 0.6.1 (responder send button fix) |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

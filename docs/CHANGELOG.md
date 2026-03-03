@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.67-dp7-bolt-core-050 — Bump bolt-core to 0.5.0 (DP-7 fix) (2026-03-03, 6bb21b3)
+- **DP-7**: Bump `@the9ines/bolt-core` from 0.4.0 to 0.5.0. Fixes build failure caused by missing `isValidWireErrorCode` export (wire error code registry added in SA2/AC-8 but never published). Unblocks Netlify deploy and WebRTC connections.
+- Files changed:
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.66-dp6-transport-web-bump — Bump bolt-transport-web to 0.6.1 (DP-6 fix) (2026-03-03, 8f98716)
 - **DP-6**: Bump `@the9ines/bolt-transport-web` from 0.6.0 to 0.6.1. Fixes responder send button permanently disabled after receiving a file.
 - Files changed:
