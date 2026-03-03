@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.65-dp3b-dp4-phantom-transfer — DP-3b + DP-4: Phantom device fix and transfer gate removal (2026-03-03, 08382f1)
+- **DP-3b**: Persist peer code in `sessionStorage` so page refreshes reuse the same code. Previously, each refresh generated a new peer code; if the old WebSocket had not been cleaned up on the server yet, the stale code appeared as a phantom device entry. Now the code is stored under `bolt_peer_code` in sessionStorage and only regenerated when no existing code is found.
+- **DP-4**: Remove verification-based gate on file upload. All three TOFU states (verified, unverified, legacy) have working end-to-end encryption. The SAS verification step is an optional MITM confirmation, not a prerequisite for secure transfer. The file upload visibility now depends only on `isConnected`, removing the previous requirement for `verified` or `legacy` verification state.
+- Files changed:
+  - `packages/localbolt-web/src/components/peer-connection.ts` (sessionStorage peer code persistence)
+  - `packages/localbolt-web/src/sections/transfer.ts` (removed verification state gate from file upload visibility)
+
 ## v3.0.64-ac4-coverage-enforced — AC-4: CI coverage enforcement (2026-03-02, a5d0237)
 - CI now enforces coverage thresholds via `vitest run --coverage` (previously ran tests without `--coverage` flag, so thresholds were not checked in CI)
 - Added jsdom polyfill for `HTMLDialogElement.showModal()` to fix v8 instrumentation exit code: under v8 coverage instrumentation, deferred `requestAnimationFrame` callbacks fire and call `showModal()` on jsdom (which does not implement it), producing an uncaught TypeError that exits vitest non-zero even though all tests and thresholds pass
