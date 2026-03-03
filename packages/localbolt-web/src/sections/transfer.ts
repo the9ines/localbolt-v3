@@ -34,14 +34,13 @@ export function createTransfer(): HTMLElement {
   fileUploadWrap.appendChild(fileUploadEl);
   content.appendChild(fileUploadWrap);
 
-  // Gate: file transfer requires connection + verification (verified or legacy)
+  // Gate: file transfer requires connection + active encryption session.
+  // All three TOFU states (verified, unverified, legacy) have working
+  // end-to-end encryption — the SAS verification step is an optional
+  // MITM confirmation, not a prerequisite for secure transfer. (DP-4)
   function updateFileUploadVisibility() {
     const { isConnected } = store.getState();
-    const vState = getVerificationState().state;
-    // Allow transfer for verified peers and legacy peers (with warning).
-    // Block for unverified peers (TOFU first-contact, must verify first).
-    const transferAllowed = vState === 'verified' || vState === 'legacy';
-    fileUploadWrap.hidden = !isConnected || !transferAllowed;
+    fileUploadWrap.hidden = !isConnected;
   }
 
   store.subscribe(updateFileUploadVisibility);

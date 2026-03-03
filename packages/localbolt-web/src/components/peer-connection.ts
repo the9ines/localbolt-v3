@@ -304,7 +304,15 @@ export function createPeerConnection(): HTMLElement {
   });
 
   // ── Initialize signaling + WebRTC ───────────────────────────────────
-  const peerCode = generateSecurePeerCode();
+  // Persist peer code in sessionStorage so page refreshes reuse the same code.
+  // This prevents phantom device entries when the old WebSocket hasn't been
+  // cleaned up on the server yet (DP-3b).
+  const PEER_CODE_KEY = 'bolt_peer_code';
+  let peerCode = sessionStorage.getItem(PEER_CODE_KEY);
+  if (!peerCode) {
+    peerCode = generateSecurePeerCode();
+    sessionStorage.setItem(PEER_CODE_KEY, peerCode);
+  }
   store.setState({ peerCode });
   console.log('[WEBRTC] Peer code:', peerCode);
 
