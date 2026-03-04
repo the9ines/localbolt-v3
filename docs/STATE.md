@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.68-dp8-netlify-npmrc
-- **Commit**: b1a2cd4
+- **Tag**: v3.0.69-dp9-backpressure-fix
+- **Commit**: 48617f0
 - **Branch**: main
 
 ## Architecture
@@ -26,7 +26,7 @@
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
-- **Web runtime** (4): @the9ines/bolt-core (0.5.0), @the9ines/bolt-transport-web (0.6.1), tweetnacl, tweetnacl-util
+- **Web runtime** (4): @the9ines/bolt-core (0.5.0), @the9ines/bolt-transport-web (0.6.2), tweetnacl, tweetnacl-util
 - **Web dev** (10): @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
 - **Signal**: Rust, bolt-rendezvous (canonical, git dep @ rendezvous-v0.2.2-s0-canonical-lib-verified), tokio, tracing-subscriber
 - **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
@@ -131,4 +131,5 @@
 | v3.0.68-dp8-netlify-npmrc | b1a2cd4 | DP-8: Add .npmrc with GitHub Packages auth for Netlify deployment |
 | v3.0.67-dp7-bolt-core-050 | 6bb21b3 | DP-7: Bump bolt-core to 0.5.0 (wire error code registry, unblocks Netlify deploy) |
 | v3.0.66-dp6-transport-web-bump | 8f98716 | DP-6: Bump bolt-transport-web to 0.6.1 (responder send button fix) |
+| v3.0.69-dp9-backpressure-fix | 48617f0 | DP-9: Bump transport-web to 0.6.2 (backpressure hang fix for bidirectional transfer) |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

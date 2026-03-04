@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.69-dp9-backpressure-fix — Fix bidirectional transfer: backpressure hang (2026-03-04, 48617f0)
+- **DP-9**: Bump `@the9ines/bolt-transport-web` from 0.6.1 to 0.6.2. Fixes responder's `sendFile` hanging indefinitely due to backpressure mechanism with `bufferedAmountLowThreshold` defaulting to 0. SDK fix: (1) sets threshold to 64KB in `setupDataChannel()`, (2) adds 5s timeout fallback to backpressure await, (3) adds `sendInProgress` guard against concurrent `sendFile` calls. Diagnostic logging from DP-9 investigation removed from source (was never committed).
+- Files changed:
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.68-dp8-netlify-npmrc — Fix Netlify deployment: add .npmrc with GitHub Packages auth (2026-03-04, b1a2cd4)
 - **DP-8**: Add `.npmrc` files with GitHub Packages auth token references (`${NPM_TOKEN}`) so Netlify can install `@the9ines/*` scoped packages from the GitHub Packages registry. Production site was stale (serving pre-DP-6 code) because `npm install` failed silently without the auth config.
 - Root `.npmrc`: added `//npm.pkg.github.com/:_authToken=${NPM_TOKEN}` line (registry scope already present)
