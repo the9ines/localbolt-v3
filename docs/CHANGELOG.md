@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.68-dp8-netlify-npmrc — Fix Netlify deployment: add .npmrc with GitHub Packages auth (2026-03-04, b1a2cd4)
+- **DP-8**: Add `.npmrc` files with GitHub Packages auth token references (`${NPM_TOKEN}`) so Netlify can install `@the9ines/*` scoped packages from the GitHub Packages registry. Production site was stale (serving pre-DP-6 code) because `npm install` failed silently without the auth config.
+- Root `.npmrc`: added `//npm.pkg.github.com/:_authToken=${NPM_TOKEN}` line (registry scope already present)
+- `packages/localbolt-web/.npmrc`: new file with both registry scope and auth token lines (Netlify builds from this workspace directory)
+- Files changed:
+  - `.npmrc`
+  - `packages/localbolt-web/.npmrc` (new)
+
 ## v3.0.67-dp7-bolt-core-050 — Bump bolt-core to 0.5.0 (DP-7 fix) (2026-03-03, 6bb21b3)
 - **DP-7**: Bump `@the9ines/bolt-core` from 0.4.0 to 0.5.0. Fixes build failure caused by missing `isValidWireErrorCode` export (wire error code registry added in SA2/AC-8 but never published). Unblocks Netlify deploy and WebRTC connections.
 - Files changed:
