@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.69-dp9-backpressure-fix
-- **Commit**: 48617f0
+- **Tag**: v3.0.70-session-hardening-cpre2
+- **Commit**: cac5e4a
 - **Branch**: main
 
 ## Architecture
@@ -13,7 +13,7 @@
 - **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); peer code persisted in sessionStorage to prevent phantom devices on refresh (DP-3b); mDNS planned for Tauri offline mode
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation; TOFU identity pinning with fail-closed key mismatch
 - **Identity**: Persistent X25519 identity keypair stored in IndexedDB via SDK (`IndexedDBIdentityStore`). Created once, reused across sessions. Not encrypted-at-rest (shared-device risk documented). TOFU peer pins stored via `IndexedDBPinStore`.
-- **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer allowed — SAS is optional MITM confirmation, not a prerequisite), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error). File upload visibility depends only on `isConnected` (DP-4).
+- **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer blocked — must verify or pin first), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error). Session orchestration layer (`session-state.ts`) enforces phase machine and generation-based race guards; transfer gating aligned with verification policy (v3.0.70).
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
@@ -23,6 +23,7 @@
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
+- **Test suite**: 59 tests across 4 test files (localbolt-web). Line coverage: 58.22%
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -35,7 +36,7 @@
 - **Entry**: `main.ts` → `app.ts` (mounts header, 3-screen layout: hero with scroll arrow, full-viewport transfer card with section-level pulsating bg, SEO content below, footer)
 - **State**: `state/store.ts` (lightweight pub/sub store replacing React hooks/context)
 - **Components**: `device-discovery.ts`, `peer-connection.ts`, `file-upload.ts`, `transfer-progress.ts`, `connection-status.ts`, `verification-status.ts` (SDK)
-- **Services**: `services/identity.ts` (local identity persistence), `services/verification-state.ts` (verification state pub/sub bus)
+- **Services**: `services/identity.ts` (local identity persistence), `services/verification-state.ts` (verification state pub/sub bus), `services/session-state.ts` (session phase machine + generation counter for race-safe orchestration)
 - **Sections**: `header.ts`, `footer.ts`, `transfer.ts`, `how-it-works.ts`, `features.ts`, `faq.ts`, `consent-modal.ts` (hero content is inlined in `app.ts`; `hero.ts` and `trust-strip.ts` have been removed; how-it-works, features, and FAQ restored as SEO content below transfer card)
 - **UI utilities**: `ui/icons.ts` (inline SVG icons), `ui/toast.ts` (toast notifications), `lib/sanitize.ts` (XSS escapeHTML)
 
@@ -131,5 +132,6 @@
 | v3.0.68-dp8-netlify-npmrc | b1a2cd4 | DP-8: Add .npmrc with GitHub Packages auth for Netlify deployment |
 | v3.0.67-dp7-bolt-core-050 | 6bb21b3 | DP-7: Bump bolt-core to 0.5.0 (wire error code registry, unblocks Netlify deploy) |
 | v3.0.66-dp6-transport-web-bump | 8f98716 | DP-6: Bump bolt-transport-web to 0.6.1 (responder send button fix) |
+| v3.0.70-session-hardening-cpre2 | cac5e4a | C-pre-1/2: Session orchestration layer, race hardening, transfer gating alignment (59 tests, 58.22% coverage) |
 | v3.0.69-dp9-backpressure-fix | 48617f0 | DP-9: Bump transport-web to 0.6.2 (backpressure hang fix for bidirectional transfer) |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

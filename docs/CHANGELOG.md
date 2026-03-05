@@ -1,5 +1,16 @@
 # LocalBolt v3 Changelog
 
+## v3.0.70-session-hardening-cpre2 — Session orchestration layer and race hardening (2026-03-04, cac5e4a)
+- **C-pre-1 + C-pre-2**: New session orchestration layer (`session-state.ts`) with a phase machine (`IDLE` / `CONNECTING` / `CONNECTED` / `DISCONNECTING`) and monotonic generation counter. Provides a canonical reset path for disconnect, error, and cancel flows, replacing scattered ad-hoc cleanup.
+- Transfer gating policy aligned with verification states: `unverified` blocks file upload; `verified` and `legacy` allow transfer.
+- Race hardening via generation guards on async callbacks: stale async completions (e.g., WebRTC callbacks arriving after disconnect) are silently dropped when the generation has advanced, preventing ghost-state corruption.
+- **Tests**: 33 new tests in `session-hardening.test.ts` (59 total, up from 26). Coverage: 58.22% lines (up from 54.26%).
+- Files changed:
+  - `packages/localbolt-web/src/services/session-state.ts` (new)
+  - `packages/localbolt-web/src/__tests__/session-hardening.test.ts` (new)
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+  - `packages/localbolt-web/src/sections/transfer.ts`
+
 ## v3.0.69-dp9-backpressure-fix — Fix bidirectional transfer: backpressure hang (2026-03-04, 48617f0)
 - **DP-9**: Bump `@the9ines/bolt-transport-web` from 0.6.1 to 0.6.2. Fixes responder's `sendFile` hanging indefinitely due to backpressure mechanism with `bufferedAmountLowThreshold` defaulting to 0. SDK fix: (1) sets threshold to 64KB in `setupDataChannel()`, (2) adds 5s timeout fallback to backpressure await, (3) adds `sendInProgress` guard against concurrent `sendFile` calls. Diagnostic logging from DP-9 investigation removed from source (was never committed).
 - Files changed:
