@@ -1,5 +1,14 @@
 # LocalBolt v3 Changelog
 
+## v3.0.72-localbolt-core-publish — Publish @the9ines/localbolt-core 0.1.0 (2026-03-05, 7cb8d8d)
+- **Batch 3 P1**: Publish `@the9ines/localbolt-core@0.1.0` to GitHub Packages (`npm.pkg.github.com`).
+- Removed `"private": true`, added `"files"`, `"publishConfig"`, and `"exports"` to `packages/localbolt-core/package.json`.
+- Pinned `localbolt-web` dependency from `"*"` to `"0.1.0"`.
+- Files changed:
+  - `packages/localbolt-core/package.json`
+  - `packages/localbolt-web/package.json`
+  - `package-lock.json`
+
 ## v3.0.71-localbolt-core-c2 — Extract @the9ines/localbolt-core package (2026-03-04, aa9e40e)
 - **C-2**: New workspace package `@the9ines/localbolt-core` (v0.1.0) at `packages/localbolt-core`. Extracts shared app-layer orchestration out of `localbolt-web` into a standalone package that any shell (web, Tauri, etc.) can depend on.
 - **Moved to core**: `session-state.ts` (session phase machine + generation counter), `verification-state.ts` (verification state pub/sub bus), and new `transfer-policy.ts` (pure `isTransferAllowed` function encoding which verification states permit file transfer).

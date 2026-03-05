@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.71-localbolt-core-c2
-- **Commit**: aa9e40e
+- **Tag**: v3.0.72-localbolt-core-publish
+- **Commit**: 7cb8d8d
 - **Branch**: main
 
 ## Architecture
@@ -19,7 +19,7 @@
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.0). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (and future shells). 41 tests.
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.0, published to GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 41 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). Depends on `@the9ines/localbolt-core` for session orchestration, verification state, and transfer policy.
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
@@ -134,6 +134,7 @@
 | v3.0.68-dp8-netlify-npmrc | b1a2cd4 | DP-8: Add .npmrc with GitHub Packages auth for Netlify deployment |
 | v3.0.67-dp7-bolt-core-050 | 6bb21b3 | DP-7: Bump bolt-core to 0.5.0 (wire error code registry, unblocks Netlify deploy) |
 | v3.0.66-dp6-transport-web-bump | 8f98716 | DP-6: Bump bolt-transport-web to 0.6.1 (responder send button fix) |
+| v3.0.72-localbolt-core-publish | 7cb8d8d | Batch 3 P1: Publish @the9ines/localbolt-core 0.1.0 to GitHub Packages |
 | v3.0.71-localbolt-core-c2 | aa9e40e | C-2: Extract @the9ines/localbolt-core package — session state, verification bus, transfer policy (100 tests total) |
 | v3.0.70-session-hardening-cpre2 | cac5e4a | C-pre-1/2: Session orchestration layer, race hardening, transfer gating alignment (59 tests, 58.22% coverage) |
 | v3.0.69-dp9-backpressure-fix | 48617f0 | DP-9: Bump transport-web to 0.6.2 (backpressure hang fix for bidirectional transfer) |
