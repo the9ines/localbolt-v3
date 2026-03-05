@@ -50,3 +50,5 @@ jobs:
       - run: npm run build -w packages/localbolt-web
       - name: Transport drift guard
         run: bash scripts/check-transport-drift.sh
+      - name: Core drift guard
+        run: bash scripts/check-core-drift.sh packages/localbolt-web/src
