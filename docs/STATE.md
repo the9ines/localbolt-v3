@@ -1,9 +1,10 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.72-localbolt-core-publish
-- **Commit**: 7cb8d8d
+- **Tag**: v3.0.73-c6-hardening
+- **Commit**: 2a4d098
 - **Branch**: main
+- **Date**: 2026-03-05
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -69,6 +70,7 @@
 - **Phase H1**: DONE — Signal server trust-boundary hardening: bolt-rendezvous-grade enforcement ported to localbolt-signal [v3.0.59-signal-hardening]
 - **Phase H5-v3**: DONE — TOFU/SAS wiring + identity/pin store: SDK identity persistence (IndexedDB), TOFU peer pinning, SAS verification UX, fail-closed key mismatch, legacy peer handling, transfer gating by verification state; 22 tests [v3.0.61-h5v3-tofu-sas-pinning]
 - **Phase S0**: DONE — Canonical rendezvous integration: replaced local protocol.rs/server.rs/room.rs with bolt-rendezvous crate wrapper; wire-format parity preserved; 36 tests; LAN-only compatible; Docker build updated for git dependency [v3.0.63-s0-canonical-rendezvous]
+- **Phase C6**: DONE — Core drift guard added to CI; `check-core-drift.sh` detects ad-hoc orchestration reimplementation in `packages/localbolt-web/src`; workspace exemption documented (consumer-style guards not applicable — localbolt-v3 is origin workspace) [v3.0.73-c6-hardening]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -138,4 +140,5 @@
 | v3.0.71-localbolt-core-c2 | aa9e40e | C-2: Extract @the9ines/localbolt-core package — session state, verification bus, transfer policy (100 tests total) |
 | v3.0.70-session-hardening-cpre2 | cac5e4a | C-pre-1/2: Session orchestration layer, race hardening, transfer gating alignment (59 tests, 58.22% coverage) |
 | v3.0.69-dp9-backpressure-fix | 48617f0 | DP-9: Bump transport-web to 0.6.2 (backpressure hang fix for bidirectional transfer) |
+| v3.0.73-c6-hardening | 2a4d098 | C6: localbolt-core drift guard in CI, workspace exemption documented |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.73-c6-hardening — Add localbolt-core drift guard to CI (2026-03-05, 2a4d098)
+- **C6 hardening**: Add `check-core-drift.sh` to detect ad-hoc orchestration reimplementation in `packages/localbolt-web/src`. CI wired with explicit `SRC_DIR`.
+- Consumer-style guards (version-pin, single-install) not applicable — localbolt-v3 is the origin workspace. Workspace exemption documented.
+- Files changed:
+  - `scripts/check-core-drift.sh` (new)
+  - `.github/workflows/ci.yml` (core drift guard step)
+
 ## v3.0.72-localbolt-core-publish — Publish @the9ines/localbolt-core 0.1.0 (2026-03-05, 7cb8d8d)
 - **Batch 3 P1**: Publish `@the9ines/localbolt-core@0.1.0` to GitHub Packages (`npm.pkg.github.com`).
 - Removed `"private": true`, added `"files"`, `"publishConfig"`, and `"exports"` to `packages/localbolt-core/package.json`.
