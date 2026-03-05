@@ -1,5 +1,29 @@
 # LocalBolt v3 Changelog
 
+## v3.0.71-localbolt-core-c2 — Extract @the9ines/localbolt-core package (2026-03-04, aa9e40e)
+- **C-2**: New workspace package `@the9ines/localbolt-core` (v0.1.0) at `packages/localbolt-core`. Extracts shared app-layer orchestration out of `localbolt-web` into a standalone package that any shell (web, Tauri, etc.) can depend on.
+- **Moved to core**: `session-state.ts` (session phase machine + generation counter), `verification-state.ts` (verification state pub/sub bus), and new `transfer-policy.ts` (pure `isTransferAllowed` function encoding which verification states permit file transfer).
+- **localbolt-web now depends on `@the9ines/localbolt-core`**: all imports of session-state, verification-state, and transfer policy updated from local `@/services/*` paths to `@the9ines/localbolt-core`. Inline transfer gating logic in `transfer.ts` replaced with `isTransferAllowed()` call.
+- **Barrel export** (`index.ts`): re-exports all session orchestration, verification bus, and transfer policy APIs.
+- **Tests**: 41 tests in core (session-hardening + transfer-policy), 59 in web, 100 total.
+- Files changed:
+  - `packages/localbolt-core/package.json` (new)
+  - `packages/localbolt-core/tsconfig.json` (new)
+  - `packages/localbolt-core/vitest.config.ts` (new)
+  - `packages/localbolt-core/README.md` (new)
+  - `packages/localbolt-core/src/index.ts` (new — barrel export)
+  - `packages/localbolt-core/src/session-state.ts` (moved from `localbolt-web/src/services/`)
+  - `packages/localbolt-core/src/verification-state.ts` (moved from `localbolt-web/src/services/`)
+  - `packages/localbolt-core/src/transfer-policy.ts` (new — `isTransferAllowed` pure function)
+  - `packages/localbolt-core/src/__tests__/session-hardening.test.ts` (new — 33 tests)
+  - `packages/localbolt-core/src/__tests__/transfer-policy.test.ts` (new — 8 tests)
+  - `packages/localbolt-web/package.json` (added `@the9ines/localbolt-core` dependency)
+  - `packages/localbolt-web/src/__tests__/h5-tofu-verification.test.ts` (import path updated)
+  - `packages/localbolt-web/src/__tests__/session-hardening.test.ts` (import path updated)
+  - `packages/localbolt-web/src/components/peer-connection.ts` (import path updated)
+  - `packages/localbolt-web/src/sections/transfer.ts` (import path updated, inline policy replaced with `isTransferAllowed`)
+  - `package-lock.json`
+
 ## v3.0.70-session-hardening-cpre2 — Session orchestration layer and race hardening (2026-03-04, cac5e4a)
 - **C-pre-1 + C-pre-2**: New session orchestration layer (`session-state.ts`) with a phase machine (`IDLE` / `CONNECTING` / `CONNECTED` / `DISCONNECTING`) and monotonic generation counter. Provides a canonical reset path for disconnect, error, and cancel flows, replacing scattered ad-hoc cleanup.
 - Transfer gating policy aligned with verification states: `unverified` blocks file upload; `verified` and `legacy` allow transfer.
