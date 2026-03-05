@@ -7,12 +7,12 @@ import {
 } from '@the9ines/bolt-transport-web';
 import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
-import { setVerificationState, resetVerificationState } from '@/services/verification-state';
 import {
+  setVerificationState,
   getPhase, getGeneration, isCurrentGeneration,
   beginRequest, receiveRequest, beginConnecting,
   markConnected, resetSession,
-} from '@/services/session-state';
+} from '@the9ines/localbolt-core';
 
 let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;

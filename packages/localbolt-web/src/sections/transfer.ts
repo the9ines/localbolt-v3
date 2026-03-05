@@ -1,6 +1,6 @@
 import { createPeerConnection } from '@/components/peer-connection';
 import { createFileUpload, store } from '@the9ines/bolt-transport-web';
-import { getVerificationState, onVerificationStateChange } from '@/services/verification-state';
+import { getVerificationState, onVerificationStateChange, isTransferAllowed } from '@the9ines/localbolt-core';
 
 export function createTransfer(): HTMLElement {
   const card = document.createElement('div');
@@ -43,8 +43,7 @@ export function createTransfer(): HTMLElement {
   function updateFileUploadVisibility() {
     const { isConnected } = store.getState();
     const vState = getVerificationState().state;
-    const transferAllowed = isConnected && (vState === 'verified' || vState === 'legacy');
-    fileUploadWrap.hidden = !transferAllowed;
+    fileUploadWrap.hidden = !isTransferAllowed(vState, isConnected);
   }
 
   store.subscribe(updateFileUploadVisibility);

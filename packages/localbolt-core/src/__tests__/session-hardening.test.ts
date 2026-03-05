@@ -1,7 +1,7 @@
 /**
  * C-pre-2 — Session orchestration + race hardening tests.
  *
- * Tests the session-state.ts orchestration layer (phase transitions,
+ * Tests the session-state orchestration layer (phase transitions,
  * generation guards, canonical reset) and race scenarios using mocked
  * SDK callbacks and fake timers.
  */
@@ -38,8 +38,10 @@ import {
   isCurrentGeneration, onSessionChange,
   beginRequest, receiveRequest, beginConnecting,
   markConnected, resetSession, _resetForTest,
+} from '../session-state';
+import {
   getVerificationState, setVerificationState, resetVerificationState,
-} from '@the9ines/localbolt-core';
+} from '../verification-state';
 
 // ── Setup ─────────────────────────────────────────────────────────────────
 

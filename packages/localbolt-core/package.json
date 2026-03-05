@@ -1,0 +1,25 @@
+{
+  "name": "@the9ines/localbolt-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@the9ines/bolt-transport-web": "0.6.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "vitest": "^4.0.0"
+  }
+}

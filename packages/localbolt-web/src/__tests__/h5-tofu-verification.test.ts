@@ -12,7 +12,7 @@ import {
   setVerificationState,
   resetVerificationState,
   onVerificationStateChange,
-} from '../services/verification-state';
+} from '@the9ines/localbolt-core';
 
 // ── Identity module tests ──────────────────────────────────────────────
 
