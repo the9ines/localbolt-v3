@@ -8,6 +8,11 @@ import {
 import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
 import { setVerificationState, resetVerificationState } from '@/services/verification-state';
+import {
+  getPhase, getGeneration, isCurrentGeneration,
+  beginRequest, receiveRequest, beginConnecting,
+  markConnected, resetSession,
+} from '@/services/session-state';
 
 let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;
@@ -22,13 +27,9 @@ let rejectBtnRef: HTMLButtonElement | null = null;
 
 function handleConnectionError(error: WebRTCError) {
   console.error(`[${error.name}]`, error.message, error.details);
-  resetVerificationState();
-  store.setState({
-    isConnected: false,
-    connectingTo: null,
-    connectedDevice: null,
-    incomingRequest: null,
-  });
+
+  // Use canonical reset path
+  resetSession();
 
   let title = 'Connection Error';
   let description = 'Failed to establish connection';
@@ -76,6 +77,10 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
   if (connected && rtcServiceRef) {
     const remotePeerCode = rtcServiceRef.getRemotePeerCode();
     const device = peers.find((p) => p.peerCode === remotePeerCode) || null;
+
+    // Transition session to connected
+    markConnected();
+
     store.setState({
       isConnected: true,
       connectedDevice: device,
@@ -85,8 +90,8 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
     });
     setWebrtcRef(rtcServiceRef);
   } else {
-    resetVerificationState();
-    store.setState({ isConnected: false, connectedDevice: null, connectingTo: null });
+    // Non-connected state (disconnected, failed, etc.) — canonical reset
+    resetSession();
   }
 }
 
@@ -134,12 +139,14 @@ function handleApprovalSignal(signal: SignalMessage) {
   switch (signal.type) {
     case 'connection_request': {
       console.log('[APPROVAL] Received connection request from', signal.from);
-      const { isConnected, connectingTo } = store.getState();
-      if (isConnected || connectingTo) {
+      const currentPhase = getPhase();
+      if (currentPhase !== 'idle') {
         // Already busy — auto-decline
         signalingRef?.sendSignal('connection_declined', { reason: 'busy' }, signal.from);
         return;
       }
+      // Transition session to incoming_request
+      receiveRequest(signal.from);
       store.setState({
         incomingRequest: {
           peerCode: signal.from,
@@ -153,11 +160,19 @@ function handleApprovalSignal(signal: SignalMessage) {
 
     case 'connection_accepted': {
       console.log('[APPROVAL] Connection accepted by', signal.from);
+      const currentPhase = getPhase();
       const { connectingTo } = store.getState();
-      if (connectingTo !== signal.from) return; // stale
+      if (currentPhase !== 'requesting' || connectingTo !== signal.from) return; // stale
+
+      // Transition session to connecting
+      beginConnecting(signal.from);
+
       // Now initiate the actual WebRTC connection
+      const gen = getGeneration();
       if (rtcServiceRef) {
         rtcServiceRef.connect(signal.from).catch((error) => {
+          // Guard against stale callback
+          if (!isCurrentGeneration(gen)) return;
           store.setState({ connectingTo: null });
           if (error instanceof WebRTCError) {
             handleConnectionError(error);
@@ -174,11 +189,11 @@ function handleApprovalSignal(signal: SignalMessage) {
       const { connectingTo, incomingRequest } = store.getState();
       if (connectingTo === signal.from) {
         // We were waiting for approval — they declined
-        store.setState({ connectingTo: null });
+        resetSession();
         showToast('Connection Declined', 'The other device declined the connection request');
       } else if (incomingRequest?.peerCode === signal.from) {
         // They cancelled their request to us
-        store.setState({ incomingRequest: null });
+        resetSession();
       }
       break;
     }
@@ -186,7 +201,10 @@ function handleApprovalSignal(signal: SignalMessage) {
 }
 
 function selectPeer(peerCode: string) {
-  if (!signalingRef || store.getState().isConnected) return;
+  if (!signalingRef) return;
+
+  // Use session phase guard instead of just isConnected
+  if (!beginRequest(peerCode)) return;
 
   const localDeviceName = getDeviceName();
   const localDeviceType = detectDeviceType();
@@ -194,11 +212,14 @@ function selectPeer(peerCode: string) {
   store.setState({ connectingTo: peerCode, showDeviceList: false });
 
   // Send connection request via signaling (not WebRTC yet)
+  const gen = getGeneration();
   signalingRef.sendSignal('connection_request', {
     deviceName: localDeviceName,
     deviceType: localDeviceType,
   }, peerCode).catch(() => {
-    store.setState({ connectingTo: null });
+    // Guard against stale callback
+    if (!isCurrentGeneration(gen)) return;
+    resetSession();
     showToast('Request Failed', 'Could not send connection request', 'destructive');
   });
 }
@@ -208,6 +229,10 @@ function acceptRequest() {
   if (!incomingRequest || !signalingRef) return;
 
   console.log('[APPROVAL] Accepting request from', incomingRequest.peerCode);
+
+  // Transition session to connecting
+  beginConnecting(incomingRequest.peerCode);
+
   // Send acceptance signal — the other side will initiate WebRTC
   signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
   store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode });
@@ -219,7 +244,7 @@ function declineRequest() {
 
   console.log('[APPROVAL] Declining request from', incomingRequest.peerCode);
   signalingRef.sendSignal('connection_declined', { reason: 'user_declined' }, incomingRequest.peerCode);
-  store.setState({ incomingRequest: null });
+  resetSession();
 }
 
 function cancelRequest() {
@@ -228,22 +253,15 @@ function cancelRequest() {
 
   console.log('[APPROVAL] Cancelling request to', connectingTo);
   signalingRef.sendSignal('connection_declined', { reason: 'cancelled' }, connectingTo);
-  store.setState({ connectingTo: null });
+  resetSession();
 }
 
 function disconnect() {
   if (rtcServiceRef) {
     rtcServiceRef.disconnect();
   }
-  resetVerificationState();
-  store.setState({
-    isConnected: false,
-    connectedDevice: null,
-    connectingTo: null,
-    transferProgress: null,
-    incomingRequest: null,
-    showDeviceList: false,
-  });
+  // Canonical reset — clears all state via session-state
+  resetSession();
   setWebrtcRef(null);
   showToast('Disconnected', 'Connection closed successfully');
 }
@@ -342,16 +360,17 @@ export function createPeerConnection(): HTMLElement {
   });
 
   signaling.onPeerLost((lostCode) => {
-    const { peers, connectingTo, incomingRequest } = store.getState();
+    const { peers } = store.getState();
     store.setState({ peers: peers.filter((p) => p.peerCode !== lostCode) });
 
     // Clean up if the lost peer was involved in a pending request
-    if (connectingTo === lostCode) {
-      store.setState({ connectingTo: null });
-      showToast('Device Left', 'The device you were connecting to has left');
-    }
-    if (incomingRequest?.peerCode === lostCode) {
-      store.setState({ incomingRequest: null });
+    const currentPhase = getPhase();
+    if (currentPhase === 'requesting' || currentPhase === 'incoming_request' || currentPhase === 'connecting') {
+      const { connectingTo, incomingRequest } = store.getState();
+      if (connectingTo === lostCode || incomingRequest?.peerCode === lostCode) {
+        resetSession();
+        showToast('Device Left', 'The device you were connecting to has left');
+      }
     }
   });
 
