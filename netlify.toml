@@ -1,7 +1,6 @@
 [build]
-  base = "packages/localbolt-web"
-  command = "npm install && npm run build"
-  publish = "dist"
+  command = "npm install && npm run build --workspace=packages/localbolt-web"
+  publish = "packages/localbolt-web/dist"
 
 [[headers]]
   for = "/*"
