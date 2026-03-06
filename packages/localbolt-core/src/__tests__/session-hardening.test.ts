@@ -356,6 +356,73 @@ describe('Race: no stale verification UI after reset', () => {
   });
 });
 
+// ── C7: rapid multi-cycle generation monotonicity ────────────────────
+
+describe('C7: rapid 5+ connect/reset cycles', () => {
+  it('generation increases monotonically with no state corruption', () => {
+    const generations: number[] = [getGeneration()];
+
+    for (let i = 0; i < 7; i++) {
+      beginRequest(`PEER-${i}`);
+      beginConnecting(`PEER-${i}`);
+      markConnected();
+      setVerificationState({ state: 'unverified', sasCode: `SAS-${i}` });
+      mockState.transferProgress = { status: 'receiving', filename: `file-${i}.dat` };
+
+      const gen = resetSession();
+      generations.push(gen);
+
+      // After each reset: clean state
+      expect(getPhase()).toBe('idle');
+      expect(getTargetPeer()).toBeNull();
+      expect(getVerificationState().state).toBe('legacy');
+      expect(mockState.transferProgress).toBeNull();
+      expect(mockState.isConnected).toBe(false);
+    }
+
+    // Monotonicity: each generation strictly greater than previous
+    for (let i = 1; i < generations.length; i++) {
+      expect(generations[i]).toBeGreaterThan(generations[i - 1]);
+    }
+
+    // All prior generations are stale
+    for (let i = 0; i < generations.length - 1; i++) {
+      expect(isCurrentGeneration(generations[i])).toBe(false);
+    }
+    expect(isCurrentGeneration(generations[generations.length - 1])).toBe(true);
+  });
+});
+
+// ── C7: late verification callback from previous session ─────────────
+
+describe('C7: late verification callback for previous peer rejected', () => {
+  it('verification callback from session A is stale after reset into session B', () => {
+    // Session A: connect to PEER-A, capture generation
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    const genA = getGeneration();
+
+    // Simulate async verification callback in-flight for PEER-A
+    const pendingVerification = { state: 'unverified' as const, sasCode: 'SAS-A' };
+
+    // User disconnects from A, connects to B
+    resetSession();
+    beginRequest('PEER-B');
+    beginConnecting('PEER-B');
+    markConnected();
+    setVerificationState({ state: 'unverified', sasCode: 'SAS-B' });
+
+    // Late callback from session A arrives — generation guard rejects it
+    expect(isCurrentGeneration(genA)).toBe(false);
+    // If caller ignores guard, wrong SAS would be shown. Guard prevents this.
+
+    // Current session B state is intact
+    expect(getTargetPeer()).toBe('PEER-B');
+    expect(getVerificationState().sasCode).toBe('SAS-B');
+  });
+});
+
 // ── Transfer gating policy consistency ────────────────────────────────────
 
 describe('Transfer gating policy', () => {
