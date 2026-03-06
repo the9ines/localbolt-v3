@@ -1,5 +1,28 @@
 # LocalBolt v3 Changelog
 
+## v3.0.76-d4-npmjs-cutover — D4: switch consumer resolution to npmjs.org (2026-03-05, ef0543e)
+- **D4 cutover**: Switch `@the9ines` scope from GitHub Packages to npmjs.org registry.
+- PAT no longer required for public package installs.
+- `.npmrc` (root + localbolt-web): `@the9ines:registry` → `registry.npmjs.org`, PAT token line removed.
+- Dependencies updated: bolt-core 0.5.1, transport-web 0.6.4, localbolt-core 0.1.2.
+- `package-lock.json` regenerated — all `@the9ines` resolved from `registry.npmjs.org`.
+- 102 tests pass, build succeeds.
+- Files changed:
+  - `.npmrc`
+  - `package-lock.json`
+  - `packages/localbolt-web/.npmrc`
+  - `packages/localbolt-web/package.json`
+
+## v3.0.75-d3-registry-migration — D3: migrate localbolt-core to npmjs.org (2026-03-05, 92adc37)
+- **D3**: Publish `localbolt-core` to npmjs.org for PAT-free installs.
+- Version 0.1.0 → 0.1.2 (0.1.0/0.1.1 locked on npmjs).
+- `publishConfig` changed from GH Packages registry to `access: public`.
+- `bolt-transport-web` dependency relaxed from exact `0.6.2` to `>=0.6.2`.
+- New `publish-localbolt-core-npmjs.yml` workflow (workflow_dispatch).
+- Files changed:
+  - `.github/workflows/publish-localbolt-core-npmjs.yml` (new)
+  - `packages/localbolt-core/package.json`
+
 ## v3.0.74-c7-closure — C7 closure: rapid cycling + late verification tests (2026-03-05, b867426)
 - **C7 closure**: Add 2 targeted tests to `@the9ines/localbolt-core` filling remaining C7 evidence gaps.
   - Rapid 5+ connect/reset cycles (7 iterations): generation monotonicity, state cleanliness, stale generation rejection.

@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.74-c7-closure
-- **Commit**: b867426
+- **Tag**: v3.0.76-d4-npmjs-cutover
+- **Commit**: ef0543e
 - **Branch**: main
 - **Date**: 2026-03-05
 
@@ -20,7 +20,7 @@
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.0, published to GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 41 tests.
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 43 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). Depends on `@the9ines/localbolt-core` for session orchestration, verification state, and transfer policy.
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
