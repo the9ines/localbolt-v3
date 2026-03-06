@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.77-d4-netlify-build-fix — D4: fix Netlify build for workspace symlink (2026-03-06, 0746275)
+- **Build fix**: Build `localbolt-core` before `localbolt-web` in `netlify.toml` so the workspace symlink `dist/` exists on clean clone.
+- Removed `base` directive to avoid monorepo path conflict with `publish`.
+- `publish` path updated to `packages/localbolt-web/dist` (absolute from repo root).
+- Deploy verified at localbolt.app.
+- Files changed:
+  - `netlify.toml`
+
 ## v3.0.76-d4-npmjs-cutover — D4: switch consumer resolution to npmjs.org (2026-03-05, ef0543e)
 - **D4 cutover**: Switch `@the9ines` scope from GitHub Packages to npmjs.org registry.
 - PAT no longer required for public package installs.

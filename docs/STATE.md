@@ -1,10 +1,10 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.76-d4-npmjs-cutover
-- **Commit**: ef0543e
+- **Tag**: v3.0.77-d4-netlify-build-fix
+- **Commit**: 0746275
 - **Branch**: main
-- **Date**: 2026-03-05
+- **Date**: 2026-03-06
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -144,3 +144,6 @@
 | v3.0.73-c6-hardening | 2a4d098 | C6: localbolt-core drift guard in CI, workspace exemption documented |
 | v3.0.74-c7-closure | b867426 | C7: rapid cycling + late verification callback tests (43 core tests, no runtime changes) |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |
+| v3.0.75-d3-registry-migration | 92adc37 | D3: migrate localbolt-core to npmjs.org (PAT-free installs) |
+| v3.0.76-d4-npmjs-cutover | ef0543e | D4: switch consumer resolution to npmjs.org |
+| v3.0.77-d4-netlify-build-fix | 0746275 | D4: fix Netlify build — build localbolt-core before localbolt-web, remove base directive |
