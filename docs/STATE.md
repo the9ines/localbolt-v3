@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.77-d4-netlify-build-fix
-- **Commit**: 0746275
+- **Tag**: v3.0.78-d5-registry-guards
+- **Commit**: fec153b
 - **Branch**: main
 - **Date**: 2026-03-06
 
@@ -147,3 +147,4 @@
 | v3.0.75-d3-registry-migration | 92adc37 | D3: migrate localbolt-core to npmjs.org (PAT-free installs) |
 | v3.0.76-d4-npmjs-cutover | ef0543e | D4: switch consumer resolution to npmjs.org |
 | v3.0.77-d4-netlify-build-fix | 0746275 | D4: fix Netlify build — build localbolt-core before localbolt-web, remove base directive |
+| v3.0.78-d5-registry-guards | fec153b | D5: registry/auth regression guards + CI cleanup for PAT-free installs |

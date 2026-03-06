@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.78-d5-registry-guards — D5: registry/auth regression guards (2026-03-06, fec153b)
+- **D5 guards**: Two new CI guard scripts prevent registry/auth regressions.
+- `check-registry-mapping.sh`: ensures `.npmrc` maps `@the9ines` to `registry.npmjs.org`, rejects GitHub Packages refs and PAT dependencies.
+- `check-lockfile-registry.sh`: ensures `package-lock.json` resolves `@the9ines` packages from `registry.npmjs.org`.
+- CI cleanup: removed `registry-url`/`scope` from `setup-node`, removed `NODE_AUTH_TOKEN` from `npm ci`, removed `packages:read` permission.
+- Files changed:
+  - `scripts/check-registry-mapping.sh` (new)
+  - `scripts/check-lockfile-registry.sh` (new)
+  - `.github/workflows/ci.yml`
+
 ## v3.0.77-d4-netlify-build-fix — D4: fix Netlify build for workspace symlink (2026-03-06, 0746275)
 - **Build fix**: Build `localbolt-core` before `localbolt-web` in `netlify.toml` so the workspace symlink `dist/` exists on clean clone.
 - Removed `base` directive to avoid monorepo path conflict with `publish`.
