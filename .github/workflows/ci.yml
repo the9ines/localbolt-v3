@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 jobs:
   signal-server:
@@ -36,14 +35,14 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
-          registry-url: https://npm.pkg.github.com
-          scope: '@the9ines'
           cache: npm
+      - name: Registry mapping guard (D5)
+        run: bash scripts/check-registry-mapping.sh
       - name: Transport version pin guard
         run: bash scripts/check-transport-version-pin.sh
       - run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lockfile registry guard (D5)
+        run: bash scripts/check-lockfile-registry.sh
       - name: Transport single-install guard
         run: bash scripts/check-transport-single-install.sh
       - run: npm test -w packages/localbolt-web -- --coverage
