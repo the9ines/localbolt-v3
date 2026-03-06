@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.78-d5-registry-guards
-- **Commit**: fec153b
+- **Tag**: v3.0.79-s-stream-r1-r1.4-security-test-lift
+- **Commit**: 31046ac
 - **Branch**: main
 - **Date**: 2026-03-06
 
@@ -20,12 +20,12 @@
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 43 tests.
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 50 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). Depends on `@the9ines/localbolt-core` for session orchestration, verification state, and transfer policy.
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
-- **Test suite**: 102 tests total — 43 in localbolt-core (2 test files), 59 in localbolt-web (4 test files)
+- **Test suite**: 109 tests total — 50 in localbolt-core (3 test files), 59 in localbolt-web (4 test files)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -72,6 +72,7 @@
 - **Phase S0**: DONE — Canonical rendezvous integration: replaced local protocol.rs/server.rs/room.rs with bolt-rendezvous crate wrapper; wire-format parity preserved; 36 tests; LAN-only compatible; Docker build updated for git dependency [v3.0.63-s0-canonical-rendezvous]
 - **Phase C6**: DONE — Core drift guard added to CI; `check-core-drift.sh` detects ad-hoc orchestration reimplementation in `packages/localbolt-web/src`; workspace exemption documented (consumer-style guards not applicable — localbolt-v3 is origin workspace) [v3.0.73-c6-hardening]
 - **Phase C7**: DONE — Session UX race-hardening closure. 2 targeted tests added to localbolt-core: rapid 5+ connect/reset cycle monotonicity + late verification callback rejection. Combined with prior evidence (session state machine, generation guards, A→B→C isolation, stale signal rejection). 43 core tests. No runtime changes needed. [v3.0.74-c7-closure]
+- **Phase R1-4**: DONE — Security-focused reconnect integrity tests. 7 tests covering crypto-path integrity around reconnect boundary (generation guard + verification reset + transfer policy) and trust/verification state isolation between consecutive sessions. Core 43→50 tests. [v3.0.79-s-stream-r1-r1.4-security-test-lift]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -148,3 +149,4 @@
 | v3.0.76-d4-npmjs-cutover | ef0543e | D4: switch consumer resolution to npmjs.org |
 | v3.0.77-d4-netlify-build-fix | 0746275 | D4: fix Netlify build — build localbolt-core before localbolt-web, remove base directive |
 | v3.0.78-d5-registry-guards | fec153b | D5: registry/auth regression guards + CI cleanup for PAT-free installs |
+| v3.0.79-s-stream-r1-r1.4-security-test-lift | 31046ac | R1-4: security-focused reconnect integrity tests (core 43→50) |

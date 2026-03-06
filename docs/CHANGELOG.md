@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.79-s-stream-r1-r1.4-security-test-lift — R1-4: security-focused reconnect integrity tests (2026-03-06, 31046ac)
+- **R1-4 security test lift**: 7 new tests covering crypto-path integrity around reconnect boundary and trust/verification state isolation between consecutive sessions.
+- Crypto-path integrity tests: generation guard + verification reset + transfer policy consistency at reconnect boundary, stale verification callback rejection, mismatch path termination.
+- Trust isolation tests: verified session A to session B starts at legacy, SAS code independence between peers, same-peer reconnect requires re-verification, three consecutive peers with no trust leakage.
+- Baseline core tests: 43 to 50. Web 59 unchanged. Total: 109.
+- Files changed:
+  - `packages/localbolt-core/src/__tests__/security-reconnect-integrity.test.ts` (new, 199 lines)
+
 ## v3.0.78-d5-registry-guards — D5: registry/auth regression guards (2026-03-06, fec153b)
 - **D5 guards**: Two new CI guard scripts prevent registry/auth regressions.
 - `check-registry-mapping.sh`: ensures `.npmrc` maps `@the9ines` to `registry.npmjs.org`, rejects GitHub Packages refs and PAT dependencies.
