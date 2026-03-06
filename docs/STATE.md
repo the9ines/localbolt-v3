@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.73-c6-hardening
-- **Commit**: 2a4d098
+- **Tag**: v3.0.74-c7-closure
+- **Commit**: b867426
 - **Branch**: main
 - **Date**: 2026-03-05
 
@@ -25,7 +25,7 @@
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
-- **Test suite**: 100 tests total — 41 in localbolt-core (2 test files), 59 in localbolt-web (4 test files)
+- **Test suite**: 102 tests total — 43 in localbolt-core (2 test files), 59 in localbolt-web (4 test files)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -71,6 +71,7 @@
 - **Phase H5-v3**: DONE — TOFU/SAS wiring + identity/pin store: SDK identity persistence (IndexedDB), TOFU peer pinning, SAS verification UX, fail-closed key mismatch, legacy peer handling, transfer gating by verification state; 22 tests [v3.0.61-h5v3-tofu-sas-pinning]
 - **Phase S0**: DONE — Canonical rendezvous integration: replaced local protocol.rs/server.rs/room.rs with bolt-rendezvous crate wrapper; wire-format parity preserved; 36 tests; LAN-only compatible; Docker build updated for git dependency [v3.0.63-s0-canonical-rendezvous]
 - **Phase C6**: DONE — Core drift guard added to CI; `check-core-drift.sh` detects ad-hoc orchestration reimplementation in `packages/localbolt-web/src`; workspace exemption documented (consumer-style guards not applicable — localbolt-v3 is origin workspace) [v3.0.73-c6-hardening]
+- **Phase C7**: DONE — Session UX race-hardening closure. 2 targeted tests added to localbolt-core: rapid 5+ connect/reset cycle monotonicity + late verification callback rejection. Combined with prior evidence (session state machine, generation guards, A→B→C isolation, stale signal rejection). 43 core tests. No runtime changes needed. [v3.0.74-c7-closure]
 - Phase E: Tauri native features (mDNS, local WS, file save)
 - Phase F: Mobile polish + app store submission
 - Phase G: Desktop builds + CI/CD
@@ -141,4 +142,5 @@
 | v3.0.70-session-hardening-cpre2 | cac5e4a | C-pre-1/2: Session orchestration layer, race hardening, transfer gating alignment (59 tests, 58.22% coverage) |
 | v3.0.69-dp9-backpressure-fix | 48617f0 | DP-9: Bump transport-web to 0.6.2 (backpressure hang fix for bidirectional transfer) |
 | v3.0.73-c6-hardening | 2a4d098 | C6: localbolt-core drift guard in CI, workspace exemption documented |
+| v3.0.74-c7-closure | b867426 | C7: rapid cycling + late verification callback tests (43 core tests, no runtime changes) |
 | v3.0.63-s0-canonical-rendezvous | 2963539 | S0: canonical bolt-rendezvous wrapper replaces local signal implementation |

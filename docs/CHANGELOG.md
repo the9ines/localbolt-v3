@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.74-c7-closure — C7 closure: rapid cycling + late verification tests (2026-03-05, b867426)
+- **C7 closure**: Add 2 targeted tests to `@the9ines/localbolt-core` filling remaining C7 evidence gaps.
+  - Rapid 5+ connect/reset cycles (7 iterations): generation monotonicity, state cleanliness, stale generation rejection.
+  - Late verification callback from previous peer: generation guard prevents wrong-SAS display after session switch.
+- Test count: 43 in localbolt-core (41 → 43, +2). No runtime changes.
+- Files changed:
+  - `packages/localbolt-core/src/__tests__/session-hardening.test.ts`
+
 ## v3.0.73-c6-hardening — Add localbolt-core drift guard to CI (2026-03-05, 2a4d098)
 - **C6 hardening**: Add `check-core-drift.sh` to detect ad-hoc orchestration reimplementation in `packages/localbolt-web/src`. CI wired with explicit `SRC_DIR`.
 - Consumer-style guards (version-pin, single-install) not applicable — localbolt-v3 is the origin workspace. Workspace exemption documented.
