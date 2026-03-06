@@ -1,0 +1,60 @@
+name: Publish @the9ines/localbolt-core to npmjs.org
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (skip actual publish)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build, Test & Publish to npmjs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/localbolt-core
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          scope: '@the9ines'
+
+      - name: Override scope registry to npmjs (repo .npmrc points to GitHub Packages)
+        run: |
+          echo "@the9ines:registry=https://registry.npmjs.org" > .npmrc
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: npm run build
+      - run: npm run test
+
+      - name: Publish to npmjs.org
+        if: inputs.dry_run != 'true'
+        run: npm publish --registry https://registry.npmjs.org --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Smoke test from npmjs (no PAT)
+        if: inputs.dry_run != 'true'
+        run: |
+          VERSION=$(node -p "require('${{ github.workspace }}/packages/localbolt-core/package.json').version")
+          mkdir -p /tmp/smoke-test && cd /tmp/smoke-test
+          npm init -y
+          npm install @the9ines/localbolt-core@${VERSION} --registry https://registry.npmjs.org
+          node --input-type=module -e "
+            import { isTransferAllowed, resetSession, getPhase } from '@the9ines/localbolt-core';
+            if (!isTransferAllowed || !resetSession || !getPhase) process.exit(1);
+            console.log('npmjs smoke test passed: ${VERSION}');
+          "

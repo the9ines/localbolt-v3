@@ -1,6 +1,6 @@
 {
   "name": "@the9ines/localbolt-core",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,14 +15,14 @@
     "README.md"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
     "test": "vitest run"
   },
   "dependencies": {
-    "@the9ines/bolt-transport-web": "0.6.2"
+    "@the9ines/bolt-transport-web": ">=0.6.2"
   },
   "devDependencies": {
     "typescript": "^5.5.3",
