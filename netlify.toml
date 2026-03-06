@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm run build --workspace=packages/localbolt-web"
+  command = "npm install && npm run build --workspace=packages/localbolt-core && npm run build --workspace=packages/localbolt-web"
   publish = "packages/localbolt-web/dist"
 
 [[headers]]
