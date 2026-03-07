@@ -1,5 +1,15 @@
 # LocalBolt v3 Changelog
 
+## v3.0.80-c-stream-r1-ui-state-fix — C-STREAM-R1: UI/state regression recovery (2026-03-06, 9f3546e)
+- **State/session hardening (P2)**: Generation guards on `handleConnectionStateChange`, `handleReceiveProgress`, `handleVerificationState` reject stale callbacks from previous sessions. Terminal-state-only reset prevents premature disconnect on intermediate WebRTC states. Transfer terminal flag prevents late progress after cancel. Idempotent `disconnect()`.
+- **Trust UI consistency (P3)**: `snapshot()` returns live verification state from bus (was hardcoded 'legacy'). Full transfer gating truth table enforced in tests.
+- **Tests**: +15 new tests (4 core snapshot, 8 truth table, 2 stale verification guard, 1 snapshot live state). Baseline: core 50→54, web 59→70. Total: 107→122 (pre-existing failures: 2 unchanged).
+- Files changed:
+  - `packages/localbolt-core/src/session-state.ts`
+  - `packages/localbolt-core/src/__tests__/session-hardening.test.ts`
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+  - `packages/localbolt-web/src/__tests__/session-hardening.test.ts`
+
 ## v3.0.79-s-stream-r1-r1.4-security-test-lift — R1-4: security-focused reconnect integrity tests (2026-03-06, 31046ac)
 - **R1-4 security test lift**: 7 new tests covering crypto-path integrity around reconnect boundary and trust/verification state isolation between consecutive sessions.
 - Crypto-path integrity tests: generation guard + verification reset + transfer policy consistency at reconnect boundary, stale verification callback rejection, mismatch path termination.

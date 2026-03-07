@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.79-s-stream-r1-r1.4-security-test-lift
-- **Commit**: 31046ac
+- **Tag**: v3.0.80-c-stream-r1-ui-state-fix
+- **Commit**: 9f3546e
 - **Branch**: main
 - **Date**: 2026-03-06
 
@@ -20,12 +20,12 @@
 - **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
 
 ## Packages
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 50 tests.
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 54 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). Depends on `@the9ines/localbolt-core` for session orchestration, verification state, and transfer policy.
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
-- **Test suite**: 109 tests total — 50 in localbolt-core (3 test files), 59 in localbolt-web (4 test files)
+- **Test suite**: 124 tests total — 54 in localbolt-core (3 test files), 70 in localbolt-web (4 test files). Pre-existing failures: 2 (faq.test.ts DOM env, app.test.ts path alias — unrelated)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
