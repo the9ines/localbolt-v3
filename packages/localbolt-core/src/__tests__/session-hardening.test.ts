@@ -465,4 +465,50 @@ describe('Session snapshot', () => {
     expect(snap.targetPeer).toBe('PEER-X');
     expect(snap.generation).toBe(0);
   });
+
+  it('snapshot reflects current verification state (not hardcoded legacy)', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    setVerificationState({ state: 'unverified', sasCode: 'SAS-A' });
+
+    const snap = getSessionSnapshot();
+    expect(snap.verificationState).toBe('unverified');
+  });
+
+  it('snapshot reflects verified state', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    setVerificationState({ state: 'verified', sasCode: 'SAS-A' });
+
+    const snap = getSessionSnapshot();
+    expect(snap.verificationState).toBe('verified');
+  });
+
+  it('snapshot reflects legacy after reset', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    setVerificationState({ state: 'verified', sasCode: 'SAS-A' });
+    resetSession();
+
+    const snap = getSessionSnapshot();
+    expect(snap.verificationState).toBe('legacy');
+  });
+
+  it('snapshot verification state tracks through full lifecycle', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+
+    expect(getSessionSnapshot().verificationState).toBe('legacy');
+    setVerificationState({ state: 'unverified', sasCode: 'ABC' });
+    expect(getSessionSnapshot().verificationState).toBe('unverified');
+    setVerificationState({ state: 'verified', sasCode: 'ABC' });
+    expect(getSessionSnapshot().verificationState).toBe('verified');
+
+    resetSession();
+    expect(getSessionSnapshot().verificationState).toBe('legacy');
+  });
 });

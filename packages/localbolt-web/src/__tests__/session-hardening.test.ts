@@ -39,6 +39,7 @@ import {
   beginRequest, receiveRequest, beginConnecting,
   markConnected, resetSession, _resetForTest,
   getVerificationState, setVerificationState, resetVerificationState,
+  isTransferAllowed,
 } from '@the9ines/localbolt-core';
 
 // ── Setup ─────────────────────────────────────────────────────────────────
@@ -395,5 +396,94 @@ describe('Session snapshot', () => {
     expect(snap.phase).toBe('requesting');
     expect(snap.targetPeer).toBe('PEER-X');
     expect(snap.generation).toBe(0);
+  });
+
+  it('snapshot reflects live verification state', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    setVerificationState({ state: 'unverified', sasCode: 'SAS-A' });
+
+    expect(getSessionSnapshot().verificationState).toBe('unverified');
+
+    setVerificationState({ state: 'verified', sasCode: 'SAS-A' });
+    expect(getSessionSnapshot().verificationState).toBe('verified');
+
+    resetSession();
+    expect(getSessionSnapshot().verificationState).toBe('legacy');
+  });
+});
+
+// ── C-STREAM-R1: Transfer gating truth table (P3) ────────────────────────
+
+describe('C-STREAM-R1: Transfer gating truth table', () => {
+  it('verified + connected → allowed', () => {
+    expect(isTransferAllowed('verified', true)).toBe(true);
+  });
+
+  it('legacy + connected → allowed', () => {
+    expect(isTransferAllowed('legacy', true)).toBe(true);
+  });
+
+  it('unverified + connected → blocked', () => {
+    expect(isTransferAllowed('unverified', true)).toBe(false);
+  });
+
+  it('mismatch + connected → blocked', () => {
+    expect(isTransferAllowed('mismatch', true)).toBe(false);
+  });
+
+  it('verified + disconnected → blocked', () => {
+    expect(isTransferAllowed('verified', false)).toBe(false);
+  });
+
+  it('legacy + disconnected → blocked', () => {
+    expect(isTransferAllowed('legacy', false)).toBe(false);
+  });
+
+  it('unverified + disconnected → blocked', () => {
+    expect(isTransferAllowed('unverified', false)).toBe(false);
+  });
+
+  it('mismatch + disconnected → blocked', () => {
+    expect(isTransferAllowed('mismatch', false)).toBe(false);
+  });
+});
+
+// ── C-STREAM-R1: Stale verification guard (P2) ───────────────────────────
+
+describe('C-STREAM-R1: Stale verification callback after disconnect', () => {
+  it('generation guard rejects late verification from session A during session B', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+    const genA = getGeneration();
+    setVerificationState({ state: 'unverified', sasCode: 'SAS-A' });
+
+    // Disconnect from A
+    resetSession();
+
+    // Session B starts
+    beginRequest('PEER-B');
+    beginConnecting('PEER-B');
+    markConnected();
+    setVerificationState({ state: 'unverified', sasCode: 'SAS-B' });
+
+    // Late verification callback from A arrives — generation guard detects stale
+    expect(isCurrentGeneration(genA)).toBe(false);
+    // Caller MUST check generation before calling setVerificationState.
+    // If it bypasses, B's state is corrupted:
+    expect(getVerificationState().sasCode).toBe('SAS-B');
+  });
+
+  it('double disconnect is idempotent at session layer', () => {
+    beginRequest('PEER-A');
+    beginConnecting('PEER-A');
+    markConnected();
+
+    const gen1 = resetSession();
+    const gen2 = resetSession();
+    expect(gen2).toBe(gen1 + 1); // each reset increments
+    expect(getPhase()).toBe('idle');
   });
 });

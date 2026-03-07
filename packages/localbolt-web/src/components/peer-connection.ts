@@ -17,6 +17,14 @@ import {
 let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;
 
+/** Generation captured when the current WebRTC service was created. */
+let serviceGeneration = 0;
+
+/** Set true when current transfer reaches a terminal status (completed/canceled/error). */
+let transferTerminal = false;
+
+const TERMINAL_CONNECTION_STATES: ReadonlySet<string> = new Set(['disconnected', 'failed', 'closed']);
+
 const pinStore = new IndexedDBPinStore();
 
 // Verification status UI component (SDK-provided)
@@ -71,6 +79,10 @@ function handleConnectionError(error: WebRTCError) {
 
 function handleConnectionStateChange(state: RTCPeerConnectionState) {
   console.log('[UI] Connection state changed:', state);
+
+  // Guard: reject callbacks from a previous session's RTC connection
+  if (!isCurrentGeneration(serviceGeneration)) return;
+
   const connected = state === 'connected';
   const { peers } = store.getState();
 
@@ -89,13 +101,17 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
       showDeviceList: false,
     });
     setWebrtcRef(rtcServiceRef);
-  } else {
-    // Non-connected state (disconnected, failed, etc.) — canonical reset
+  } else if (TERMINAL_CONNECTION_STATES.has(state)) {
+    // Only reset on terminal states — ignore intermediates ('new', 'connecting')
+    transferTerminal = false;
     resetSession();
   }
 }
 
 function handleVerificationState(info: VerificationInfo) {
+  // Guard: reject callbacks from a previous session's RTC connection
+  if (!isCurrentGeneration(serviceGeneration)) return;
+
   console.log('[TOFU] Verification state:', info.state, info.sasCode ? `SAS: ${info.sasCode}` : '');
   setVerificationState(info);
   verificationStatusUpdate?.(info);
@@ -118,17 +134,29 @@ function handleFileReceive(file: Blob, filename: string) {
 }
 
 function handleReceiveProgress(progress: TransferProgress) {
+  // Guard: reject callbacks from a previous session's RTC connection
+  if (!isCurrentGeneration(serviceGeneration)) return;
+
+  // Guard: ignore late progress after current transfer reached terminal status
+  if (transferTerminal) return;
+
   store.setState({ transferProgress: progress });
 
   if (progress.status === 'completed') {
+    transferTerminal = true;
     showToast('Transfer Complete', `${progress.filename} has been received successfully`);
     setTimeout(() => store.setState({ transferProgress: null }), 2000);
   } else if (progress.status === 'canceled_by_sender' || progress.status === 'canceled_by_receiver') {
+    transferTerminal = true;
     store.setState({ transferProgress: null });
     showToast('Transfer Canceled', 'The file transfer was cancelled');
   } else if (progress.status === 'error') {
+    transferTerminal = true;
     store.setState({ transferProgress: null });
     showToast('Transfer Error', 'The transfer was terminated due to an error', 'destructive');
+  } else {
+    // Non-terminal status (receiving, sending) — reset terminal flag for new transfer
+    transferTerminal = false;
   }
 }
 
@@ -257,10 +285,14 @@ function cancelRequest() {
 }
 
 function disconnect() {
+  // Idempotent — skip if already idle
+  if (getPhase() === 'idle') return;
+
   if (rtcServiceRef) {
     rtcServiceRef.disconnect();
   }
   // Canonical reset — clears all state via session-state
+  transferTerminal = false;
   resetSession();
   setWebrtcRef(null);
   showToast('Disconnected', 'Connection closed successfully');
@@ -397,6 +429,7 @@ export function createPeerConnection(): HTMLElement {
     );
     rtcService.setConnectionStateHandler(handleConnectionStateChange);
     rtcServiceRef = rtcService;
+    serviceGeneration = getGeneration();
     setWebrtcRef(rtcService);
   }).catch((err) => {
     console.error('[SIGNALING] Failed to connect:', err);

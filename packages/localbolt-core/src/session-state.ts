@@ -19,7 +19,7 @@
 
 import { store } from '@the9ines/bolt-transport-web';
 import type { VerificationInfo } from '@the9ines/bolt-transport-web';
-import { resetVerificationState, setVerificationState } from './verification-state';
+import { getVerificationState, resetVerificationState, setVerificationState } from './verification-state';
 
 // ── Types ────────────────────────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ function snapshot(): SessionSnapshot {
     phase,
     generation,
     targetPeer,
-    verificationState: 'legacy', // read from verification-state bus if needed
+    verificationState: getVerificationState().state,
   };
 }
 
