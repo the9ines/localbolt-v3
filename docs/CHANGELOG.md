@@ -1,5 +1,10 @@
 # LocalBolt v3 Changelog
 
+## v3.0.86-csp-wasm — Allow WASM compilation in CSP for policy adapter (2026-03-08, 98610d3)
+- **CSP update**: Add `wasm-unsafe-eval` and `https://www.googletagmanager.com` to `script-src` directive in Content-Security-Policy meta tag. Required for WASM compilation by policy adapter and Google Tag Manager script loading.
+- Files changed:
+  - `packages/localbolt-web/index.html`
+
 ## v3.0.80-c-stream-r1-ui-state-fix — C-STREAM-R1: UI/state regression recovery (2026-03-06, 9f3546e)
 - **State/session hardening (P2)**: Generation guards on `handleConnectionStateChange`, `handleReceiveProgress`, `handleVerificationState` reject stale callbacks from previous sessions. Terminal-state-only reset prevents premature disconnect on intermediate WebRTC states. Transfer terminal flag prevents late progress after cancel. Idempotent `disconnect()`.
 - **Trust UI consistency (P3)**: `snapshot()` returns live verification state from bus (was hardcoded 'legacy'). Full transfer gating truth table enforced in tests.

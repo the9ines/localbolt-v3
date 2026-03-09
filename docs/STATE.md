@@ -1,10 +1,10 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.80-c-stream-r1-ui-state-fix
-- **Commit**: 9f3546e
+- **Tag**: v3.0.86-csp-wasm
+- **Commit**: 98610d3
 - **Branch**: main
-- **Date**: 2026-03-06
+- **Date**: 2026-03-08
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -149,4 +149,5 @@
 | v3.0.76-d4-npmjs-cutover | ef0543e | D4: switch consumer resolution to npmjs.org |
 | v3.0.77-d4-netlify-build-fix | 0746275 | D4: fix Netlify build — build localbolt-core before localbolt-web, remove base directive |
 | v3.0.78-d5-registry-guards | fec153b | D5: registry/auth regression guards + CI cleanup for PAT-free installs |
+| v3.0.86-csp-wasm | 98610d3 | Allow WASM compilation in CSP — add wasm-unsafe-eval and googletagmanager to script-src |
 | v3.0.79-s-stream-r1-r1.4-security-test-lift | 31046ac | R1-4: security-focused reconnect integrity tests (core 43→50) |
