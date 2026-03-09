@@ -1,4 +1,4 @@
-import { icons } from '@the9ines/bolt-transport-web';
+import { icons, initPolicyAdapter } from '@the9ines/bolt-transport-web';
 
 function createPrivacyDialog(): HTMLDialogElement {
   const dialog = document.createElement('dialog');
@@ -105,11 +105,19 @@ export function createFooter(): HTMLElement {
       <span class="text-white/[0.08]">/</span>
       <a href="https://the9ines.com" target="_blank" rel="noopener noreferrer"
          class="hover:text-[rgb(255,141,197)] transition-colors">the9ines</a>
+      <span class="text-white/[0.08]">/</span>
+      <span class="policy-badge">Policy: ...</span>
     </div>
   `;
 
   footer.appendChild(privacyDialog);
   footer.querySelector('.privacy-btn')!.addEventListener('click', () => privacyDialog.showModal());
+
+  const badge = footer.querySelector('.policy-badge') as HTMLElement;
+  initPolicyAdapter().then((adapter) => {
+    const label = adapter.name === 'wasm' ? 'WASM' : 'Fallback';
+    badge.textContent = `Policy: ${label}`;
+  });
 
   return footer;
 }

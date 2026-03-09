@@ -73,6 +73,7 @@ vi.mock('@the9ines/bolt-transport-web', () => {
       element: document.createElement('div'),
       update: vi.fn(),
     }),
+    initPolicyAdapter: () => Promise.resolve({ name: 'ts-fallback' }),
   };
 });
 
