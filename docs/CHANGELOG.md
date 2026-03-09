@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.88-recon-xfer1-phase-a — Fix transfer reconnect recovery after mid-transfer disconnect (2026-03-09, a7e311b)
+- **RECON-XFER-1 Phase A**: Fix transfer reconnect recovery after mid-transfer disconnect. Root cause: `serviceGeneration` was captured once at init and never updated across reconnect cycles, causing all SDK callbacks to be silently rejected as stale after the first disconnect. Fix: `createFreshRtcService()` factory creates a new SDK service and synchronizes `serviceGeneration` on each connection attempt. Old service handlers are fully detached before swap (prevents double-callback races). Terminal WebRTC state handler now disconnects the one-shot service before session reset. Hoisted `identityRef` and `localPeerCode` for service recreation across reconnect cycles.
+- **Tests**: +338 lines — new `recon-xfer-1-reconnect-resend.test.ts` covering AC-RX-01 through AC-RX-06 (mid-transfer disconnect reset, fresh generation on reconnect, new transfer after reconnect, no stale state crossing boundary, control state clean, full disconnect-reconnect-resend regression cycle).
+- Files changed:
+  - `packages/localbolt-core/src/__tests__/recon-xfer-1-reconnect-resend.test.ts` (new)
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+
 ## v3.0.87-domain-rename — Rename localbolt.site to localbolt.app (2026-03-08, 69ec25c)
 - **Domain rename**: Update all `localbolt.site` references to `localbolt.app` across source, SEO files, and docs.
 - Files changed:

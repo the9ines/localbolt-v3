@@ -1,10 +1,10 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.87-domain-rename
-- **Commit**: 69ec25c
+- **Tag**: v3.0.88-recon-xfer1-phase-a
+- **Commit**: a7e311b
 - **Branch**: main
-- **Date**: 2026-03-08
+- **Date**: 2026-03-09
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -151,3 +151,6 @@
 | v3.0.78-d5-registry-guards | fec153b | D5: registry/auth regression guards + CI cleanup for PAT-free installs |
 | v3.0.86-csp-wasm | 98610d3 | Allow WASM compilation in CSP — add wasm-unsafe-eval and googletagmanager to script-src |
 | v3.0.79-s-stream-r1-r1.4-security-test-lift | 31046ac | R1-4: security-focused reconnect integrity tests (core 43→50) |
+| v3.0.80-c-stream-r1-ui-state-fix | 9f3546e | C-STREAM-R1: UI/state regression recovery (generation guards, trust UI, 122 tests) |
+| v3.0.87-domain-rename | 69ec25c | Rename localbolt.site to localbolt.app |
+| v3.0.88-recon-xfer1-phase-a | a7e311b | RECON-XFER-1 Phase A: fix transfer reconnect recovery after mid-transfer disconnect |
