@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.86-csp-wasm
-- **Commit**: 98610d3
+- **Tag**: v3.0.87-domain-rename
+- **Commit**: 69ec25c
 - **Branch**: main
 - **Date**: 2026-03-08
 

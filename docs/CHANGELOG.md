@@ -1,5 +1,17 @@
 # LocalBolt v3 Changelog
 
+## v3.0.87-domain-rename — Rename localbolt.site to localbolt.app (2026-03-08, 69ec25c)
+- **Domain rename**: Update all `localbolt.site` references to `localbolt.app` across source, SEO files, and docs.
+- Files changed:
+  - `packages/localbolt-web/index.html`
+  - `packages/localbolt-web/src/sections/how-it-works.ts`
+  - `packages/localbolt-web/src/sections/faq.ts`
+  - `packages/localbolt-web/public/robots.txt`
+  - `packages/localbolt-web/public/sitemap.xml`
+  - `README.md`
+  - `ROADMAP.md`
+  - `PRD.md`
+
 ## v3.0.86-csp-wasm — Allow WASM compilation in CSP for policy adapter (2026-03-08, 98610d3)
 - **CSP update**: Add `wasm-unsafe-eval` and `https://www.googletagmanager.com` to `script-src` directive in Content-Security-Policy meta tag. Required for WASM compilation by policy adapter and Google Tag Manager script loading.
 - Files changed:
