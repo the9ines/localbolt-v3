@@ -23,9 +23,55 @@ let serviceGeneration = 0;
 /** Set true when current transfer reaches a terminal status (completed/canceled/error). */
 let transferTerminal = false;
 
+// RECON-XFER-1: hoisted refs for service recreation across reconnect cycles
+let identityRef: { publicKey: Uint8Array } | null = null;
+let localPeerCode = '';
+
 const TERMINAL_CONNECTION_STATES: ReadonlySet<string> = new Set(['disconnected', 'failed', 'closed']);
 
 const pinStore = new IndexedDBPinStore();
+
+/**
+ * RECON-XFER-1: Create a fresh WebRTCService for each connection attempt.
+ *
+ * The SDK service follows a one-shot lifecycle: the constructor registers a
+ * signaling listener, disconnect() permanently removes it. A disconnected
+ * service cannot receive offer/answer/ICE signals.
+ *
+ * Additionally, each new service captures the current localbolt-core session
+ * generation so that stale callbacks from previous sessions are rejected.
+ *
+ * Old service handlers are fully detached before the new instance is created,
+ * preventing double-callback races during the swap.
+ */
+function createFreshRtcService(): WebRTCService | null {
+  if (!signalingRef || !identityRef) return null;
+
+  // Fully detach old service before creating new one
+  if (rtcServiceRef) {
+    rtcServiceRef.setConnectionStateHandler(() => {}); // block late callbacks
+    rtcServiceRef.disconnect(); // detaches signaling listener + all internal handlers
+    rtcServiceRef = null;
+    setWebrtcRef(null);
+  }
+
+  const rtcService = new WebRTCService(
+    signalingRef,
+    localPeerCode,
+    handleFileReceive,
+    handleConnectionError,
+    handleReceiveProgress,
+    {
+      identityPublicKey: identityRef.publicKey,
+      pinStore,
+      onVerificationState: handleVerificationState,
+    },
+  );
+  rtcService.setConnectionStateHandler(handleConnectionStateChange);
+  rtcServiceRef = rtcService;
+  serviceGeneration = getGeneration();
+  return rtcService;
+}
 
 // Verification status UI component (SDK-provided)
 let verificationStatusUpdate: ((info: VerificationInfo) => void) | null = null;
@@ -104,7 +150,14 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
   } else if (TERMINAL_CONNECTION_STATES.has(state)) {
     // Only reset on terminal states — ignore intermediates ('new', 'connecting')
     transferTerminal = false;
+    // RECON-XFER-1: disconnect SDK service on terminal WebRTC state so transfer
+    // maps/flags/timers are cleaned up and the one-shot service is retired
+    if (rtcServiceRef) {
+      rtcServiceRef.setConnectionStateHandler(() => {}); // prevent re-entrant callback
+      rtcServiceRef.disconnect();
+    }
     resetSession();
+    setWebrtcRef(null);
   }
 }
 
@@ -195,20 +248,23 @@ function handleApprovalSignal(signal: SignalMessage) {
       // Transition session to connecting
       beginConnecting(signal.from);
 
-      // Now initiate the actual WebRTC connection
+      // RECON-XFER-1: fresh service per connection attempt — old service's
+      // signaling listener is dead after disconnect, and serviceGeneration
+      // must be synchronized with the current localbolt-core generation
+      const service = createFreshRtcService();
+      if (!service) return;
+
       const gen = getGeneration();
-      if (rtcServiceRef) {
-        rtcServiceRef.connect(signal.from).catch((error) => {
-          // Guard against stale callback
-          if (!isCurrentGeneration(gen)) return;
-          store.setState({ connectingTo: null });
-          if (error instanceof WebRTCError) {
-            handleConnectionError(error);
-          } else {
-            showToast('Connection Failed', 'Unable to connect to device. Please try again.', 'destructive');
-          }
-        });
-      }
+      service.connect(signal.from).catch((error) => {
+        // Guard against stale callback
+        if (!isCurrentGeneration(gen)) return;
+        store.setState({ connectingTo: null });
+        if (error instanceof WebRTCError) {
+          handleConnectionError(error);
+        } else {
+          showToast('Connection Failed', 'Unable to connect to device. Please try again.', 'destructive');
+        }
+      });
       break;
     }
 
@@ -261,6 +317,10 @@ function acceptRequest() {
   // Transition session to connecting
   beginConnecting(incomingRequest.peerCode);
 
+  // RECON-XFER-1: fresh service before sending acceptance so the signaling
+  // listener is active when the initiator's offer arrives
+  createFreshRtcService();
+
   // Send acceptance signal — the other side will initiate WebRTC
   signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
   store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode });
@@ -288,8 +348,12 @@ function disconnect() {
   // Idempotent — skip if already idle
   if (getPhase() === 'idle') return;
 
+  // RECON-XFER-1: detach handler before disconnect to prevent re-entrant
+  // callbacks during teardown, then retire the one-shot service
   if (rtcServiceRef) {
+    rtcServiceRef.setConnectionStateHandler(() => {});
     rtcServiceRef.disconnect();
+    rtcServiceRef = null;
   }
   // Canonical reset — clears all state via session-state
   transferTerminal = false;
@@ -363,6 +427,7 @@ export function createPeerConnection(): HTMLElement {
     peerCode = generateSecurePeerCode();
     sessionStorage.setItem(PEER_CODE_KEY, peerCode);
   }
+  localPeerCode = peerCode; // RECON-XFER-1: hoist for service recreation
   store.setState({ peerCode });
   console.log('[WEBRTC] Peer code:', peerCode);
 
@@ -415,22 +480,11 @@ export function createPeerConnection(): HTMLElement {
     const identity = await identityPromise;
     console.log('[IDENTITY] Local identity loaded');
 
-    const rtcService = new WebRTCService(
-      signaling,
-      peerCode,
-      handleFileReceive,
-      handleConnectionError,
-      handleReceiveProgress,
-      {
-        identityPublicKey: identity.publicKey,
-        pinStore,
-        onVerificationState: handleVerificationState,
-      },
-    );
-    rtcService.setConnectionStateHandler(handleConnectionStateChange);
-    rtcServiceRef = rtcService;
-    serviceGeneration = getGeneration();
-    setWebrtcRef(rtcService);
+    // RECON-XFER-1: hoist identity for service recreation across reconnect cycles
+    identityRef = identity;
+
+    // Initial service creation via factory
+    createFreshRtcService();
   }).catch((err) => {
     console.error('[SIGNALING] Failed to connect:', err);
     store.setState({ signalingConnected: false });
