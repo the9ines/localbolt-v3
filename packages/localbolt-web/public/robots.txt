@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Main sitemap
-Sitemap: https://localbolt.site/sitemap.xml
+Sitemap: https://localbolt.app/sitemap.xml
 
 # Important pages
 Allow: /

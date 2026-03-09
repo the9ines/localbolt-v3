@@ -7,7 +7,7 @@
 
 ## 1. Current State Summary
 
-**Version:** v3.0.38-faq-sync (production web, live at localbolt.site)
+**Version:** v3.0.38-faq-sync (production web, live at localbolt.app)
 **Stack:** Vanilla TypeScript, Tailwind CSS, Vite, TweetNaCl, Rust signal server, Netlify + Fly.io
 **Test coverage:** None (no automated test suite)
 **Deployment:** Netlify (web), Fly.io (signal server at wss://localbolt-signal.fly.dev)
@@ -51,7 +51,7 @@
 
 ### Production-Ready
 
-- Web frontend (localbolt.site)
+- Web frontend (localbolt.app)
 - Signal server (localbolt-signal.fly.dev)
 - Deployment pipeline (Netlify + Fly.io)
 - Security posture (A+ Observatory, CSP, hardened headers)
@@ -145,7 +145,7 @@ LocalBolt v3 is the flagship hosted web experience:
 
 ## 9. Success Metrics
 
-- localbolt.site uptime 99.9%
+- localbolt.app uptime 99.9%
 - Signal server latency <100ms p95
 - First meaningful paint <2 seconds
 - Lighthouse performance score 90+

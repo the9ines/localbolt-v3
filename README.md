@@ -1,6 +1,6 @@
 # LocalBolt v3
 
-**[localbolt.site](https://localbolt.site)** - the live website.
+**[localbolt.app](https://localbolt.app)** - the live website.
 
 Source code for the LocalBolt website and cloud signaling server. Encrypted peer-to-peer file transfer. Files go directly between devices, never stored on any server.
 
@@ -49,7 +49,7 @@ cargo run --release
 
 The website connects to both the cloud signal server and any local signal server via `DualSignaling`. This means users of the website can discover:
 
-- Other users on localbolt.site (via cloud signaling)
+- Other users on localbolt.app (via cloud signaling)
 - Devices running the self-hosted version on the same LAN (via local signaling)
 - Devices running the native desktop app (via either)
 
@@ -72,7 +72,7 @@ This is an **open-source** project.
 
 ## Related
 
-- **[localbolt.site](https://localbolt.site)** — use it now
+- **[localbolt.app](https://localbolt.app)** — use it now
 - **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
 - **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app with embedded signal server
 

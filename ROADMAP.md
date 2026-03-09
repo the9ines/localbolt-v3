@@ -42,7 +42,7 @@
 
 ### I2. Monitoring
 - Signal server health endpoint
-- Uptime monitoring for localbolt.site and localbolt-signal.fly.dev
+- Uptime monitoring for localbolt.app and localbolt-signal.fly.dev
 - Alert on downtime
 
 ### I3. Performance baseline
