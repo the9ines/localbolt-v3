@@ -1,10 +1,11 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.88-recon-xfer1-phase-a
-- **Commit**: a7e311b
+- **Tag**: v3.0.89-consumer-btr1-p1
+- **Commit**: e34e617
 - **Branch**: main
-- **Date**: 2026-03-09
+- **Date**: 2026-03-11
+- **BTR**: Enabled (`btrEnabled: true` in peer-connection.ts)
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
@@ -25,7 +26,7 @@
 - `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
-- **Test suite**: 124 tests total — 54 in localbolt-core (3 test files), 70 in localbolt-web (4 test files). Pre-existing failures: 2 (faq.test.ts DOM env, app.test.ts path alias — unrelated)
+- **Test suite**: 145 tests total — 70 in localbolt-core, 75 in localbolt-web (5 test files). Pre-existing failures: 2 (faq.test.ts DOM env, app.test.ts path alias — unrelated)
 - `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
 
 ## Key Dependencies
@@ -153,4 +154,5 @@
 | v3.0.79-s-stream-r1-r1.4-security-test-lift | 31046ac | R1-4: security-focused reconnect integrity tests (core 43→50) |
 | v3.0.80-c-stream-r1-ui-state-fix | 9f3546e | C-STREAM-R1: UI/state regression recovery (generation guards, trust UI, 122 tests) |
 | v3.0.87-domain-rename | 69ec25c | Rename localbolt.site to localbolt.app |
+| v3.0.89-consumer-btr1-p1 | e34e617 | CBTR-1 P1: enable BTR (Bolt Transfer Ratchet) in consumer |
 | v3.0.88-recon-xfer1-phase-a | a7e311b | RECON-XFER-1 Phase A: fix transfer reconnect recovery after mid-transfer disconnect |

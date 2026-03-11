@@ -1,5 +1,12 @@
 # LocalBolt v3 Changelog
 
+## v3.0.89-consumer-btr1-p1 — Enable BTR (Bolt Transfer Ratchet) in consumer (2026-03-11, e34e617)
+- **CBTR-1 Phase 1**: Enable Bolt Transfer Ratchet in localbolt-v3 consumer. Passes `btrEnabled: true` in `WebRTCService` options, activating per-transfer forward-secrecy ratchet from the SDK. Single-line config change in `peer-connection.ts` — rollback is `btrEnabled: false`. No consumer-side BTR logic; SDK handles ratchet negotiation, downgrade-with-warning, and capability advertisement transparently.
+- **Tests**: +5 new tests in `cbtr1-btr-compatibility.test.ts` covering source-level verification of `btrEnabled: true`, options block structure, rollback path, SDK downgrade compatibility, and non-BTR baseline preservation. Total: 145 tests (75 localbolt-web + 70 localbolt-core).
+- Files changed:
+  - `packages/localbolt-web/src/__tests__/cbtr1-btr-compatibility.test.ts` (new)
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+
 ## v3.0.88-recon-xfer1-phase-a — Fix transfer reconnect recovery after mid-transfer disconnect (2026-03-09, a7e311b)
 - **RECON-XFER-1 Phase A**: Fix transfer reconnect recovery after mid-transfer disconnect. Root cause: `serviceGeneration` was captured once at init and never updated across reconnect cycles, causing all SDK callbacks to be silently rejected as stale after the first disconnect. Fix: `createFreshRtcService()` factory creates a new SDK service and synchronizes `serviceGeneration` on each connection attempt. Old service handlers are fully detached before swap (prevents double-callback races). Terminal WebRTC state handler now disconnects the one-shot service before session reset. Hoisted `identityRef` and `localPeerCode` for service recreation across reconnect cycles.
 - **Tests**: +338 lines — new `recon-xfer-1-reconnect-resend.test.ts` covering AC-RX-01 through AC-RX-06 (mid-transfer disconnect reset, fresh generation on reconnect, new transfer after reconnect, no stale state crossing boundary, control state clean, full disconnect-reconnect-resend regression cycle).
