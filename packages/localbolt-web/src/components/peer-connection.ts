@@ -65,6 +65,7 @@ function createFreshRtcService(): WebRTCService | null {
       identityPublicKey: identityRef.publicKey,
       pinStore,
       onVerificationState: handleVerificationState,
+      btrEnabled: true,
     },
   );
   rtcService.setConnectionStateHandler(handleConnectionStateChange);
