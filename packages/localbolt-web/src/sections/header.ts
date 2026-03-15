@@ -23,7 +23,7 @@ export function createHeader(): HTMLElement {
     const { signalingConnected } = store.getState();
     if (signalingConnected) {
       dot.className = 'status-dot w-1.5 h-1.5 rounded-full bg-neon/70 animate-pulse';
-      label.textContent = 'ACTIVE';
+      label.textContent = 'NEARBY';
     } else {
       dot.className = 'status-dot w-1.5 h-1.5 rounded-full bg-red-500/70';
       label.textContent = 'OFFLINE';
