@@ -1,9 +1,9 @@
 import './index.css';
-import { initWasmCrypto } from '@the9ines/bolt-core';
+import { initProtocolWasm } from '@the9ines/bolt-transport-web';
 import { createApp } from './app';
 
-// RB5: Initialize Rust/WASM protocol authority before any crypto operations.
+// BR2: Initialize Rust/WASM protocol authority from embedded artifact.
 // Falls back silently to TS tweetnacl/BTR if WASM unavailable (PM-RB-03).
-initWasmCrypto().then(() => {
+initProtocolWasm().then(() => {
   createApp(document.getElementById('root')!);
 });
