@@ -144,6 +144,7 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
       isConnected: true,
       connectedDevice: device,
       connectingTo: null,
+      connectingPhase: null,
       incomingRequest: null,
       showDeviceList: false,
     });
@@ -248,6 +249,8 @@ function handleApprovalSignal(signal: SignalMessage) {
 
       // Transition session to connecting
       beginConnecting(signal.from);
+      // RU2: switch UI from "Waiting for peer" to "Establishing secure connection..."
+      store.setState({ connectingPhase: 'establishing' });
 
       // RECON-XFER-1: fresh service per connection attempt — old service's
       // signaling listener is dead after disconnect, and serviceGeneration
@@ -259,7 +262,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       service.connect(signal.from).catch((error) => {
         // Guard against stale callback
         if (!isCurrentGeneration(gen)) return;
-        store.setState({ connectingTo: null });
+        store.setState({ connectingTo: null, connectingPhase: null });
         if (error instanceof WebRTCError) {
           handleConnectionError(error);
         } else {
@@ -294,7 +297,8 @@ function selectPeer(peerCode: string) {
   const localDeviceName = getDeviceName();
   const localDeviceType = detectDeviceType();
 
-  store.setState({ connectingTo: peerCode, showDeviceList: false });
+  // RU2: distinguish "waiting for peer" from "establishing connection"
+  store.setState({ connectingTo: peerCode, connectingPhase: 'requesting', showDeviceList: false });
 
   // Send connection request via signaling (not WebRTC yet)
   const gen = getGeneration();
@@ -324,7 +328,8 @@ function acceptRequest() {
 
   // Send acceptance signal — the other side will initiate WebRTC
   signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
-  store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode });
+  // RU2: responder goes straight to "establishing" (they already accepted)
+  store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
 }
 
 function declineRequest() {
