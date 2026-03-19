@@ -204,7 +204,8 @@ function handleReceiveProgress(progress: TransferProgress) {
   if (progress.status === 'completed') {
     transferTerminal = true;
     showToast('Transfer Complete', `${progress.filename} has been received successfully`);
-    setTimeout(() => store.setState({ transferProgress: null }), 2000);
+    // RU4: 3s to let completion state (green checkmark) be clearly visible
+    setTimeout(() => store.setState({ transferProgress: null }), 3000);
   } else if (progress.status === 'canceled_by_sender' || progress.status === 'canceled_by_receiver') {
     transferTerminal = true;
     store.setState({ transferProgress: null });
