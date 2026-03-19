@@ -164,6 +164,8 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
     }
     resetSession();
     setWebrtcRef(null);
+    // RU5: connection drop guidance — tell user what happened and how to recover
+    showToast('Connection Lost', 'The connection was interrupted. Select the device again to reconnect.', 'destructive');
   }
 }
 
@@ -208,8 +210,10 @@ function handleReceiveProgress(progress: TransferProgress) {
     setTimeout(() => store.setState({ transferProgress: null }), 3000);
   } else if (progress.status === 'canceled_by_sender' || progress.status === 'canceled_by_receiver') {
     transferTerminal = true;
-    store.setState({ transferProgress: null });
+    // RU5: keep cancelled state visible briefly (transfer-progress.ts renders it)
+    // then clear after 2s — matches cancel feedback timing
     showToast('Transfer Canceled', 'The file transfer was cancelled');
+    setTimeout(() => store.setState({ transferProgress: null }), 2000);
   } else if (progress.status === 'error') {
     transferTerminal = true;
     store.setState({ transferProgress: null });
@@ -379,7 +383,8 @@ function disconnect() {
   transferTerminal = false;
   resetSession();
   setWebrtcRef(null);
-  showToast('Disconnected', 'Connection closed successfully');
+  // RU5: recovery guidance — reconnect means selecting the device again
+  showToast('Disconnected', 'Select the device again to reconnect.');
 }
 
 // ── Main Component ───────────────────────────────────────────────────────
