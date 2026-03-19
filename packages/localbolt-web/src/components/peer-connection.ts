@@ -98,6 +98,10 @@ function handleConnectionError(error: WebRTCError) {
           'This device\'s identity key has changed since your last connection. ' +
           'The connection has been blocked for your safety. If this is unexpected, ' +
           'the device may have been compromised or reinstalled.';
+      } else if (error.message.includes('timeout')) {
+        // RU3: distinct timeout messaging
+        title = 'Connection Timed Out';
+        description = 'The other device may be unreachable. Check that both devices are on the same network and try again.';
       } else {
         title = 'Connection Failed';
         description = device.isLinux
@@ -208,7 +212,9 @@ function handleReceiveProgress(progress: TransferProgress) {
   } else if (progress.status === 'error') {
     transferTerminal = true;
     store.setState({ transferProgress: null });
-    showToast('Transfer Error', 'The transfer was terminated due to an error', 'destructive');
+    // RU3: show classified error reason if available
+    const reason = progress.errorDetail || 'The transfer was terminated due to an error';
+    showToast('Transfer Error', reason, 'destructive');
   } else {
     // Non-terminal status (receiving, sending) — reset terminal flag for new transfer
     transferTerminal = false;
@@ -251,6 +257,13 @@ function handleApprovalSignal(signal: SignalMessage) {
       beginConnecting(signal.from);
       // RU2: switch UI from "Waiting for peer" to "Establishing secure connection..."
       store.setState({ connectingPhase: 'establishing' });
+
+      // RU3: show "still connecting" hint after 10s if not yet connected
+      const slowTimer = setTimeout(() => {
+        if (getPhase() === 'connecting') {
+          store.setState({ connectingPhase: 'slow' });
+        }
+      }, 10000);
 
       // RECON-XFER-1: fresh service per connection attempt — old service's
       // signaling listener is dead after disconnect, and serviceGeneration
