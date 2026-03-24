@@ -17,5 +17,8 @@
     "build:tauri": "cd apps/tauri && npx tauri build",
     "build:tauri:ios": "cd apps/tauri && npx tauri ios build",
     "build:tauri:android": "cd apps/tauri && npx tauri android build"
+  },
+  "dependencies": {
+    "@the9ines/bolt-transport-web": "^0.7.7"
   }
 }
