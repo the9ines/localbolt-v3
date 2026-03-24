@@ -2,8 +2,9 @@ import { generateSecurePeerCode } from '@the9ines/bolt-core';
 import {
   store, showToast, DualSignaling, detectDeviceType, getDeviceName,
   WebRTCService, WebRTCError, SignalingError, detectDevice,
-  createConnectionStatus, createDeviceDiscovery, setWebrtcRef,
+  createConnectionStatus, createDeviceDiscovery, setWebrtcRef, setDirectTransportRef,
   IndexedDBPinStore, createVerificationStatus,
+  BrowserAppTransport,
 } from '@the9ines/bolt-transport-web';
 import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
@@ -16,6 +17,10 @@ import {
 
 let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;
+let directTransportRef: BrowserAppTransport | null = null;
+
+/** wsUrl received from a desktop peer's connection_request or connection_accepted. */
+let pendingDesktopWsUrl: string | null = null;
 
 /** Generation captured when the current WebRTC service was created. */
 let serviceGeneration = 0;
@@ -235,10 +240,22 @@ function handleApprovalSignal(signal: SignalMessage) {
       console.log('[APPROVAL] Received connection request from', signal.from);
       const currentPhase = getPhase();
       if (currentPhase !== 'idle') {
-        // Already busy — auto-decline
+        // Duplicate request from same peer (arrives via both local + cloud) — ignore
+        const { incomingRequest } = store.getState();
+        if (incomingRequest?.peerCode === signal.from) {
+          console.log('[APPROVAL] Ignoring duplicate request from same peer:', signal.from);
+          return;
+        }
+        // Actually busy with a different peer — auto-decline
         signalingRef?.sendSignal('connection_declined', { reason: 'busy' }, signal.from);
         return;
       }
+      // Capture desktop peer's WS endpoint URL if provided
+      pendingDesktopWsUrl = signal.data.wsUrl || null;
+      if (pendingDesktopWsUrl) {
+        console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
+      }
+
       // Transition session to incoming_request
       receiveRequest(signal.from);
       store.setState({
@@ -258,27 +275,70 @@ function handleApprovalSignal(signal: SignalMessage) {
       const { connectingTo } = store.getState();
       if (currentPhase !== 'requesting' || connectingTo !== signal.from) return; // stale
 
+      // Check if the accepting peer provides a direct WS endpoint (desktop app)
+      const desktopWsUrl = signal.data?.wsUrl as string | undefined;
+
       // Transition session to connecting
       beginConnecting(signal.from);
-      // RU2: switch UI from "Waiting for peer" to "Establishing secure connection..."
       store.setState({ connectingPhase: 'establishing' });
 
-      // RU3: show "still connecting" hint after 10s if not yet connected
       const slowTimer = setTimeout(() => {
         if (getPhase() === 'connecting') {
           store.setState({ connectingPhase: 'slow' });
         }
       }, 10000);
 
-      // RECON-XFER-1: fresh service per connection attempt — old service's
-      // signaling listener is dead after disconnect, and serviceGeneration
-      // must be synchronized with the current localbolt-core generation
+      if (desktopWsUrl) {
+        // ── Direct browser↔desktop transport via BrowserAppTransport ──
+        console.log('[DIRECT] Using BrowserAppTransport to', desktopWsUrl);
+        const gen = getGeneration();
+
+        directTransportRef = new BrowserAppTransport({
+          daemonUrl: desktopWsUrl,
+          wsConnectTimeout: 10000,
+          identityPublicKey: identityRef?.publicKey,
+          onVerification: handleVerificationState,
+          onReceiveFile: handleFileReceive,
+          onProgress: handleReceiveProgress,
+          onError: handleConnectionError,
+          btrEnabled: true,
+          onTransportMode: (mode) => {
+            console.log('[DIRECT] Transport mode:', mode);
+          },
+        });
+
+        directTransportRef.connect().then(() => {
+          if (!isCurrentGeneration(gen)) return;
+          clearTimeout(slowTimer);
+          markConnected();
+          setDirectTransportRef(directTransportRef); // wire for file upload
+          const { peers } = store.getState();
+          const connDevice = peers.find((p) => p.peerCode === signal.from) || null;
+          store.setState({
+            isConnected: true,
+            connectedDevice: connDevice,
+            connectingTo: null,
+            connectingPhase: null,
+            incomingRequest: null,
+            showDeviceList: false,
+          });
+        }).catch((error) => {
+          if (!isCurrentGeneration(gen)) return;
+          clearTimeout(slowTimer);
+          store.setState({ connectingTo: null, connectingPhase: null });
+          showToast('Connection Failed', 'Unable to connect to desktop app. Check that both devices are on the same network.', 'destructive');
+          resetSession();
+        });
+
+        break;
+      }
+
+      // ── Standard browser↔browser WebRTC path ──
       const service = createFreshRtcService();
       if (!service) return;
 
       const gen = getGeneration();
       service.connect(signal.from).catch((error) => {
-        // Guard against stale callback
         if (!isCurrentGeneration(gen)) return;
         store.setState({ connectingTo: null, connectingPhase: null });
         if (error instanceof WebRTCError) {
@@ -337,17 +397,55 @@ function acceptRequest() {
 
   console.log('[APPROVAL] Accepting request from', incomingRequest.peerCode);
 
-  // Transition session to connecting
   beginConnecting(incomingRequest.peerCode);
 
-  // RECON-XFER-1: fresh service before sending acceptance so the signaling
-  // listener is active when the initiator's offer arrives
-  createFreshRtcService();
+  if (pendingDesktopWsUrl) {
+    // ── Desktop peer: use direct BrowserAppTransport ──
+    console.log('[DIRECT] Accepting desktop request, connecting to', pendingDesktopWsUrl);
+    const wsUrl = pendingDesktopWsUrl;
+    pendingDesktopWsUrl = null;
 
-  // Send acceptance signal — the other side will initiate WebRTC
-  signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
-  // RU2: responder goes straight to "establishing" (they already accepted)
-  store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
+    // Send acceptance (desktop will know we connected)
+    signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
+    store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
+
+    const gen = getGeneration();
+    directTransportRef = new BrowserAppTransport({
+      daemonUrl: wsUrl,
+      wsConnectTimeout: 10000,
+      identityPublicKey: identityRef?.publicKey,
+      onVerification: handleVerificationState,
+      onReceiveFile: handleFileReceive,
+      onProgress: handleReceiveProgress,
+      onError: handleConnectionError,
+      btrEnabled: true,
+    });
+
+    directTransportRef.connect().then(() => {
+      if (!isCurrentGeneration(gen)) return;
+      markConnected();
+      setDirectTransportRef(directTransportRef); // wire for file upload
+      const { peers } = store.getState();
+      const connDevice = peers.find((p) => p.peerCode === incomingRequest.peerCode) || null;
+      store.setState({
+        isConnected: true,
+        connectedDevice: connDevice,
+        connectingTo: null,
+        connectingPhase: null,
+        showDeviceList: false,
+      });
+    }).catch(() => {
+      if (!isCurrentGeneration(gen)) return;
+      store.setState({ connectingTo: null, connectingPhase: null });
+      showToast('Connection Failed', 'Unable to connect to desktop app.', 'destructive');
+      resetSession();
+    });
+  } else {
+    // ── Standard browser↔browser WebRTC path ──
+    createFreshRtcService();
+    signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
+    store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
+  }
 }
 
 function declineRequest() {
@@ -379,6 +477,12 @@ function disconnect() {
     rtcServiceRef.disconnect();
     rtcServiceRef = null;
   }
+  if (directTransportRef) {
+    directTransportRef.disconnect();
+    directTransportRef = null;
+    setDirectTransportRef(null);
+  }
+  pendingDesktopWsUrl = null;
   // Canonical reset — clears all state via session-state
   transferTerminal = false;
   resetSession();
@@ -413,7 +517,11 @@ export function createPeerConnection(): HTMLElement {
 
   const verificationStatus = createVerificationStatus({
     onMarkVerified: () => {
-      rtcServiceRef?.markPeerVerified();
+      if (directTransportRef) {
+        directTransportRef.markPeerVerified();
+      } else {
+        rtcServiceRef?.markPeerVerified();
+      }
     },
   });
   verificationStatusUpdate = verificationStatus.update;
