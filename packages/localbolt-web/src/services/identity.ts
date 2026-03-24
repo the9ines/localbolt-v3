@@ -9,7 +9,7 @@
  * IndexedDB. Users on shared devices should use private/incognito windows.
  */
 
-import { IndexedDBIdentityStore, getOrCreateIdentity, zeroizeIdentityKey } from '@the9ines/bolt-transport-web';
+import { IndexedDBIdentityStore, getOrCreateIdentity } from '@the9ines/bolt-transport-web';
 import type { IdentityKeyPair } from '@the9ines/bolt-core';
 
 const identityStore = new IndexedDBIdentityStore();
@@ -29,10 +29,13 @@ export async function initIdentity(): Promise<IdentityKeyPair> {
 // Best-effort key zeroization on page unload (ENDPOINT-SECURITY-1, F-HIGH-01).
 // Fills the secretKey Uint8Array with zeros before the page is torn down.
 // JavaScript GC may retain copies, but this zeroes the active buffer.
+// Inline implementation avoids dependency on unpublished SDK export.
 if (typeof window !== 'undefined') {
   window.addEventListener('pagehide', () => {
     if (cachedIdentity) {
-      zeroizeIdentityKey(cachedIdentity);
+      if (cachedIdentity.secretKey instanceof Uint8Array) {
+        cachedIdentity.secretKey.fill(0);
+      }
       cachedIdentity = null;
     }
   });
