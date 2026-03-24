@@ -569,10 +569,20 @@ export function createPeerConnection(): HTMLElement {
 
   // Dual signaling: cloud (internet) + local (LAN)
   const cloudUrl = import.meta.env.VITE_SIGNAL_URL as string | undefined;
-  const localUrl = import.meta.env.VITE_LOCAL_SIGNAL_URL || `ws://${window.location.hostname}:3001`;
+
+  // Local signaling endpoint: only attempt ws:// from http:// origins.
+  // HTTPS pages MUST NOT attempt ws:// (mixed content — blocked by browsers).
+  // Local signaling is for dev mode and desktop-app embedded rendezvous only.
+  const isSecureOrigin = window.location.protocol === 'https:';
+  const localUrl = isSecureOrigin
+    ? '' // Skip local signaling from HTTPS — no local rendezvous reachable
+    : (import.meta.env.VITE_LOCAL_SIGNAL_URL || `ws://${window.location.hostname}:3001`);
 
   if (!cloudUrl) {
     console.warn('[SIGNALING] VITE_SIGNAL_URL not set — cloud signaling disabled, local-only mode');
+  }
+  if (isSecureOrigin && !localUrl) {
+    console.log('[SIGNALING] HTTPS origin — local ws:// signaling disabled (mixed content policy)');
   }
 
   const signaling = new DualSignaling(localUrl, cloudUrl ?? '');
