@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@the9ines/bolt-transport-web": ">=0.6.2"
+    "@the9ines/bolt-transport-web": "^0.7.8"
   },
   "devDependencies": {
     "typescript": "^5.5.3",
