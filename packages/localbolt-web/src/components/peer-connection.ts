@@ -22,6 +22,14 @@ let directTransportRef: BrowserAppTransport | null = null;
 /** wsUrl received from a desktop peer's connection_request or connection_accepted. */
 let pendingDesktopWsUrl: string | null = null;
 
+/** Whether a ws:// direct URL is reachable from the current origin.
+ *  HTTPS pages cannot connect to ws:// (mixed content — browser blocks it). */
+function canUseDirectWs(url: string): boolean {
+  if (window.location.protocol !== 'https:') return true;
+  // From HTTPS, only wss:// is allowed
+  return url.startsWith('wss://');
+}
+
 /** Generation captured when the current WebRTC service was created. */
 let serviceGeneration = 0;
 
@@ -253,7 +261,11 @@ function handleApprovalSignal(signal: SignalMessage) {
       // Capture desktop peer's WS endpoint URL if provided
       pendingDesktopWsUrl = signal.data.wsUrl || null;
       if (pendingDesktopWsUrl) {
-        console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
+        if (canUseDirectWs(pendingDesktopWsUrl)) {
+          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
+        } else {
+          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked — HTTPS origin, will use WebRTC)');
+        }
       }
 
       // Transition session to incoming_request
@@ -277,6 +289,9 @@ function handleApprovalSignal(signal: SignalMessage) {
 
       // Check if the accepting peer provides a direct WS endpoint (desktop app)
       const desktopWsUrl = signal.data?.wsUrl as string | undefined;
+      if (desktopWsUrl && !canUseDirectWs(desktopWsUrl)) {
+        console.log('[DIRECT] Skipping ws:// direct transport from HTTPS origin — mixed content policy. Falling back to WebRTC.');
+      }
 
       // Transition session to connecting
       beginConnecting(signal.from);
@@ -288,7 +303,7 @@ function handleApprovalSignal(signal: SignalMessage) {
         }
       }, 10000);
 
-      if (desktopWsUrl) {
+      if (desktopWsUrl && canUseDirectWs(desktopWsUrl)) {
         // ── Direct browser↔desktop transport via BrowserAppTransport ──
         console.log('[DIRECT] Using BrowserAppTransport to', desktopWsUrl);
         const gen = getGeneration();
@@ -399,7 +414,7 @@ function acceptRequest() {
 
   beginConnecting(incomingRequest.peerCode);
 
-  if (pendingDesktopWsUrl) {
+  if (pendingDesktopWsUrl && canUseDirectWs(pendingDesktopWsUrl)) {
     // ── Desktop peer: use direct BrowserAppTransport ──
     console.log('[DIRECT] Accepting desktop request, connecting to', pendingDesktopWsUrl);
     const wsUrl = pendingDesktopWsUrl;
