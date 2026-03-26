@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test --workspace=packages/localbolt-web",
     "dev": "npm run dev --workspace=packages/localbolt-web",
-    "build": "npm run build --workspace=packages/localbolt-browser && npm run build --workspace=packages/localbolt-core && npm run build --workspace=packages/localbolt-web",
+    "build": "npm run build --workspace=packages/bolt-core-browser && npm run build --workspace=packages/localbolt-browser && npm run build --workspace=packages/localbolt-core && npm run build --workspace=packages/localbolt-web",
     "typecheck": "npm run typecheck --workspace=packages/localbolt-web",
     "dev:tauri": "cd apps/tauri && npx tauri dev",
     "dev:tauri:ios": "cd apps/tauri && npx tauri ios dev",
