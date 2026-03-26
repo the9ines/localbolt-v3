@@ -614,14 +614,16 @@ function disconnect() {
     rtcServiceRef.disconnect();
     rtcServiceRef = null;
   }
-  if (directTransportRef) {
-    directTransportRef.disconnect();
-    directTransportRef = null;
-    setDirectTransportRef(null);
-  }
   if (wtTransportRef) {
     wtTransportRef.disconnect();
     wtTransportRef = null;
+    // directTransportRef may alias wtTransportRef — clear both
+    directTransportRef = null;
+    setDirectTransportRef(null);
+  } else if (directTransportRef) {
+    directTransportRef.disconnect();
+    directTransportRef = null;
+    setDirectTransportRef(null);
   }
   pendingDesktopWsUrl = null;
   // Canonical reset — clears all state via session-state
