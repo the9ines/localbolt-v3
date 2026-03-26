@@ -19,7 +19,7 @@ import {
 // Mock SDK identity store
 const mockLoad = vi.fn();
 const mockSave = vi.fn();
-vi.mock('@the9ines/bolt-transport-web', async () => {
+vi.mock('@the9ines/localbolt-browser', async () => {
   const actual: Record<string, unknown> = {};
   return {
     ...actual,
@@ -102,8 +102,8 @@ describe('Identity persistence (getOrCreateIdentity)', () => {
     mockLoad.mockResolvedValue(existingPair);
 
     // Import fresh to avoid cached identity
-    const { getOrCreateIdentity } = await import('@the9ines/bolt-transport-web');
-    const store = new (await import('@the9ines/bolt-transport-web')).IndexedDBIdentityStore();
+    const { getOrCreateIdentity } = await import('@the9ines/localbolt-browser');
+    const store = new (await import('@the9ines/localbolt-browser')).IndexedDBIdentityStore();
     const result = await getOrCreateIdentity(store);
 
     expect(result.publicKey).toEqual(existingPair.publicKey);
@@ -115,8 +115,8 @@ describe('Identity persistence (getOrCreateIdentity)', () => {
     mockLoad.mockResolvedValue(null);
     mockSave.mockResolvedValue(undefined);
 
-    const { getOrCreateIdentity } = await import('@the9ines/bolt-transport-web');
-    const store = new (await import('@the9ines/bolt-transport-web')).IndexedDBIdentityStore();
+    const { getOrCreateIdentity } = await import('@the9ines/localbolt-browser');
+    const store = new (await import('@the9ines/localbolt-browser')).IndexedDBIdentityStore();
     const result = await getOrCreateIdentity(store);
 
     expect(result.publicKey).toBeInstanceOf(Uint8Array);

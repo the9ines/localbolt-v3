@@ -5,8 +5,8 @@ vi.mock('@the9ines/bolt-core', () => ({
   generateSecurePeerCode: () => 'MOCK-PEER-CODE',
 }));
 
-// ── Mock @the9ines/bolt-transport-web ───────────────────────────────────
-vi.mock('@the9ines/bolt-transport-web', () => {
+// ── Mock @the9ines/localbolt-browser ───────────────────────────────────
+vi.mock('@the9ines/localbolt-browser', () => {
   const state: Record<string, unknown> = {
     signalingConnected: false,
     isConnected: false,

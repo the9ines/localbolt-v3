@@ -28,7 +28,7 @@ const mockState: Record<string, unknown> = {
   peers: [],
 };
 
-vi.mock('@the9ines/bolt-transport-web', () => ({
+vi.mock('@the9ines/localbolt-browser', () => ({
   store: {
     getState: () => ({ ...mockState }),
     setState: (partial: Record<string, unknown>) => Object.assign(mockState, partial),

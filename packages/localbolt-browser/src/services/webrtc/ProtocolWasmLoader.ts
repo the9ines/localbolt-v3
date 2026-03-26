@@ -7,7 +7,7 @@
  * bolt-core's initWasmCrypto() directly.
  *
  * Usage:
- *   import { initProtocolWasm } from '@the9ines/bolt-transport-web';
+ *   import { initProtocolWasm } from '@the9ines/localbolt-browser';
  *   await initProtocolWasm();  // call once before any crypto operations
  */
 

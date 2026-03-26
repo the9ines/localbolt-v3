@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
  * restores baseline behavior.
  *
  * These tests exercise the consumer config layer, not the SDK internals
- * (which are covered by 40 integration tests in bolt-transport-web).
+ * (which are covered by 40 integration tests in localbolt-browser).
  */
 
 // Capture constructor args passed to WebRTCService
@@ -18,7 +18,7 @@ vi.mock('@the9ines/bolt-core', () => ({
   generateSecurePeerCode: () => 'TEST-CODE',
 }));
 
-vi.mock('@the9ines/bolt-transport-web', () => {
+vi.mock('@the9ines/localbolt-browser', () => {
   const state: Record<string, unknown> = {
     signalingConnected: false,
     isConnected: false,
@@ -161,14 +161,16 @@ describe('CBTR-1: BTR rollback path', () => {
     );
     const source = fs.readFileSync(filePath, 'utf-8');
 
-    // Verify rollback is a single-line change: btrEnabled: true → false
-    // The field exists and is a simple boolean — no complex gating logic
-    const btrLine = source.split('\n').find((l: string) => l.includes('btrEnabled'));
-    expect(btrLine).toBeDefined();
-    expect(btrLine!.trim()).toBe('btrEnabled: true,');
+    // Verify rollback is a simple boolean flip per transport constructor.
+    // All btrEnabled values should be `true` — rollback replaces all with `false`.
+    const btrLines = source.split('\n').filter((l: string) => l.includes('btrEnabled'));
+    expect(btrLines.length).toBeGreaterThanOrEqual(1);
+    for (const line of btrLines) {
+      expect(line.trim()).toBe('btrEnabled: true,');
+    }
 
-    // Rollback verification: replacing true with false would disable BTR
-    const rolledBack = source.replace('btrEnabled: true', 'btrEnabled: false');
+    // Rollback verification: replacing all true→false disables BTR everywhere
+    const rolledBack = source.replaceAll('btrEnabled: true', 'btrEnabled: false');
     expect(rolledBack).toContain('btrEnabled: false');
     expect(rolledBack).not.toContain('btrEnabled: true');
   });
@@ -207,8 +209,14 @@ describe('CBTR-1: BTR↔non-BTR compatibility', () => {
     );
     const source = fs.readFileSync(filePath, 'utf-8');
 
-    // Count btrEnabled occurrences — should be exactly 1 (the config line)
+    // All btrEnabled occurrences should be simple `btrEnabled: true` config lines.
+    // No BTR-specific gating logic in consumer code.
     const matches = source.match(/btrEnabled/g);
-    expect(matches).toHaveLength(1);
+    expect(matches!.length).toBeGreaterThanOrEqual(1);
+    // Every occurrence should be a simple assignment, not conditional logic
+    const btrLines = source.split('\n').filter((l: string) => l.includes('btrEnabled'));
+    for (const line of btrLines) {
+      expect(line.trim()).toBe('btrEnabled: true,');
+    }
   });
 });

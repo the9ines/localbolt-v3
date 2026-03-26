@@ -92,7 +92,7 @@ export function initWasmCryptoFromModule(wasmModule: any): boolean {
 
 /**
  * Initialize WASM crypto. Legacy entry point — attempts dynamic import.
- * Prefer initProtocolWasm() from @the9ines/bolt-transport-web instead.
+ * Prefer initProtocolWasm() from @the9ines/localbolt-browser instead.
  */
 export async function initWasmCrypto(): Promise<boolean> {
   if (_initAttempted) return _wasmCrypto !== null;
