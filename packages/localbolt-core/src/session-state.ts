@@ -17,8 +17,8 @@
  *   Used by C-pre-2 to guard stale async callbacks.
  */
 
-import { store } from '@the9ines/bolt-transport-web';
-import type { VerificationInfo } from '@the9ines/bolt-transport-web';
+import { store } from '@the9ines/localbolt-browser';
+import type { VerificationInfo } from '@the9ines/localbolt-browser';
 import { getVerificationState, resetVerificationState, setVerificationState } from './verification-state';
 
 // ── Types ────────────────────────────────────────────────────────────────

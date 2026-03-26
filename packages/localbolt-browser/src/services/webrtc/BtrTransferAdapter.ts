@@ -1,23 +1,13 @@
 /**
- * BtrTransferAdapter — thin wrapper bridging BTR core primitives
- * to the transport layer's transfer send/receive operations.
+ * BtrTransferAdapter — WASM-backed BTR for transfer send/receive.
  *
- * RB5: When WASM is available, WasmBtrTransferAdapter delegates all BTR
- * state and crypto to Rust/WASM opaque handles. The TS BtrTransferAdapter
- * remains as fallback-only (PM-RB-03).
- *
- * Use createBtrAdapter() factory to get the appropriate implementation.
+ * TS BTR fallback deleted (RUST-AUTHORITY-MIGRATION-2).
+ * Only WasmBtrTransferAdapter remains — all BTR state and crypto
+ * live in Rust/WASM opaque handles.
  */
 
 import {
-  deriveSessionRoot,
-  deriveTransferRoot,
-  deriveRatchetedSessionRoot,
-  generateRatchetKeypair,
-  scalarMult,
-  BtrTransferContext,
   toBase64,
-  fromBase64,
   createWasmBtrEngine,
 } from '@the9ines/bolt-core';
 import type { WasmBtrEngineHandle, WasmBtrTransferCtxHandle } from '@the9ines/bolt-core';
@@ -29,245 +19,87 @@ export interface BtrEnvelopeFields {
   chain_index: number;          // uint32 (every chunk)
 }
 
-export class BtrTransferAdapter {
-  private sessionRootKey: Uint8Array;
-  private ratchetGeneration: number;
-  private activeCtx: BtrTransferContext | null = null;
-  private lastLocalRatchetPub: Uint8Array | null = null;
+/** Wrapper for WASM transfer context that matches TransferManager's expected interface. */
+class TransferCtxBridge {
+  constructor(private ctx: WasmBtrTransferCtxHandle) {}
 
-  constructor(ephemeralSharedSecret: Uint8Array) {
-    this.sessionRootKey = deriveSessionRoot(ephemeralSharedSecret);
-    this.ratchetGeneration = 0;
-  }
-
-  /** Current ratchet generation. */
-  get generation(): number {
-    return this.ratchetGeneration;
-  }
-
-  /** Active transfer context (null if no transfer in progress). */
-  get activeTransferCtx(): BtrTransferContext | null {
-    return this.activeCtx;
-  }
-
-  /**
-   * Sender side: begin a new transfer with DH ratchet step.
-   *
-   * Generates fresh ratchet keypair, performs DH with remote peer's
-   * current ratchet public key (initially their ephemeral pub).
-   *
-   * Returns [BtrTransferContext, localRatchetPublicKey].
-   */
-  beginSend(
-    transferId: Uint8Array,
-    remoteRatchetPub: Uint8Array,
-  ): [BtrTransferContext, Uint8Array] {
-    const localKp = generateRatchetKeypair();
-    const dhOutput = scalarMult(localKp.secretKey, remoteRatchetPub);
-
-    const newSrk = deriveRatchetedSessionRoot(this.sessionRootKey, dhOutput);
-    // Zeroize old session root key
-    this.sessionRootKey.fill(0);
-    this.sessionRootKey = newSrk;
-    this.ratchetGeneration += 1;
-
-    const transferRoot = deriveTransferRoot(this.sessionRootKey, transferId);
-
-    // Zeroize DH output and local secret key
-    dhOutput.fill(0);
-    localKp.secretKey.fill(0);
-
-    this.activeCtx = new BtrTransferContext(
-      new Uint8Array(transferId),
-      this.ratchetGeneration,
-      transferRoot,
-    );
-    this.lastLocalRatchetPub = localKp.publicKey;
-
-    return [this.activeCtx, localKp.publicKey];
-  }
-
-  /**
-   * Receiver side: begin receiving a transfer with DH ratchet step.
-   *
-   * Uses the receiver's existing secret key (ephemeral or last ratchet)
-   * with the sender's ratchet public key from the envelope. This produces
-   * the same DH output as the sender (DH commutativity).
-   */
-  beginReceive(
-    transferId: Uint8Array,
-    senderRatchetPub: Uint8Array,
-    localSecretKey: Uint8Array,
-  ): BtrTransferContext {
-    const dhOutput = scalarMult(localSecretKey, senderRatchetPub);
-
-    const newSrk = deriveRatchetedSessionRoot(this.sessionRootKey, dhOutput);
-    // Zeroize old session root key
-    this.sessionRootKey.fill(0);
-    this.sessionRootKey = newSrk;
-    this.ratchetGeneration += 1;
-
-    const transferRoot = deriveTransferRoot(this.sessionRootKey, transferId);
-
-    // Zeroize DH output (don't zeroize localSecretKey — caller owns it)
-    dhOutput.fill(0);
-
-    this.activeCtx = new BtrTransferContext(
-      new Uint8Array(transferId),
-      this.ratchetGeneration,
-      transferRoot,
-    );
-
-    return this.activeCtx;
-  }
-
-  /**
-   * Build BTR envelope fields for a chunk.
-   *
-   * First chunk (chainIndex 0) includes ratchet_public_key + ratchet_generation.
-   * Subsequent chunks include only chain_index.
-   */
-  buildEnvelopeFields(chainIndex: number, localRatchetPub?: Uint8Array): BtrEnvelopeFields {
-    if (chainIndex === 0 && localRatchetPub) {
-      return {
-        ratchet_public_key: toBase64(localRatchetPub),
-        ratchet_generation: this.ratchetGeneration,
-        chain_index: chainIndex,
-      };
-    }
-    return { chain_index: chainIndex };
-  }
-
-  /** End the current transfer (FILE_FINISH). Zeroizes transfer-scoped state. */
-  endTransfer(): void {
-    this.activeCtx?.cleanupComplete();
-    this.activeCtx = null;
-  }
-
-  /** Cancel the current transfer. Zeroizes transfer-scoped state. */
-  cancelTransfer(): void {
-    this.activeCtx?.cleanupCancel();
-    this.activeCtx = null;
-  }
-
-  /** Cleanup on disconnect — zeroize ALL BTR state. */
-  cleanupDisconnect(): void {
-    this.sessionRootKey.fill(0);
-    this.ratchetGeneration = 0;
-    this.activeCtx?.cleanupCancel();
-    this.activeCtx = null;
-    this.lastLocalRatchetPub = null;
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════
-// RB5: WASM-backed BTR adapter (production path when WASM available)
-// ══════════════════════════════════════════════════════════════════
-
-/**
- * Thin wrapper over WasmBtrTransferCtxHandle matching the interface
- * that TransferManager expects from BtrTransferContext (.sealChunk, .openChunk).
- */
-class WasmBtrTransferCtxBridge {
-  constructor(private handle: WasmBtrTransferCtxHandle) {}
-
+  /** Seal a chunk. Returns [chainIndex, sealed] tuple for TransferManager destructuring. */
   sealChunk(plaintext: Uint8Array): [number, Uint8Array] {
-    const result = this.handle.sealChunk(plaintext);
+    const result = this.ctx.sealChunk(plaintext);
     return [result.chainIndex, result.sealed];
   }
 
-  openChunk(expectedIndex: number, sealed: Uint8Array): Uint8Array {
-    return this.handle.openChunk(expectedIndex, sealed);
+  /** Open a sealed chunk. */
+  openChunk(chainIndex: number, sealed: Uint8Array): Uint8Array {
+    return this.ctx.openChunk(chainIndex, sealed);
   }
-
-  get chainIndex(): number { return this.handle.chainIndex(); }
-
-  cleanupComplete(): void { this.handle.cleanupComplete(); }
-  cleanupCancel(): void { this.handle.cleanupCancel(); }
 }
 
 /**
- * WASM-backed BtrTransferAdapter. Same interface as the TS version,
- * but all BTR state and crypto live in Rust/WASM opaque handles.
+ * WASM-backed BTR adapter. Interface matches what TransferManager expects.
  */
 export class WasmBtrTransferAdapter {
   private engine: WasmBtrEngineHandle;
-  private activeCtx: WasmBtrTransferCtxBridge | null = null;
+  private activeCtx: TransferCtxBridge | null = null;
+  generation: number = 0;
+  private lastRatchetPub: Uint8Array | null = null;
 
   constructor(engine: WasmBtrEngineHandle) {
     this.engine = engine;
+    this.generation = engine.ratchetGeneration();
   }
 
-  get generation(): number {
-    return this.engine.ratchetGeneration();
+  /** Begin send transfer. Returns [ctxBridge, ratchetPublicKey] for TransferManager. */
+  beginSend(transferId: Uint8Array, remotePublicKey: Uint8Array): [TransferCtxBridge, Uint8Array] {
+    const ctx = this.engine.beginTransferSend(transferId, remotePublicKey);
+    this.activeCtx = new TransferCtxBridge(ctx);
+    this.generation = this.engine.ratchetGeneration();
+    this.lastRatchetPub = ctx.localRatchetPub();
+    return [this.activeCtx, this.lastRatchetPub];
   }
 
-  get activeTransferCtx(): WasmBtrTransferCtxBridge | null {
-    return this.activeCtx;
-  }
-
-  beginSend(
-    transferId: Uint8Array,
-    _remoteRatchetPub: Uint8Array,
-  ): [WasmBtrTransferCtxBridge, Uint8Array] {
-    const ctx = this.engine.beginTransferSend(transferId, _remoteRatchetPub);
-    this.activeCtx = new WasmBtrTransferCtxBridge(ctx);
-    return [this.activeCtx, new Uint8Array(ctx.localRatchetPub())];
-  }
-
+  /** Begin receive transfer. Sets activeTransferCtx. */
   beginReceive(
     transferId: Uint8Array,
-    senderRatchetPub: Uint8Array,
+    remoteRatchetPub: Uint8Array,
     localSecretKey: Uint8Array,
-  ): WasmBtrTransferCtxBridge {
-    // Pass localSecretKey to Rust so it does scalarMult(localSk, senderPub)
-    // matching the TS BtrTransferAdapter.beginReceive() DH behavior exactly.
-    const ctx = this.engine.beginTransferReceive(transferId, senderRatchetPub, localSecretKey);
-    this.activeCtx = new WasmBtrTransferCtxBridge(ctx);
+  ): void {
+    const ctx = this.engine.beginTransferReceive(transferId, remoteRatchetPub, localSecretKey);
+    this.activeCtx = new TransferCtxBridge(ctx);
+    this.generation = this.engine.ratchetGeneration();
+  }
+
+  get activeTransferCtx(): TransferCtxBridge | null {
     return this.activeCtx;
   }
 
-  buildEnvelopeFields(chainIndex: number, localRatchetPub?: Uint8Array): BtrEnvelopeFields {
-    if (chainIndex === 0 && localRatchetPub) {
-      return {
-        ratchet_public_key: toBase64(localRatchetPub),
-        ratchet_generation: this.engine.ratchetGeneration(),
-        chain_index: chainIndex,
-      };
-    }
-    return { chain_index: chainIndex };
+  /** Build BTR envelope fields for a chunk. */
+  buildEnvelopeFields(chainIndex: number, ratchetPub?: Uint8Array): BtrEnvelopeFields {
+    return {
+      chain_index: chainIndex,
+      ratchet_public_key: ratchetPub ? toBase64(ratchetPub) : undefined,
+      ratchet_generation: ratchetPub ? this.generation : undefined,
+    };
   }
 
   endTransfer(): void {
-    this.activeCtx?.cleanupComplete();
-    this.activeCtx = null;
     this.engine.endTransfer();
+    this.activeCtx = null;
   }
 
   cancelTransfer(): void {
-    this.activeCtx?.cleanupCancel();
+    this.engine.endTransfer();
     this.activeCtx = null;
   }
 
   cleanupDisconnect(): void {
-    this.activeCtx?.cleanupCancel();
-    this.activeCtx = null;
     this.engine.cleanupDisconnect();
+    this.activeCtx = null;
   }
 }
 
 /**
- * Factory: create the best available BTR adapter.
- * Returns WasmBtrTransferAdapter (Rust authority) if WASM is initialized,
- * otherwise falls back to BtrTransferAdapter (TS authority).
- */
-/**
- * Create a BTR adapter backed by Rust/WASM authority.
- *
- * Returns null if WASM BTR is unavailable. In that case, BTR capability
- * should not be advertised and transfers use static NaCl box encryption.
- * The TS BTR fallback has been removed (RUST-AUTHORITY-MIGRATION-2) —
- * Rust/WASM is the only BTR authority.
+ * Create a BTR adapter. Returns WASM-backed adapter or null if WASM unavailable.
  */
 export function createBtrAdapter(sharedSecret: Uint8Array): WasmBtrTransferAdapter | null {
   const engine = createWasmBtrEngine(sharedSecret);

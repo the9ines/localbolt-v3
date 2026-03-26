@@ -6,7 +6,7 @@
  * polluting the shared AppState type.
  */
 
-import type { VerificationInfo } from '@the9ines/bolt-transport-web';
+import type { VerificationInfo } from '@the9ines/localbolt-browser';
 
 type Listener = (info: VerificationInfo) => void;
 

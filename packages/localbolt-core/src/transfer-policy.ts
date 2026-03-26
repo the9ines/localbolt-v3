@@ -10,7 +10,7 @@
  *   mismatch   → transfer BLOCKED (fail-closed, connection should already be down)
  */
 
-import type { VerificationInfo } from '@the9ines/bolt-transport-web';
+import type { VerificationInfo } from '@the9ines/localbolt-browser';
 
 export function isTransferAllowed(
   verificationState: VerificationInfo['state'],
