@@ -379,6 +379,10 @@ function handleApprovalSignal(signal: SignalMessage) {
           onReceiveFile: handleFileReceive,
           onProgress: handleReceiveProgress,
           onError: handleConnectionError,
+          onDisconnect: () => {
+            console.log('[SECURE-DIRECT] WT transport disconnected by peer');
+            disconnect();
+          },
           btrEnabled: true,
         });
 
@@ -551,6 +555,10 @@ function acceptRequest() {
       onReceiveFile: handleFileReceive,
       onProgress: handleReceiveProgress,
       onError: handleConnectionError,
+      onDisconnect: () => {
+        console.log('[SECURE-DIRECT] WT transport disconnected by peer');
+        disconnect();
+      },
       btrEnabled: true,
     });
 
