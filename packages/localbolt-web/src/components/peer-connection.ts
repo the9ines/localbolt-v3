@@ -387,6 +387,7 @@ function handleApprovalSignal(signal: SignalMessage) {
           clearTimeout(slowTimer);
           if (ok) {
             markConnected();
+            setDirectTransportRef(wtTransportRef as any); // wire for file upload
             const { peers } = store.getState();
             const connDevice = peers.find((p) => p.peerCode === signal.from) || null;
             store.setState({
@@ -557,6 +558,7 @@ function acceptRequest() {
       if (!isCurrentGeneration(gen)) return;
       if (ok) {
         markConnected();
+        setDirectTransportRef(wtTransportRef as any); // wire for file upload
         const { peers } = store.getState();
         const connDevice = peers.find((p) => p.peerCode === incomingRequest.peerCode) || null;
         store.setState({
