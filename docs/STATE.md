@@ -18,7 +18,7 @@
 - **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer blocked — must verify or pin first), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error). Session orchestration layer (`session-state.ts` in `@the9ines/localbolt-core`) enforces phase machine and generation-based race guards; transfer gating via `isTransferAllowed()` pure function aligned with verification policy (v3.0.71).
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
-- **Native**: Tauri v2 (macOS, iOS, Windows, Linux, Android)
+- **Native**: Tauri v2 path **retired**. Native desktop is bolt-ui (transitional) / localbolt-app SwiftUI (future).
 
 ## Packages
 - `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 54 tests.
@@ -27,7 +27,7 @@
 - **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
 - **Test suite**: 145 tests total — 70 in localbolt-core, 75 in localbolt-web (5 test files). Pre-existing failures: 2 (faq.test.ts DOM env, app.test.ts path alias — unrelated)
-- `apps/tauri` — Tauri v2 native apps (scaffolded, config pointing to localbolt-web)
+- `apps/tauri` — Tauri v2 native apps (**retired** — native desktop is now bolt-ui / localbolt-app SwiftUI path)
 
 ## Key Dependencies
 - **Core runtime** (1): @the9ines/bolt-transport-web (0.6.2)
