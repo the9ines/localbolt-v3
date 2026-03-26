@@ -1,5 +1,5 @@
 import { createPeerConnection } from '@/components/peer-connection';
-import { createFileUpload, store } from '@the9ines/bolt-transport-web';
+import { createFileUpload, store } from '@the9ines/localbolt-browser';
 import { getVerificationState, onVerificationStateChange, isTransferAllowed } from '@the9ines/localbolt-core';
 
 export function createTransfer(): HTMLElement {

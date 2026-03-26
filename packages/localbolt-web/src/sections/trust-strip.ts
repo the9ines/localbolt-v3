@@ -1,4 +1,4 @@
-import { icons } from '@the9ines/bolt-transport-web';
+import { icons } from '@the9ines/localbolt-browser';
 
 export function createTrustStrip(): HTMLElement {
   const section = document.createElement('section');

@@ -1,4 +1,4 @@
-import { icons } from '@the9ines/bolt-transport-web';
+import { icons } from '@the9ines/localbolt-browser';
 
 export function createHowItWorks(): HTMLElement {
   const section = document.createElement('section');

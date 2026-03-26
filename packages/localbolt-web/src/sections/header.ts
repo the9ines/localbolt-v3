@@ -1,4 +1,4 @@
-import { store } from '@the9ines/bolt-transport-web';
+import { store } from '@the9ines/localbolt-browser';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');

@@ -1,0 +1,26 @@
+{
+  "name": "@the9ines/localbolt-browser",
+  "version": "0.1.0",
+  "description": "Product UI components and state for LocalBolt browser apps",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@the9ines/bolt-transport-web": ">=0.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@the9ines/bolt-transport-web": "^0.7.14"
+  },
+  "license": "MIT"
+}
