@@ -12,3 +12,9 @@ coverage/
 
 # Local Netlify folder
 .netlify
+.gitnexus
+
+# Claude Code workspace artifacts
+.claude/
+CLAUDE.md
+AGENTS.md
