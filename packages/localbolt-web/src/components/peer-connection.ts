@@ -5,6 +5,7 @@ import {
   createConnectionStatus, createDeviceDiscovery, setWebrtcRef, setDirectTransportRef,
   IndexedDBPinStore, createVerificationStatus,
   BrowserAppTransport,
+  WtDataTransport,
 } from '@the9ines/bolt-transport-web';
 import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
@@ -18,16 +19,26 @@ import {
 let signalingRef: DualSignaling | null = null;
 let rtcServiceRef: WebRTCService | null = null;
 let directTransportRef: BrowserAppTransport | null = null;
+let wtTransportRef: WtDataTransport | null = null;
 
 /** wsUrl received from a desktop peer's connection_request or connection_accepted. */
 let pendingDesktopWsUrl: string | null = null;
+/** wtUrl + certHash received from a desktop peer (SECURE-DIRECT-1). */
+let pendingDesktopWtUrl: string | null = null;
+let pendingDesktopCertHash: string | null = null;
 
 /** Whether a ws:// direct URL is reachable from the current origin.
  *  HTTPS pages cannot connect to ws:// (mixed content — browser blocks it). */
 function canUseDirectWs(url: string): boolean {
   if (window.location.protocol !== 'https:') return true;
-  // From HTTPS, only wss:// is allowed
   return url.startsWith('wss://');
+}
+
+/** Whether WebTransport with cert-hash pinning is available and applicable. */
+function canUseSecureDirect(wtUrl: string | null, certHash: string | null): boolean {
+  if (!wtUrl || !certHash) return false;
+  if (typeof globalThis.WebTransport === 'undefined') return false;
+  return true;
 }
 
 /** Generation captured when the current WebRTC service was created. */
@@ -258,13 +269,18 @@ function handleApprovalSignal(signal: SignalMessage) {
         signalingRef?.sendSignal('connection_declined', { reason: 'busy' }, signal.from);
         return;
       }
-      // Capture desktop peer's WS endpoint URL if provided
+      // Capture desktop peer's endpoint URLs
       pendingDesktopWsUrl = signal.data.wsUrl || null;
+      pendingDesktopWtUrl = signal.data.wtUrl || null;
+      pendingDesktopCertHash = signal.data.certHash || null;
+      if (pendingDesktopWtUrl && pendingDesktopCertHash) {
+        console.log('[APPROVAL] Desktop peer provides wtUrl:', pendingDesktopWtUrl, 'certHash:', pendingDesktopCertHash.slice(0, 16) + '...');
+      }
       if (pendingDesktopWsUrl) {
         if (canUseDirectWs(pendingDesktopWsUrl)) {
           console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
-        } else {
-          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked — HTTPS origin, will use WebRTC)');
+        } else if (!canUseSecureDirect(pendingDesktopWtUrl, pendingDesktopCertHash)) {
+          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked — HTTPS origin, no WT available, will use WebRTC)');
         }
       }
 
@@ -287,11 +303,10 @@ function handleApprovalSignal(signal: SignalMessage) {
       const { connectingTo } = store.getState();
       if (currentPhase !== 'requesting' || connectingTo !== signal.from) return; // stale
 
-      // Check if the accepting peer provides a direct WS endpoint (desktop app)
+      // Extract desktop peer endpoints from accepted signal
       const desktopWsUrl = signal.data?.wsUrl as string | undefined;
-      if (desktopWsUrl && !canUseDirectWs(desktopWsUrl)) {
-        console.log('[DIRECT] Skipping ws:// direct transport from HTTPS origin — mixed content policy. Falling back to WebRTC.');
-      }
+      const desktopWtUrl = signal.data?.wtUrl as string | undefined;
+      const desktopCertHash = signal.data?.certHash as string | undefined;
 
       // Transition session to connecting
       beginConnecting(signal.from);
@@ -303,8 +318,10 @@ function handleApprovalSignal(signal: SignalMessage) {
         }
       }, 10000);
 
+      // ── Transport selection: WS direct → WT secure direct → WebRTC fallback ──
+
       if (desktopWsUrl && canUseDirectWs(desktopWsUrl)) {
-        // ── Direct browser↔desktop transport via BrowserAppTransport ──
+        // Path 1: Direct WS (localhost / HTTP LAN only)
         console.log('[DIRECT] Using BrowserAppTransport to', desktopWsUrl);
         const gen = getGeneration();
 
@@ -326,7 +343,7 @@ function handleApprovalSignal(signal: SignalMessage) {
           if (!isCurrentGeneration(gen)) return;
           clearTimeout(slowTimer);
           markConnected();
-          setDirectTransportRef(directTransportRef); // wire for file upload
+          setDirectTransportRef(directTransportRef);
           const { peers } = store.getState();
           const connDevice = peers.find((p) => p.peerCode === signal.from) || null;
           store.setState({
@@ -337,7 +354,7 @@ function handleApprovalSignal(signal: SignalMessage) {
             incomingRequest: null,
             showDeviceList: false,
           });
-        }).catch((error) => {
+        }).catch(() => {
           if (!isCurrentGeneration(gen)) return;
           clearTimeout(slowTimer);
           store.setState({ connectingTo: null, connectingPhase: null });
@@ -348,7 +365,68 @@ function handleApprovalSignal(signal: SignalMessage) {
         break;
       }
 
-      // ── Standard browser↔browser WebRTC path ──
+      if (canUseSecureDirect(desktopWtUrl ?? null, desktopCertHash ?? null)) {
+        // Path 2: Secure direct via WebTransport with cert-hash pinning (HTTPS origins)
+        console.log('[SECURE-DIRECT] Using WtDataTransport to', desktopWtUrl, 'with cert-hash pinning');
+        const gen = getGeneration();
+
+        wtTransportRef = new WtDataTransport({
+          daemonUrl: desktopWtUrl!,
+          certHashHex: desktopCertHash!,
+          connectTimeout: 10000,
+          identityPublicKey: identityRef?.publicKey,
+          onVerification: handleVerificationState,
+          onReceiveFile: handleFileReceive,
+          onProgress: handleReceiveProgress,
+          onError: handleConnectionError,
+          btrEnabled: true,
+        });
+
+        wtTransportRef.connect().then((ok) => {
+          if (!isCurrentGeneration(gen)) return;
+          clearTimeout(slowTimer);
+          if (ok) {
+            markConnected();
+            const { peers } = store.getState();
+            const connDevice = peers.find((p) => p.peerCode === signal.from) || null;
+            store.setState({
+              isConnected: true,
+              connectedDevice: connDevice,
+              connectingTo: null,
+              connectingPhase: null,
+              incomingRequest: null,
+              showDeviceList: false,
+            });
+          } else {
+            console.log('[SECURE-DIRECT] WT connect failed, falling back to WebRTC');
+            store.setState({ connectingTo: null, connectingPhase: null });
+            // Fall back to WebRTC
+            const rtcService = createFreshRtcService();
+            if (rtcService) {
+              rtcService.connect(signal.from).catch(() => {
+                if (!isCurrentGeneration(gen)) return;
+                store.setState({ connectingTo: null, connectingPhase: null });
+                showToast('Connection Failed', 'Unable to connect. Please try again.', 'destructive');
+                resetSession();
+              });
+            }
+          }
+        }).catch(() => {
+          if (!isCurrentGeneration(gen)) return;
+          clearTimeout(slowTimer);
+          console.log('[SECURE-DIRECT] WT connect error, falling back to WebRTC');
+          store.setState({ connectingTo: null, connectingPhase: null });
+          resetSession();
+        });
+
+        break;
+      }
+
+      if (desktopWsUrl && !canUseDirectWs(desktopWsUrl)) {
+        console.log('[DIRECT] ws:// blocked from HTTPS origin, no WT available — falling back to WebRTC');
+      }
+
+      // ── Path 3: Standard browser↔browser WebRTC fallback ──
       const service = createFreshRtcService();
       if (!service) return;
 
@@ -414,16 +492,20 @@ function acceptRequest() {
 
   beginConnecting(incomingRequest.peerCode);
 
-  if (pendingDesktopWsUrl && canUseDirectWs(pendingDesktopWsUrl)) {
-    // ── Desktop peer: use direct BrowserAppTransport ──
-    console.log('[DIRECT] Accepting desktop request, connecting to', pendingDesktopWsUrl);
-    const wsUrl = pendingDesktopWsUrl;
-    pendingDesktopWsUrl = null;
+  // Transport selection: WS direct → WT secure direct → WebRTC fallback
+  const wtUrl = pendingDesktopWtUrl;
+  const certHash = pendingDesktopCertHash;
+  const wsUrl = pendingDesktopWsUrl;
+  pendingDesktopWsUrl = null;
+  pendingDesktopWtUrl = null;
+  pendingDesktopCertHash = null;
 
-    // Send acceptance (desktop will know we connected)
-    signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
-    store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
+  signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
+  store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
 
+  if (wsUrl && canUseDirectWs(wsUrl)) {
+    // Path 1: Direct WS (localhost / HTTP LAN)
+    console.log('[DIRECT] Accepting desktop request, connecting to', wsUrl);
     const gen = getGeneration();
     directTransportRef = new BrowserAppTransport({
       daemonUrl: wsUrl,
@@ -439,7 +521,7 @@ function acceptRequest() {
     directTransportRef.connect().then(() => {
       if (!isCurrentGeneration(gen)) return;
       markConnected();
-      setDirectTransportRef(directTransportRef); // wire for file upload
+      setDirectTransportRef(directTransportRef);
       const { peers } = store.getState();
       const connDevice = peers.find((p) => p.peerCode === incomingRequest.peerCode) || null;
       store.setState({
@@ -455,11 +537,49 @@ function acceptRequest() {
       showToast('Connection Failed', 'Unable to connect to desktop app.', 'destructive');
       resetSession();
     });
+  } else if (canUseSecureDirect(wtUrl, certHash)) {
+    // Path 2: Secure direct via WebTransport (HTTPS origins)
+    console.log('[SECURE-DIRECT] Accepting via WtDataTransport to', wtUrl);
+    const gen = getGeneration();
+    wtTransportRef = new WtDataTransport({
+      daemonUrl: wtUrl!,
+      certHashHex: certHash!,
+      connectTimeout: 10000,
+      identityPublicKey: identityRef?.publicKey,
+      onVerification: handleVerificationState,
+      onReceiveFile: handleFileReceive,
+      onProgress: handleReceiveProgress,
+      onError: handleConnectionError,
+      btrEnabled: true,
+    });
+
+    wtTransportRef.connect().then((ok) => {
+      if (!isCurrentGeneration(gen)) return;
+      if (ok) {
+        markConnected();
+        const { peers } = store.getState();
+        const connDevice = peers.find((p) => p.peerCode === incomingRequest.peerCode) || null;
+        store.setState({
+          isConnected: true,
+          connectedDevice: connDevice,
+          connectingTo: null,
+          connectingPhase: null,
+          showDeviceList: false,
+        });
+      } else {
+        console.log('[SECURE-DIRECT] WT connect failed');
+        store.setState({ connectingTo: null, connectingPhase: null });
+        showToast('Connection Failed', 'Unable to establish secure direct connection.', 'destructive');
+        resetSession();
+      }
+    }).catch(() => {
+      if (!isCurrentGeneration(gen)) return;
+      store.setState({ connectingTo: null, connectingPhase: null });
+      resetSession();
+    });
   } else {
-    // ── Standard browser↔browser WebRTC path ──
+    // Path 3: Standard browser↔browser WebRTC fallback
     createFreshRtcService();
-    signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
-    store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
   }
 }
 
@@ -496,6 +616,10 @@ function disconnect() {
     directTransportRef.disconnect();
     directTransportRef = null;
     setDirectTransportRef(null);
+  }
+  if (wtTransportRef) {
+    wtTransportRef.disconnect();
+    wtTransportRef = null;
   }
   pendingDesktopWsUrl = null;
   // Canonical reset — clears all state via session-state
