@@ -1,4 +1,4 @@
-import { initPolicyAdapter } from '@the9ines/bolt-transport-web';
+import { initPolicyAdapter } from '@the9ines/localbolt-browser';
 import { icons } from '@the9ines/localbolt-browser';
 
 function createPrivacyDialog(): HTMLDialogElement {

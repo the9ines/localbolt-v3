@@ -34,3 +34,37 @@ export { IndexedDBIdentityStore, getOrCreateIdentity, zeroizeIdentityKey } from 
 export type { IdentityPersistence } from './services/identity/identity-store.js';
 export { IndexedDBPinStore } from './services/identity/pin-store.js';
 export type { PinPersistence, PinRecord, PinVerifyResult } from './services/identity/pin-store.js';
+
+// WebRTC (legacy tribute — browser↔browser)
+export { default as WebRTCService } from './services/webrtc/WebRTCService.js';
+export type { TransferProgress, TransferStats, WebRTCServiceOptions, VerificationInfo, VerificationState } from './services/webrtc/WebRTCService.js';
+
+// WS/WT Transport (forward-path browser↔app)
+export { WsDataTransport, WtDataTransport, BrowserAppTransport } from './services/ws-transport/index.js';
+export type { WsDataTransportOptions, WtDataTransportOptions, DataTransport, BrowserAppTransportOptions } from './services/ws-transport/index.js';
+
+// Platform / Lib
+export {
+  detectDevice,
+  getDeviceName as getPlatformDeviceName,
+  getMaxChunkSize,
+  getPlatformICEServers,
+  getLocalOnlyRTCConfig,
+  isPrivateIP,
+  isLocalCandidate,
+} from './lib/platform-utils.js';
+
+// Protocol WASM
+export { initProtocolWasm, getProtocolAuthorityMode } from './services/webrtc/ProtocolWasmLoader.js';
+export type { ProtocolAuthorityMode } from './services/webrtc/ProtocolWasmLoader.js';
+
+// Transfer Metrics
+export { setTransferMetricsEnabled } from './services/webrtc/transferMetrics.js';
+
+// Policy
+export { initPolicyAdapter, getPolicyAdapter } from './services/webrtc/PolicyAdapter.js';
+export type { PolicyAdapter, ScheduleDecision, StallResult, ProgressResult } from './services/webrtc/PolicyAdapter.js';
+
+// Error types
+export { SignalingError } from './types/webrtc-errors.js';
+export { WebRTCError, ConnectionError, TransferError, EncryptionError } from './types/webrtc-errors.js';

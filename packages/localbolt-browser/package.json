@@ -16,12 +16,10 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@the9ines/bolt-transport-web": ">=0.7.0",
     "@the9ines/bolt-core": ">=0.6.0"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "@the9ines/bolt-transport-web": "^0.7.14",
     "@the9ines/bolt-core": "^0.6.4"
   },
   "license": "MIT"

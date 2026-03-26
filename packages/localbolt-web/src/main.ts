@@ -1,5 +1,5 @@
 import './index.css';
-import { initProtocolWasm, setTransferMetricsEnabled } from '@the9ines/bolt-transport-web';
+import { initProtocolWasm, setTransferMetricsEnabled } from '@the9ines/localbolt-browser';
 import { createApp } from './app';
 
 // PF2: Enable transfer metrics for baseline measurement.
