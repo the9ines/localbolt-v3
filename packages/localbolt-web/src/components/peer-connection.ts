@@ -1,8 +1,6 @@
 import { generateSecurePeerCode } from '@the9ines/bolt-core';
 import {
-  DualSignaling, detectDeviceType, getDeviceName,
   WebRTCService, WebRTCError, SignalingError, detectDevice,
-  IndexedDBPinStore,
   BrowserAppTransport,
   WtDataTransport,
 } from '@the9ines/bolt-transport-web';
@@ -11,6 +9,8 @@ import {
   store, showToast,
   createConnectionStatus, createDeviceDiscovery, setWebrtcRef, setDirectTransportRef,
   createVerificationStatus,
+  DualSignaling, detectDeviceType, getDeviceName,
+  IndexedDBPinStore,
 } from '@the9ines/localbolt-browser';
 import { initIdentity } from '@/services/identity';
 import {

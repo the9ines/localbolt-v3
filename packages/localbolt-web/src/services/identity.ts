@@ -9,7 +9,7 @@
  * IndexedDB. Users on shared devices should use private/incognito windows.
  */
 
-import { IndexedDBIdentityStore, getOrCreateIdentity } from '@the9ines/bolt-transport-web';
+import { IndexedDBIdentityStore, getOrCreateIdentity } from '@the9ines/localbolt-browser';
 import type { IdentityKeyPair } from '@the9ines/bolt-core';
 
 const identityStore = new IndexedDBIdentityStore();

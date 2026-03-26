@@ -1,7 +1,7 @@
 {
   "name": "@the9ines/localbolt-browser",
   "version": "0.1.0",
-  "description": "Product UI components and state for LocalBolt browser apps",
+  "description": "Browser-layer components, signaling, persistence, and state for LocalBolt web apps",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,11 +16,13 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@the9ines/bolt-transport-web": ">=0.7.0"
+    "@the9ines/bolt-transport-web": ">=0.7.0",
+    "@the9ines/bolt-core": ">=0.6.0"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "@the9ines/bolt-transport-web": "^0.7.14"
+    "@the9ines/bolt-transport-web": "^0.7.14",
+    "@the9ines/bolt-core": "^0.6.4"
   },
   "license": "MIT"
 }
