@@ -8,8 +8,11 @@ Source code for the LocalBolt website and cloud signaling server. Encrypted peer
 
 ```
 packages/
-  localbolt-web/     # Website frontend (Vanilla TypeScript, Tailwind, Vite)
-  localbolt-signal/  # Rust signaling server (Tokio + Tungstenite WebSocket)
+  bolt-core-browser/   # Browser crypto primitives (@the9ines/bolt-core)
+  localbolt-browser/   # Browser transport, signaling, UI, state (@the9ines/localbolt-browser)
+  localbolt-core/      # Session orchestration, verification state (@the9ines/localbolt-core)
+  localbolt-web/       # Website frontend (Vanilla TypeScript, Tailwind, Vite)
+  localbolt-signal/    # Rust signaling server (Tokio + Tungstenite WebSocket)
 ```
 
 ## Features
@@ -28,7 +31,6 @@ packages/
 **Web frontend:**
 
 ```bash
-cd packages/localbolt-web
 npm install
 npm run dev
 ```
@@ -38,6 +40,15 @@ npm run dev
 ```bash
 cd packages/localbolt-signal
 cargo run --release
+```
+
+## Build
+
+The workspace builds in dependency order:
+
+```bash
+npm run build
+# bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web
 ```
 
 ## Deployment
@@ -61,7 +72,7 @@ LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-pro
 |-------------|-----------|
 | Ecosystem governance (mirror) | [bolt-ecosystem](https://github.com/the9ines/bolt-ecosystem) |
 | Protocol spec | [bolt-protocol](https://github.com/the9ines/bolt-protocol) |
-| SDK dependency | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) (TypeScript) |
+| SDK (Rust) | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) |
 | Hosted rendezvous | [bolt-rendezvous](https://github.com/the9ines/bolt-rendezvous) (endpoint only) |
 | Lite self-hosted | [localbolt](https://github.com/the9ines/localbolt) |
 | Native app | [localbolt-app](https://github.com/the9ines/localbolt-app) |
@@ -74,7 +85,7 @@ This is an **open-source** project.
 
 - **[localbolt.app](https://localbolt.app)** — use it now
 - **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
-- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app with embedded signal server
+- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app
 
 ## License
 

@@ -38,16 +38,16 @@ jobs:
           cache: npm
       - name: Registry mapping guard (D5)
         run: bash scripts/check-registry-mapping.sh
-      - name: Transport version pin guard
-        run: bash scripts/check-transport-version-pin.sh
       - run: npm ci
       - name: Lockfile registry guard (D5)
         run: bash scripts/check-lockfile-registry.sh
-      - name: Transport single-install guard
-        run: bash scripts/check-transport-single-install.sh
-      - run: npm test -w packages/localbolt-web -- --coverage
-      - run: npm run build -w packages/localbolt-web
-      - name: Transport drift guard
-        run: bash scripts/check-transport-drift.sh
+      - name: Build workspace (bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web)
+        run: npm run build
+      - name: Test localbolt-browser
+        run: npm test -w packages/localbolt-browser
+      - name: Test localbolt-core
+        run: npm test -w packages/localbolt-core
+      - name: Test localbolt-web
+        run: npm test -w packages/localbolt-web -- --coverage
       - name: Core drift guard
         run: bash scripts/check-core-drift.sh packages/localbolt-web/src

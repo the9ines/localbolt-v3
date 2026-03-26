@@ -21,20 +21,21 @@
 - **Native**: Tauri v2 path **retired**. Native desktop is bolt-ui (transitional) / localbolt-app SwiftUI (future).
 
 ## Packages
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org + GitHub Packages). Owns session state machine, generation guard, verification state bus, and transfer gating policy. Depended on by `localbolt-web` (workspace), `localbolt` (registry), and `localbolt-app` (registry). 54 tests.
-- `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). Depends on `@the9ines/localbolt-core` for session orchestration, verification state, and transfer policy.
-- `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper, v0.1.1); IP-based rooms with private IP grouping, peer code validation/collision detection, keepalive ping support, deployed to Fly.io. bolt-core (0.4.0) as dev-only dependency for peer code parity tests. 36 tests. Cloud URL configured via `VITE_SIGNAL_URL` (no hardcoded fallback — SIG-3)
-- **Deployment**: Netlify (web app, requires `NPM_TOKEN` env var for GitHub Packages auth), Fly.io (signal server)
-- **CI/CD**: GitHub Actions — CI workflow (Rust fmt/clippy/test/build + TS test with coverage enforcement + TS build), Dependabot (npm/cargo/github-actions weekly); all actions pinned by SHA. Coverage thresholds enforced in CI via `vitest run --coverage`. CodeQL SAST was removed (private repo cannot use code scanning without GitHub Advanced Security)
-- **Test suite**: 145 tests total — 70 in localbolt-core, 75 in localbolt-web (5 test files). Pre-existing failures: 2 (faq.test.ts DOM env, app.test.ts path alias — unrelated)
+- `packages/bolt-core-browser` — Browser crypto primitives (`@the9ines/bolt-core` v0.6.5, workspace package). Source rehomed from bolt-core-sdk as part of TS-EXTRACTION-1.
+- `packages/localbolt-browser` — Browser transport, signaling, identity, UI components, state (`@the9ines/localbolt-browser` v0.1.0, workspace package). Extracted from bolt-core-sdk. 344 tests (1 skipped).
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org). Owns session state machine, generation guard, verification state bus, and transfer gating policy. 70 tests.
+- `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). 75 tests.
+- `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper); deployed to Fly.io. 36 tests.
+- **Deployment**: Netlify (web app, workspace build — no NPM_TOKEN required), Fly.io (signal server)
+- **CI/CD**: GitHub Actions — CI workflow builds full workspace chain (bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web), tests all TS packages, Rust fmt/clippy/test/build for signal server. All actions pinned by SHA.
+- **Test suite**: 489 tests total — 344 localbolt-browser, 70 localbolt-core, 75 localbolt-web
 - `apps/tauri` — Tauri v2 native apps (**retired** — native desktop is now bolt-ui / localbolt-app SwiftUI path)
 
 ## Key Dependencies
-- **Core runtime** (1): @the9ines/bolt-transport-web (0.6.2)
-- **Web runtime** (5): @the9ines/bolt-core (0.5.0), @the9ines/bolt-transport-web (0.6.2), @the9ines/localbolt-core (workspace), tweetnacl, tweetnacl-util
-- **Web dev** (10): @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
-- **Signal**: Rust, bolt-rendezvous (canonical, git dep @ rendezvous-v0.2.2-s0-canonical-lib-verified), tokio, tracing-subscriber
-- **Tauri**: @tauri-apps/cli v2, tauri (Rust crate)
+- **Browser layer** (workspace): @the9ines/bolt-core (bolt-core-browser), @the9ines/localbolt-browser
+- **Web runtime** (4): @the9ines/bolt-core (workspace), @the9ines/localbolt-browser (workspace), @the9ines/localbolt-core (workspace), tweetnacl/tweetnacl-util
+- **Web dev**: @types/node, @vitest/coverage-v8, autoprefixer, jsdom, postcss, tailwindcss, tailwindcss-animate, typescript, vite (v7), vitest
+- **Signal**: Rust, bolt-rendezvous (canonical, git dep), tokio, tracing-subscriber
 
 ## UI Components (vanilla TypeScript)
 - **Entry**: `main.ts` → `app.ts` (mounts header, 3-screen layout: hero with scroll arrow, full-viewport transfer card with section-level pulsating bg, SEO content below, footer)
