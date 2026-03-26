@@ -658,6 +658,8 @@ export function createPeerConnection(): HTMLElement {
     onMarkVerified: () => {
       if (directTransportRef) {
         directTransportRef.markPeerVerified();
+      } else if (wtTransportRef) {
+        wtTransportRef.markPeerVerified();
       } else {
         rtcServiceRef?.markPeerVerified();
       }
