@@ -3,7 +3,9 @@ import { store } from '../state/store.js';
 import { showToast } from '../ui/toast.js';
 import { escapeHTML } from '../lib/sanitize.js';
 import { createTransferProgress } from './transfer-progress.js';
-import type { WebRTCService, TransferProgress, BrowserAppTransport } from '@the9ines/bolt-transport-web';
+import type WebRTCService from '../services/webrtc/WebRTCService.js';
+import type { TransferProgress } from '../services/webrtc/types.js';
+import type { BrowserAppTransport } from '../services/ws-transport/BrowserAppTransport.js';
 
 let webrtcRef: WebRTCService | null = null;
 let directRef: BrowserAppTransport | null = null;

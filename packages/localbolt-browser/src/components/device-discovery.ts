@@ -1,7 +1,7 @@
 import { icons } from '../ui/icons.js';
 import { store } from '../state/store.js';
 import { escapeHTML } from '../lib/sanitize.js';
-import type { DiscoveredDevice } from '@the9ines/bolt-transport-web';
+import type { DiscoveredDevice } from '../services/signaling/SignalingProvider.js';
 
 const deviceIconMap: Record<string, (cls: string) => string> = {
   phone: icons.smartphone,

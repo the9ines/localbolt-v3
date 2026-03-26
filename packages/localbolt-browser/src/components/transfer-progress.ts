@@ -1,6 +1,6 @@
 import { icons } from '../ui/icons.js';
 import { escapeHTML } from '../lib/sanitize.js';
-import type { TransferProgress } from '@the9ines/bolt-transport-web';
+import type { TransferProgress } from '../services/webrtc/types.js';
 
 export function formatSpeed(bytesPerSecond: number): string {
   if (bytesPerSecond === 0) return '0 B/s';

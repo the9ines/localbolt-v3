@@ -1,5 +1,5 @@
 import { escapeHTML } from '../lib/sanitize.js';
-import type { VerificationInfo } from '@the9ines/bolt-transport-web';
+import type { VerificationInfo } from '../services/webrtc/types.js';
 
 export interface VerificationStatusOptions {
   onMarkVerified: () => void;

@@ -1,5 +1,5 @@
-import type { DiscoveredDevice } from '@the9ines/bolt-transport-web';
-import type { TransferProgress } from '@the9ines/bolt-transport-web';
+import type { DiscoveredDevice } from '../services/signaling/SignalingProvider.js';
+import type { TransferProgress } from '../services/webrtc/types.js';
 
 export interface ConnectionRequest {
   peerCode: string;
