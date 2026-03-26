@@ -380,6 +380,7 @@ function handleApprovalSignal(signal: SignalMessage) {
           onProgress: handleReceiveProgress,
           onError: handleConnectionError,
           onDisconnect: () => {
+            if (!wtTransportRef) return; // already cleaned up
             console.log('[SECURE-DIRECT] WT transport disconnected by peer');
             disconnect();
           },
@@ -623,11 +624,12 @@ function disconnect() {
     rtcServiceRef = null;
   }
   if (wtTransportRef) {
-    wtTransportRef.disconnect();
+    const wt = wtTransportRef;
+    // Clear refs BEFORE disconnect to prevent re-entrant onDisconnect loop
     wtTransportRef = null;
-    // directTransportRef may alias wtTransportRef — clear both
     directTransportRef = null;
     setDirectTransportRef(null);
+    wt.disconnect();
   } else if (directTransportRef) {
     directTransportRef.disconnect();
     directTransportRef = null;
