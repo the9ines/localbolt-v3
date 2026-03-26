@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
@@ -20,7 +21,9 @@
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "@the9ines/bolt-core": "^0.6.4"
+    "@the9ines/bolt-core": "^0.6.4",
+    "jsdom": "^26.0.0",
+    "vitest": "^4.0.0"
   },
   "license": "MIT"
 }

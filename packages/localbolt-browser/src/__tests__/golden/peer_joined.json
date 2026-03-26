@@ -1,0 +1,8 @@
+{
+  "type": "peer_joined",
+  "peer": {
+    "peer_code": "DEF456",
+    "device_name": "iPad",
+    "device_type": "tablet"
+  }
+}

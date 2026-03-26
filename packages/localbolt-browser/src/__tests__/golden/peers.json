@@ -1,0 +1,10 @@
+{
+  "type": "peers",
+  "peers": [
+    {
+      "peer_code": "ABC123",
+      "device_name": "MacBook",
+      "device_type": "laptop"
+    }
+  ]
+}

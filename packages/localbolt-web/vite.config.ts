@@ -55,11 +55,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Exclude bolt-transport-web from dep optimization so wasm-bindgen's
+  // Exclude localbolt-browser from dep optimization so wasm-bindgen's
   // `new URL(..., import.meta.url)` resolves to the real node_modules path
   // where the .wasm sibling files exist.
   optimizeDeps: {
-    exclude: ["@the9ines/bolt-transport-web"],
+    exclude: ["@the9ines/localbolt-browser"],
   },
   test: {
     environment: "jsdom",
