@@ -638,7 +638,8 @@ function disconnect() {
   transferTerminal = false;
   resetSession();
   setWebrtcRef(null);
-  // RU5: recovery guidance — reconnect means selecting the device again
+  // Show device list immediately so the UI clearly changes after disconnect
+  store.setState({ showDeviceList: true });
   showToast('Disconnected', 'Select the device again to reconnect.');
 }
 
