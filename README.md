@@ -58,11 +58,16 @@ npm run build
 
 ## Architecture
 
+Two transfer paths:
+
+- **Browser → App** (forward path): connects to the native desktop app's daemon via WebTransport (HTTPS origins) or WebSocket direct (localhost/HTTP origins). Encrypted, daemon-mediated, peer-to-peer.
+- **Browser ↔ Browser** (compatibility path): WebRTC data channels for browser-only file sharing without a native app.
+
 The website connects to both the cloud signal server and any local signal server via `DualSignaling`. This means users of the website can discover:
 
-- Other users on localbolt.app (via cloud signaling)
+- Devices running the native desktop app (via cloud or local signaling) — forward path
+- Other users on localbolt.app (via cloud signaling) — browser↔browser
 - Devices running the self-hosted version on the same LAN (via local signaling)
-- Devices running the native desktop app (via either)
 
 ## Ecosystem
 
