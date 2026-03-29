@@ -18,7 +18,7 @@
 - **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer blocked — must verify or pin first), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error). Session orchestration layer (`session-state.ts` in `@the9ines/localbolt-core`) enforces phase machine and generation-based race guards; transfer gating via `isTransferAllowed()` pure function aligned with verification policy (v3.0.71).
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
-- **Native**: Tauri v2 path **retired**. Native desktop is bolt-ui (transitional) / localbolt-app SwiftUI (future).
+- **Native**: Tauri v2 path **retired**. Forward native path: localbolt-app SwiftUI (NATIVE-SHELL-1 CLOSED). bolt-ui is historical fallback only.
 
 ## Packages
 - `packages/bolt-core-browser` — Browser crypto primitives (`@the9ines/bolt-core` v0.6.5, workspace package). Source rehomed from bolt-core-sdk as part of TS-EXTRACTION-1.
@@ -75,10 +75,10 @@
 - **Phase C6**: DONE — Core drift guard added to CI; `check-core-drift.sh` detects ad-hoc orchestration reimplementation in `packages/localbolt-web/src`; workspace exemption documented (consumer-style guards not applicable — localbolt-v3 is origin workspace) [v3.0.73-c6-hardening]
 - **Phase C7**: DONE — Session UX race-hardening closure. 2 targeted tests added to localbolt-core: rapid 5+ connect/reset cycle monotonicity + late verification callback rejection. Combined with prior evidence (session state machine, generation guards, A→B→C isolation, stale signal rejection). 43 core tests. No runtime changes needed. [v3.0.74-c7-closure]
 - **Phase R1-4**: DONE — Security-focused reconnect integrity tests. 7 tests covering crypto-path integrity around reconnect boundary (generation guard + verification reset + transfer policy) and trust/verification state isolation between consecutive sessions. Core 43→50 tests. [v3.0.79-s-stream-r1-r1.4-security-test-lift]
-- Phase E: Tauri native features (mDNS, local WS, file save)
-- Phase F: Mobile polish + app store submission
-- Phase G: Desktop builds + CI/CD
-- Future: Nostr global signaling
+- ~~Phase E: Tauri native features~~ — RETIRED (Tauri path retired; native features live in localbolt-app)
+- ~~Phase F: Mobile polish + app store~~ — DEFERRED (future governance decision)
+- ~~Phase G: Desktop builds + CI/CD~~ — RETIRED (desktop builds via localbolt-app native shell)
+- Future: Nostr global signaling (not started)
 
 ## Tag History
 | Tag | Hash | Description |
