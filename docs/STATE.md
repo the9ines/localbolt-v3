@@ -1,11 +1,12 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.89-consumer-btr1-p1
-- **Commit**: e34e617
+- **Tag**: v3.0.100-pf3-pf4-perf-tuning
+- **HEAD**: ab880d8
 - **Branch**: main
-- **Date**: 2026-03-11
+- **Date**: 2026-04-07 (state refreshed by GOVERNANCE-CODIFICATION-1)
 - **BTR**: Enabled (`btrEnabled: true` in peer-connection.ts)
+- **WASM**: Rust/WASM protocol authority active (RUSTIFY-BROWSER-CORE-1)
 
 ## Architecture
 - **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
