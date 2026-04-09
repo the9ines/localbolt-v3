@@ -53,13 +53,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Canonical alias: localbolt uses @the9ines/bolt-transport-web (published npm name).
+      // v3 workspace resolves to @the9ines/localbolt-browser (workspace package).
+      // This alias lets v3 consume localbolt's canonical source files byte-identical.
+      "@the9ines/bolt-transport-web": "@the9ines/localbolt-browser",
     },
   },
   // Exclude localbolt-browser from dep optimization so wasm-bindgen's
   // `new URL(..., import.meta.url)` resolves to the real node_modules path
   // where the .wasm sibling files exist.
   optimizeDeps: {
-    exclude: ["@the9ines/localbolt-browser"],
+    exclude: ["@the9ines/localbolt-browser", "@the9ines/bolt-transport-web"],
   },
   test: {
     environment: "jsdom",

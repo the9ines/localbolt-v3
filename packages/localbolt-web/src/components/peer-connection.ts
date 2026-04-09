@@ -7,8 +7,8 @@ import {
   IndexedDBPinStore,
   WebRTCService, WebRTCError, SignalingError,
   BrowserAppTransport, WtDataTransport,
-} from '@the9ines/localbolt-browser';
-import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/localbolt-browser';
+} from '@the9ines/bolt-transport-web';
+import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
 import {
   setVerificationState,
