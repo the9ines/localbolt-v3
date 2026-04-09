@@ -22,7 +22,7 @@
   "devDependencies": {
     "typescript": "^5.7.0",
     "@the9ines/bolt-core": "^0.6.4",
-    "jsdom": "^26.0.0",
+    "jsdom": "^29.0.2",
     "vitest": "^4.0.0"
   },
   "license": "MIT"
