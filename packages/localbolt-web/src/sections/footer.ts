@@ -93,21 +93,27 @@ function createPrivacyDialog(): HTMLDialogElement {
 
 export function createFooter(): HTMLElement {
   const footer = document.createElement('footer');
-  footer.className = 'py-4';
+  footer.className = 'pt-12 pb-4';
 
   const privacyDialog = createPrivacyDialog();
 
   footer.innerHTML = `
-    <div class="container mx-auto px-4 flex items-center justify-center gap-3 text-white/20" style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.05em">
-      <a href="https://github.com/the9ines/localbolt" target="_blank" rel="noopener noreferrer"
-         class="hover:text-white/50 transition-colors">GitHub</a>
-      <span class="text-white/[0.08]">/</span>
-      <button class="privacy-btn hover:text-white/50 transition-colors">Privacy</button>
-      <span class="text-white/[0.08]">/</span>
-      <a href="https://the9ines.com" target="_blank" rel="noopener noreferrer"
-         class="hover:text-[rgb(255,141,197)] transition-colors">the9ines</a>
-      <span class="text-white/[0.08]">/</span>
-      <span class="policy-badge">Policy: ...</span>
+    <div class="container mx-auto px-4 flex flex-col items-center gap-5">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.05em; color:rgba(255,255,255,0.20)">
+        This site is powered by <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer"
+           style="color:#30E6E2" class="hover:opacity-70 transition-opacity">Netlify</a>
+      </div>
+      <div class="flex items-center justify-center gap-3 text-white/20" style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.05em">
+        <a href="https://github.com/the9ines/localbolt" target="_blank" rel="noopener noreferrer"
+           class="hover:text-white/50 transition-colors">GitHub</a>
+        <span class="text-white/[0.08]">/</span>
+        <button class="privacy-btn hover:text-white/50 transition-colors">Privacy</button>
+        <span class="text-white/[0.08]">/</span>
+        <a href="https://the9ines.com" target="_blank" rel="noopener noreferrer"
+           class="hover:text-[rgb(255,141,197)] transition-colors">the9ines</a>
+        <span class="text-white/[0.08]">/</span>
+        <span class="policy-badge">Policy: ...</span>
+      </div>
     </div>
   `;
 
