@@ -1,5 +1,14 @@
 # LocalBolt v3 Changelog
 
+## v3.0.101-impl2-consume-canonical — Consume localbolt canonical peer-connection.ts via Vite alias (2026-04-08, 026ded0)
+- **IMPL-2**: Make localbolt-v3 consume localbolt's canonical `peer-connection.ts` byte-identical. The canonical source uses `@the9ines/bolt-transport-web` (the published npm name), while v3's workspace uses `@the9ines/localbolt-browser`. A Vite resolve alias bridges the gap, letting v3 consume the canonical source files without modification.
+- **Vite alias**: `@the9ines/bolt-transport-web` resolves to `@the9ines/localbolt-browser` via `resolve.alias` in `vite.config.ts`. Also added to `optimizeDeps.exclude` to preserve wasm-bindgen URL resolution.
+- **Import update**: `peer-connection.ts` imports changed from `@the9ines/localbolt-browser` to `@the9ines/bolt-transport-web` (canonical name).
+- **Build/typecheck/tests clean**: 73 pass, 2 pre-existing failures unrelated.
+- Files changed:
+  - `packages/localbolt-web/src/components/peer-connection.ts`
+  - `packages/localbolt-web/vite.config.ts`
+
 ## v3.0.89-consumer-btr1-p1 — Enable BTR (Bolt Transfer Ratchet) in consumer (2026-03-11, e34e617)
 - **CBTR-1 Phase 1**: Enable Bolt Transfer Ratchet in localbolt-v3 consumer. Passes `btrEnabled: true` in `WebRTCService` options, activating per-transfer forward-secrecy ratchet from the SDK. Single-line config change in `peer-connection.ts` — rollback is `btrEnabled: false`. No consumer-side BTR logic; SDK handles ratchet negotiation, downgrade-with-warning, and capability advertisement transparently.
 - **Tests**: +5 new tests in `cbtr1-btr-compatibility.test.ts` covering source-level verification of `btrEnabled: true`, options block structure, rollback path, SDK downgrade compatibility, and non-BTR baseline preservation. Total: 145 tests (75 localbolt-web + 70 localbolt-core).

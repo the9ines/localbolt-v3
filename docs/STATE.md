@@ -1,10 +1,10 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.100-pf3-pf4-perf-tuning
-- **HEAD**: ab880d8
+- **Tag**: v3.0.101-impl2-consume-canonical
+- **HEAD**: 026ded0
 - **Branch**: main
-- **Date**: 2026-04-07 (state refreshed by GOVERNANCE-CODIFICATION-1)
+- **Date**: 2026-04-08
 - **BTR**: Enabled (`btrEnabled: true` in peer-connection.ts)
 - **WASM**: Rust/WASM protocol authority active (RUSTIFY-BROWSER-CORE-1)
 
@@ -158,3 +158,4 @@
 | v3.0.87-domain-rename | 69ec25c | Rename localbolt.site to localbolt.app |
 | v3.0.89-consumer-btr1-p1 | e34e617 | CBTR-1 P1: enable BTR (Bolt Transfer Ratchet) in consumer |
 | v3.0.88-recon-xfer1-phase-a | a7e311b | RECON-XFER-1 Phase A: fix transfer reconnect recovery after mid-transfer disconnect |
+| v3.0.101-impl2-consume-canonical | 026ded0 | IMPL-2: consume localbolt canonical peer-connection.ts via Vite resolve alias |
