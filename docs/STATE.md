@@ -1,8 +1,8 @@
 # LocalBolt v3 — Project State
 
 ## Current Version
-- **Tag**: v3.0.103-netlify-attribution
-- **HEAD**: 2a38651
+- **Tag**: v3.0.104-netlify-logo
+- **HEAD**: 3d25302
 - **Branch**: main
 - **Date**: 2026-04-09
 - **BTR**: Enabled (`btrEnabled: true` in peer-connection.ts)
@@ -160,3 +160,4 @@
 | v3.0.88-recon-xfer1-phase-a | a7e311b | RECON-XFER-1 Phase A: fix transfer reconnect recovery after mid-transfer disconnect |
 | v3.0.101-impl2-consume-canonical | 026ded0 | IMPL-2: consume localbolt canonical peer-connection.ts via Vite resolve alias |
 | v3.0.103-netlify-attribution | 2a38651 | Add Netlify attribution to site footer for Open Source plan compliance |
+| v3.0.104-netlify-logo | 3d25302 | Replace Netlify text with official fullcolor darkmode logo, bump attribution text size and opacity |
