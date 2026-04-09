@@ -8,21 +8,21 @@ export function createFeatures(): HTMLElement {
   const bolt = icons.zap('inline w-2.5 h-2.5 text-gray-500');
 
   const features = [
-    { icon: icons.shield, title: 'End-to-End Encryption', desc: 'Every file is encrypted with NaCl/Curve25519 (same algorithms used by Signal and WireGuard) before transfer. Per-chunk random nonces prevent any pattern analysis.' },
-    { icon: icons.wifi, title: 'WebRTC P2P Transfer', desc: 'Files transfer directly between devices over encrypted WebRTC data channels. Faster and more private than cloud uploads.' },
+    { icon: icons.shield, title: 'End-to-End Encryption', desc: 'Every file is encrypted with NaCl/Curve25519 (same algorithms used by Signal and WireGuard) before transfer. Per-chunk random nonces prevent any pattern analysis. Built on the open-source Bolt Protocol.' },
+    { icon: icons.wifi, title: 'Direct P2P Transfer', desc: 'Files transfer directly between devices over encrypted WebRTC data channels. Browser-to-browser or browser-to-desktop-app. Faster and more private than cloud uploads.' },
     { icon: icons.server, title: 'Zero Server Storage', desc: 'Your files never touch any server. Not during transfer, not after. Zero cloud storage means zero data exposure.' },
-    { icon: icons.laptop, title: 'Universal Compatibility', desc: 'Works across Windows, macOS, Linux, iOS, and Android. Use the website, the native desktop app, or self-host your own instance.' },
-    { icon: icons.lock, title: 'Privacy Focused', desc: "No account, no tracking, no analytics, no data collection. We can't see your files because they never reach us." },
+    { icon: icons.laptop, title: 'Browser &amp; Desktop App', desc: 'Use localbolt.app in any browser or download the native desktop app for macOS. Both connect seamlessly — same encryption, same protocol.' },
+    { icon: icons.lock, title: 'Fully Open Source', desc: "Source code, protocol spec, and cryptographic SDK are all public on GitHub. Audit the code, self-host your own instance, or build on top of bolt-core-sdk." },
     { icon: icons.zap, title: 'Lightning Fast', desc: 'Direct peer connections transfer at local network speed. Same-network transfers never leave your LAN.' },
-    { icon: icons.globe, title: 'Works Everywhere', desc: 'Same network or different networks. Dual signaling discovers devices both locally and across the internet.' },
-    { icon: icons.clock, title: 'Real-time Transfer', desc: 'Live progress tracking and transfer speed monitoring.' },
+    { icon: icons.globe, title: 'Works Everywhere', desc: 'Same network or different networks. Dual signaling discovers devices both locally and across the internet. No account needed.' },
+    { icon: icons.clock, title: 'Real-time Transfer', desc: 'Live progress tracking, transfer speed monitoring, and pause/resume control.' },
   ];
 
   section.innerHTML = `
     <div class="text-center max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold mb-2">End-to-End Encrypted, Zero Trust by Design</h2>
+      <h2 class="text-2xl font-bold mb-2">Open-Source Security, Zero Trust by Design</h2>
       <p class="text-sm text-gray-500 leading-relaxed">
-        LocalBolt uses NaCl/Curve25519 encryption, the same cryptographic standard trusted by Signal and WireGuard, to transfer files directly between devices with zero server storage.
+        LocalBolt uses NaCl/Curve25519 encryption to transfer files directly between devices with zero server storage. The entire stack — from the Bolt Protocol to the cryptographic SDK — is open source.
       </p>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-up">

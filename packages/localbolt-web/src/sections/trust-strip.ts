@@ -8,7 +8,8 @@ export function createTrustStrip(): HTMLElement {
   const signals = [
     { icon: icons.shield('w-3.5 h-3.5 text-neon/60'), label: 'NaCl/Curve25519 Encrypted' },
     { icon: icons.server('w-3.5 h-3.5 text-neon/60'), label: 'Zero Server Storage' },
-    { icon: icons.globe('w-3.5 h-3.5 text-neon/60'), label: 'Cross-Platform' },
+    { icon: icons.lock('w-3.5 h-3.5 text-neon/60'), label: 'Open Source' },
+    { icon: icons.globe('w-3.5 h-3.5 text-neon/60'), label: 'Browser &amp; Desktop' },
     { icon: icons.userX('w-3.5 h-3.5 text-neon/60'), label: 'No Account Needed' },
   ];
 

@@ -7,6 +7,8 @@ const faqs = [
   { q: "What's the maximum file size I can send?", a: 'LocalBolt does not enforce a file size cap. Practical limits are your device storage, memory, and network quality.' },
   { q: 'Does LocalBolt work without internet?', a: 'Yes. LocalBolt ships its own signaling server. When you self-host or run the desktop app, devices on your local network find each other with no internet connection needed. When internet is available, the same signaling server running in the cloud also lets you discover and transfer files to devices on other networks. Both local and cloud discovery happen at the same time, so you always see every reachable device.' },
   { q: 'Can I self-host LocalBolt?', a: 'Yes. LocalBolt is fully open source. Clone the repo from GitHub, run the start script, and you have your own private instance with its own signaling server. Works offline on your LAN with no internet required.' },
+  { q: 'Is LocalBolt open source?', a: 'Yes. LocalBolt is fully open source, built on the Bolt Protocol and bolt-core-sdk. The source code, protocol specification, and cryptographic SDK are all publicly available on GitHub. You can audit the code, self-host your own instance, or build on top of the SDK.' },
+  { q: 'Does LocalBolt have a desktop app?', a: 'Yes. LocalBolt has a native macOS desktop app that connects directly with browser users. Open localbolt.app in your browser on one device and use the desktop app on another — they discover each other automatically and transfer files with the same end-to-end encryption.' },
 ];
 
 export function createFAQ(): HTMLElement {

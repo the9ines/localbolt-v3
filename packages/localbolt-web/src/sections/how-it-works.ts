@@ -6,16 +6,16 @@ export function createHowItWorks(): HTMLElement {
   section.className = 'space-y-6 max-w-4xl mx-auto';
 
   const steps = [
-    { icon: icons.smartphone('w-4 h-4 text-neon/70'), step: '1', title: 'Open on Both Devices', desc: 'Visit localbolt.app on any two devices. Same network or different networks.' },
-    { icon: icons.share2('w-4 h-4 text-neon/70'), step: '2', title: 'Select a Device', desc: 'Devices appear automatically. Tap one to send a connection request.' },
-    { icon: icons.zap('w-4 h-4 text-neon/70'), step: '3', title: 'Transfer Instantly', desc: 'Drag and drop files. NaCl-encrypted, peer-to-peer, no size limits.' },
+    { icon: icons.smartphone('w-4 h-4 text-neon/70'), step: '1', title: 'Open on Both Devices', desc: 'Visit localbolt.app in a browser or use the desktop app. Same network or different networks.' },
+    { icon: icons.share2('w-4 h-4 text-neon/70'), step: '2', title: 'Select a Device', desc: 'Devices appear automatically. Tap one to send an encrypted connection request.' },
+    { icon: icons.zap('w-4 h-4 text-neon/70'), step: '3', title: 'Transfer Directly', desc: 'Drag and drop files. End-to-end encrypted, peer-to-peer, no size limits.' },
   ];
 
   section.innerHTML = `
     <div class="text-center">
       <h2 class="text-2xl font-bold mb-2">How It Works</h2>
       <p class="text-sm text-gray-500">
-        Start sharing files in seconds. No apps, no accounts.
+        Start sharing files in seconds. Browser or desktop app, no accounts needed.
       </p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
