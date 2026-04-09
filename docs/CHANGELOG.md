@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.103-netlify-attribution — Add Netlify attribution to site footer (2026-04-09, 2a38651)
+- **Netlify attribution**: Added "This site is powered by Netlify" line above the existing footer links row, satisfying Netlify Open Source plan attribution requirements. Link uses Netlify brand teal (#30E6E2) with hover opacity transition.
+- **Layout update**: Footer padding changed from `py-4` to `pt-12 pb-4` for visual breathing room. Footer inner content restructured from a single flex row to a stacked column (`flex-col`) with the attribution line on top and the existing GitHub/Privacy/the9ines/Policy links row below.
+- Files changed:
+  - `packages/localbolt-web/src/sections/footer.ts`
+
 ## v3.0.101-impl2-consume-canonical — Consume localbolt canonical peer-connection.ts via Vite alias (2026-04-08, 026ded0)
 - **IMPL-2**: Make localbolt-v3 consume localbolt's canonical `peer-connection.ts` byte-identical. The canonical source uses `@the9ines/bolt-transport-web` (the published npm name), while v3's workspace uses `@the9ines/localbolt-browser`. A Vite resolve alias bridges the gap, letting v3 consume the canonical source files without modification.
 - **Vite alias**: `@the9ines/bolt-transport-web` resolves to `@the9ines/localbolt-browser` via `resolve.alias` in `vite.config.ts`. Also added to `optimizeDeps.exclude` to preserve wasm-bindgen URL resolution.
