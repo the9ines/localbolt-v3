@@ -1,5 +1,13 @@
 # LocalBolt v3 Changelog
 
+## v3.0.104-netlify-logo — Replace Netlify text with official logo in footer attribution (2026-04-09, 3d25302)
+- **Netlify logo**: Replaced "Netlify" text link (teal #30E6E2) with the official Netlify fullcolor darkmode logo (WebP image, 24px height) in the footer attribution line. The logo is wrapped in the same anchor tag linking to netlify.com.
+- **Attribution text bump**: Font size increased from 10px to 12px, text opacity brightened from 20% (`rgba(255,255,255,0.20)`) to 35% (`rgba(255,255,255,0.35)`) for better readability.
+- **Layout**: Attribution div now uses `flex items-center justify-center gap-1.5` for proper vertical alignment between text and logo image.
+- Files changed:
+  - `packages/localbolt-web/src/sections/footer.ts`
+  - `packages/localbolt-web/public/netlify-logo.webp` (new)
+
 ## v3.0.103-netlify-attribution — Add Netlify attribution to site footer (2026-04-09, 2a38651)
 - **Netlify attribution**: Added "This site is powered by Netlify" line above the existing footer links row, satisfying Netlify Open Source plan attribution requirements. Link uses Netlify brand teal (#30E6E2) with hover opacity transition.
 - **Layout update**: Footer padding changed from `py-4` to `pt-12 pb-4` for visual breathing room. Footer inner content restructured from a single flex row to a stacked column (`flex-col`) with the attribution line on top and the existing GitHub/Privacy/the9ines/Policy links row below.

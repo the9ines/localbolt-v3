@@ -99,9 +99,9 @@ export function createFooter(): HTMLElement {
 
   footer.innerHTML = `
     <div class="container mx-auto px-4 flex flex-col items-center gap-5">
-      <div class="flex items-center justify-center gap-1.5" style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; color:rgba(255,255,255,0.35)">
+      <div class="flex items-center justify-center gap-1.5" style="font-family:'JetBrains Mono',monospace; font-size:14px; letter-spacing:0.05em; color:rgba(255,255,255,0.50)">
         This site is powered by <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer"
-           class="hover:opacity-70 transition-opacity inline-flex items-center"><img src="/netlify-logo.webp" alt="Netlify" style="height:24px" /></a>
+           class="hover:opacity-70 transition-opacity inline-flex items-center"><img src="/netlify-logo.webp" alt="Netlify" style="height:30px" /></a>
       </div>
       <div class="flex items-center justify-center gap-3 text-white/20" style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.05em">
         <a href="https://github.com/the9ines/localbolt" target="_blank" rel="noopener noreferrer"
