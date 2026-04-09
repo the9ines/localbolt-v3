@@ -92,6 +92,10 @@ This is an **open-source** project.
 - **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
 - **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app
 
+## Code of Conduct
+
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md).
+
 ## License
 
 MIT — built by [the9ines](https://the9ines.com)
