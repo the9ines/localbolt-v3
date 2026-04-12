@@ -41,10 +41,10 @@ Every commit made by any Claude instance MUST follow this exact workflow:
 
 ## Project Context
 
-- **Repo**: LocalBolt v3 — Encrypted P2P file transfer (WebRTC + Tauri native apps)
-- **Stack**: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, TweetNaCl, Rust (signaling + Tauri)
+- **Repo**: LocalBolt v3 — Encrypted P2P file transfer web app
+- **Stack**: Vanilla TypeScript, Vite, Tailwind CSS, Rust (signaling)
 - **Monorepo**: npm workspaces — `packages/localbolt-web`, `packages/localbolt-signal` (Rust crate)
-- **Apps**: `apps/tauri` (Tauri v2 — iOS, Android, macOS, Windows, Linux)
+- **Native app**: Separate repo ([localbolt-native](https://github.com/the9ines/localbolt-native)) — SwiftUI + Rust, not part of this monorepo
 - **Branch**: `main` (single branch, linear history preferred)
 
 ## Architecture
@@ -52,7 +52,7 @@ Every commit made by any Claude instance MUST follow this exact workflow:
 - **Signaling**: Custom Rust WebSocket server (replaces Supabase). IP-based peer grouping for device discovery.
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305). Per-chunk random nonce.
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered.
-- **Discovery**: WS server groups same-IP peers (web), mDNS for Tauri offline mode.
+- **Discovery**: WS server groups same-IP peers (web).
 - **Future**: Nostr relays for global reach (not implemented yet).
 
 ## Code Standards
