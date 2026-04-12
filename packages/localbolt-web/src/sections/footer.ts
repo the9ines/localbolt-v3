@@ -107,6 +107,9 @@ export function createFooter(): HTMLElement {
         <a href="https://github.com/the9ines/localbolt" target="_blank" rel="noopener noreferrer"
            class="hover:text-white/50 transition-colors">GitHub</a>
         <span class="text-white/[0.08]">/</span>
+        <a href="https://github.com/the9ines/localbolt-native" target="_blank" rel="noopener noreferrer"
+           class="hover:text-white/50 transition-colors">Desktop App</a>
+        <span class="text-white/[0.08]">/</span>
         <button class="privacy-btn hover:text-white/50 transition-colors">Privacy</button>
         <span class="text-white/[0.08]">/</span>
         <a href="https://the9ines.com" target="_blank" rel="noopener noreferrer"
