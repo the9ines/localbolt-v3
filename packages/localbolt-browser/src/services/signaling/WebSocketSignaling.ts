@@ -26,12 +26,12 @@ type ClientMessage = RegisterMessage | SignalOutMessage;
 /** Messages received from server */
 interface PeersMessage {
   type: 'peers';
-  peers: Array<{ peer_code: string; device_name: string; device_type: string }>;
+  peers: Array<{ peer_code: string; device_name: string; device_type: string; wt_url?: string; wt_cert_hash?: string }>;
 }
 
 interface PeerJoinedMessage {
   type: 'peer_joined';
-  peer: { peer_code: string; device_name: string; device_type: string };
+  peer: { peer_code: string; device_name: string; device_type: string; wt_url?: string; wt_cert_hash?: string };
 }
 
 interface PeerLeftMessage {
@@ -328,7 +328,7 @@ export class WebSocketSignaling implements SignalingProvider {
     }
   }
 
-  private toDiscoveredDevice(raw: { peer_code: string; device_name: string; device_type: string }): DiscoveredDevice {
+  private toDiscoveredDevice(raw: { peer_code: string; device_name: string; device_type: string; wt_url?: string; wt_cert_hash?: string }): DiscoveredDevice {
     const validTypes: DiscoveredDevice['deviceType'][] = ['phone', 'tablet', 'laptop', 'desktop'];
     const deviceType = validTypes.includes(raw.device_type as any)
       ? (raw.device_type as DiscoveredDevice['deviceType'])
@@ -338,6 +338,8 @@ export class WebSocketSignaling implements SignalingProvider {
       peerCode: raw.peer_code,
       deviceName: raw.device_name,
       deviceType,
+      wtUrl: raw.wt_url,
+      wtCertHash: raw.wt_cert_hash,
     };
   }
 

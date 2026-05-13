@@ -13,6 +13,10 @@ export interface DiscoveredDevice {
   peerCode: string;
   deviceName: string;
   deviceType: 'phone' | 'tablet' | 'laptop' | 'desktop';
+  /** WebTransport URL (e.g. "https://192.168.4.210:9948"). Null if peer doesn't support WT. */
+  wtUrl?: string;
+  /** WebTransport TLS cert SHA-256 hash hex. Required for browser serverCertificateHashes. */
+  wtCertHash?: string;
 }
 
 export interface SignalingProvider {

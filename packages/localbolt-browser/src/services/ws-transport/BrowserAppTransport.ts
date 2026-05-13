@@ -58,6 +58,8 @@ export interface BrowserAppTransportOptions {
   /** Force-disable WebTransport even if webTransportUrl is set and browser supports it (WTI4 kill-switch).
    *  Default: true when webTransportUrl is provided. Set to false to force WS-only. */
   webTransportEnabled?: boolean;
+  /** Fired when the daemon closes the transport (remote disconnect). */
+  onDisconnect?: () => void;
 
   /**
    * Factory for creating a WebRTC fallback service.
@@ -144,6 +146,7 @@ export class BrowserAppTransport {
         btrEnabled: this.options.btrEnabled,
         onDisconnect: () => {
           console.log('[WT_TRANSPORT] Disconnected from daemon');
+          this.options.onDisconnect?.();
         },
       });
 
@@ -179,6 +182,7 @@ export class BrowserAppTransport {
         webTransportEnabled: !!this.options.webTransportUrl && this.options.webTransportEnabled !== false,
         onDisconnect: () => {
           console.log('[WS_TRANSPORT] Disconnected from daemon');
+          this.options.onDisconnect?.();
         },
       });
 

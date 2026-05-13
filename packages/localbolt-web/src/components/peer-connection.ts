@@ -338,6 +338,11 @@ function handleApprovalSignal(signal: SignalMessage) {
           onTransportMode: (mode) => {
             console.log('[DIRECT] Transport mode:', mode);
           },
+          onDisconnect: () => {
+            if (!directTransportRef) return;
+            console.log('[SECURE-DIRECT] WS transport disconnected by peer');
+            disconnect();
+          },
         });
 
         directTransportRef.connect().then(() => {
@@ -632,9 +637,11 @@ function disconnect() {
     setDirectTransportRef(null);
     wt.disconnect();
   } else if (directTransportRef) {
-    directTransportRef.disconnect();
+    const dt = directTransportRef;
+    // Clear refs BEFORE disconnect to prevent re-entrant onDisconnect loop
     directTransportRef = null;
     setDirectTransportRef(null);
+    dt.disconnect();
   }
   pendingDesktopWsUrl = null;
   // Canonical reset — clears all state via session-state
