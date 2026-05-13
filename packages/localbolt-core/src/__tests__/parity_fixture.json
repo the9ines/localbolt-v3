@@ -1,0 +1,34 @@
+{
+  "contract_version": 1,
+  "session_phases": ["idle", "requesting", "incoming_request", "connecting", "connected"],
+  "session_transitions_legal": [
+    ["idle", "requesting"],
+    ["idle", "incoming_request"],
+    ["requesting", "connecting"],
+    ["requesting", "idle"],
+    ["incoming_request", "connecting"],
+    ["incoming_request", "idle"],
+    ["connecting", "connected"],
+    ["connecting", "idle"],
+    ["connected", "idle"]
+  ],
+  "transfer_phases": ["idle", "sending", "receiving", "complete", "failed"],
+  "transfer_transitions_legal": [
+    ["idle", "sending"],
+    ["idle", "receiving"],
+    ["sending", "complete"],
+    ["sending", "failed"],
+    ["receiving", "complete"],
+    ["receiving", "failed"],
+    ["complete", "idle"],
+    ["failed", "idle"],
+    ["sending", "idle"],
+    ["receiving", "idle"]
+  ],
+  "verification_states": ["unverified", "verified", "legacy"],
+  "transfer_gating": {
+    "unverified": false,
+    "verified": true,
+    "legacy": true
+  }
+}
