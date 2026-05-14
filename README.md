@@ -60,12 +60,12 @@ npm run build
 
 Two transfer paths:
 
-- **Browser → App** (forward path): connects to the native desktop app's daemon via WebTransport (HTTPS origins) or WebSocket direct (localhost/HTTP origins). Encrypted, daemon-mediated, peer-to-peer.
+- **Browser → App** (forward path): connects to the native app daemon via WebTransport (HTTPS origins) or WebSocket direct (localhost/HTTP origins). Encrypted, daemon-mediated, peer-to-peer.
 - **Browser ↔ Browser** (compatibility path): WebRTC data channels for browser-only file sharing without a native app.
 
 The website connects to both the cloud signal server and any local signal server via `DualSignaling`. This means users of the website can discover:
 
-- Devices running the native desktop app (via cloud or local signaling) — forward path
+- Devices running the native app (via cloud or local signaling) — forward path
 - Other users on localbolt.app (via cloud signaling) — browser↔browser
 - Devices running the self-hosted version on the same LAN (via local signaling)
 
@@ -80,7 +80,7 @@ LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-pro
 | SDK (Rust) | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) |
 | Hosted rendezvous | [bolt-rendezvous](https://github.com/the9ines/bolt-rendezvous) (endpoint only) |
 | Lite self-hosted | [localbolt](https://github.com/the9ines/localbolt) |
-| Native app | [localbolt-app](https://github.com/the9ines/localbolt-app) |
+| Native/mobile shells | [localbolt-app](https://github.com/the9ines/localbolt-app) |
 
 This repo does **not** bundle the rendezvous server or daemon. It connects to a hosted endpoint only.
 
@@ -90,7 +90,7 @@ This is an **open-source** project.
 
 - **[localbolt.app](https://localbolt.app)** — use it now
 - **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
-- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native desktop app
+- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native/mobile shells over the shared Rust core
 
 ## Code of Conduct
 

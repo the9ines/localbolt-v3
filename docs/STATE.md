@@ -13,13 +13,14 @@
 - **Signaling**: Dual signaling — `DualSignaling` class connects to both a local WS server (LAN) and a cloud WS server (internet) simultaneously; graceful degradation if either fails. Rust WebSocket server backend is a thin wrapper around canonical `bolt-rendezvous` crate (IP-based room grouping, replaced local protocol/server/room implementation)
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
-- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); peer code persisted in sessionStorage to prevent phantom devices on refresh (DP-3b); mDNS planned for Tauri offline mode
+- **Discovery**: AirDrop-style UI — WS server broadcasts same-IP peers (all private/loopback IPs share "local" room); CGNAT/Tailscale/WireGuard IPs (100.64.0.0/10) also treated as private/local; client shows device discovery popup with clean device names (iPhone, Mac, Windows PC, Android, etc.) and one-tap connect; dual signaling merges peer lists from local + cloud servers; works across different networks (not just same LAN); peer code persisted in sessionStorage to prevent phantom devices on refresh (DP-3b). Native/mobile discovery belongs in localbolt-app.
 - **Connection Flow**: Request → Accept/Decline → WebRTC handshake (approval-based, not auto-connect); SAS verification code available for key confirmation; TOFU identity pinning with fail-closed key mismatch
 - **Identity**: Persistent X25519 identity keypair stored in IndexedDB via SDK (`IndexedDBIdentityStore`). Created once, reused across sessions. Not encrypted-at-rest (shared-device risk documented). TOFU peer pins stored via `IndexedDBPinStore`.
 - **Verification States**: `verified` (pinned + SAS confirmed, transfer allowed), `unverified` (new/unpinned peer, SAS shown, transfer blocked — must verify or pin first), `legacy` (peer lacks identity/HELLO support, transfer allowed with warning), `mismatch` (fail-closed, disconnect + error). Session orchestration layer (`session-state.ts` in `@the9ines/localbolt-core`) enforces phase machine and generation-based race guards; transfer gating via `isTransferAllowed()` pure function aligned with verification policy (v3.0.71).
 - **Security**: CSP meta tag (script/style/connect/img/frame-ancestors); XSS sanitization on all innerHTML user data; peer code validation (alphanumeric, max 16 chars) and collision rejection on signal server; Netlify security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, HSTS preload) for Observatory A+ rating
 - **Logo**: Inline Zap icon + "LocalBolt" text in header (JetBrains Mono, no external SVG file)
-- **Native**: Tauri v2 path **retired**. Forward native path: localbolt-app SwiftUI (NATIVE-SHELL-1 CLOSED). bolt-ui is historical fallback only.
+- **Product role**: Production web app. `localbolt-app` owns native/mobile shells. `localbolt` owns the lightweight self-hosted web app.
+- **Native**: Tauri v2 path **retired**. Forward native/mobile path is `localbolt-app` platform-native shells. bolt-ui/egui is historical only, not a fallback.
 
 ## Packages
 - `packages/bolt-core-browser` — Browser crypto primitives (`@the9ines/bolt-core` v0.6.5, workspace package). Source rehomed from bolt-core-sdk as part of TS-EXTRACTION-1.
@@ -30,7 +31,7 @@
 - **Deployment**: Netlify (web app, workspace build — no NPM_TOKEN required), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow builds full workspace chain (bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web), tests all TS packages, Rust fmt/clippy/test/build for signal server. All actions pinned by SHA.
 - **Test suite**: 489 tests total — 344 localbolt-browser, 70 localbolt-core, 75 localbolt-web
-- `apps/tauri` — Tauri v2 native apps (**retired** — native desktop is now bolt-ui / localbolt-app SwiftUI path)
+- `apps/tauri` — Tauri v2 native apps (**retired** — native/mobile apps live in `localbolt-app`)
 
 ## Key Dependencies
 - **Browser layer** (workspace): @the9ines/bolt-core (bolt-core-browser), @the9ines/localbolt-browser
