@@ -1,6 +1,6 @@
 {
   "name": "@the9ines/localbolt-browser",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browser-layer components, signaling, persistence, and state for LocalBolt web apps",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,7 +14,16 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "wasm"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "peerDependencies": {
     "@the9ines/bolt-core": ">=0.6.0"

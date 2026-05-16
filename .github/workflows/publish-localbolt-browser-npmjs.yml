@@ -1,0 +1,67 @@
+name: Publish @the9ines/localbolt-browser to npmjs.org
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (skip actual publish)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build, Test & Publish to npmjs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+          scope: '@the9ines'
+
+      - name: Pin scope registry to npmjs for publish
+        run: |
+          echo "@the9ines:registry=https://registry.npmjs.org" > .npmrc
+          echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: npm run build --workspace=packages/localbolt-browser
+      - run: npm test -w packages/localbolt-browser
+
+      - name: Publish to npmjs.org
+        if: inputs.dry_run != 'true'
+        working-directory: packages/localbolt-browser
+        run: npm publish --registry https://registry.npmjs.org --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Smoke test from npmjs (no PAT)
+        if: inputs.dry_run != 'true'
+        run: |
+          VERSION=$(node -p "require('${{ github.workspace }}/packages/localbolt-browser/package.json').version")
+          mkdir -p /tmp/smoke-test && cd /tmp/smoke-test
+          npm init -y
+          npm install @the9ines/localbolt-browser@${VERSION} --registry https://registry.npmjs.org
+          node --input-type=module -e "
+            import {
+              AppStore,
+              escapeHTML,
+              formatSize,
+              getPlatformICEServers,
+              isLocalCandidate
+            } from '@the9ines/localbolt-browser';
+            const store = new AppStore();
+            if (!store || escapeHTML('<') !== '&lt;' || formatSize(0) !== '0 B') process.exit(1);
+            if (!Array.isArray(getPlatformICEServers())) process.exit(1);
+            if (typeof isLocalCandidate !== 'function') process.exit(1);
+            console.log('npmjs smoke test passed: ${VERSION}');
+          "
