@@ -15,9 +15,6 @@ jobs:
   publish:
     name: Build, Test & Publish to npmjs
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/localbolt-core
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
@@ -37,11 +34,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: npm run build
-      - run: npm run test
+      - run: npm run build --workspace=packages/localbolt-core
+      - run: npm test -w packages/localbolt-core
 
       - name: Publish to npmjs.org
         if: inputs.dry_run != 'true'
+        working-directory: packages/localbolt-core
         run: npm publish --registry https://registry.npmjs.org --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
