@@ -208,29 +208,6 @@ function handleVerificationState(info: VerificationInfo) {
   }
 }
 
-function normalizePeerCode(value: string): string {
-  return value.trim().replace(/-/g, '').toUpperCase();
-}
-
-function upsertPeer(peerCode: string, data?: any) {
-  const code = normalizePeerCode(peerCode);
-  const { peers } = store.getState();
-  if (peers.some((p) => p.peerCode === code)) return;
-
-  store.setState({
-    peers: [
-      ...peers,
-      {
-        peerCode: code,
-        deviceName: data?.deviceName || `Peer ${code}`,
-        deviceType: data?.deviceType || 'desktop',
-        wtUrl: data?.wtUrl,
-        wtCertHash: data?.certHash,
-      },
-    ],
-  });
-}
-
 function handleFileReceive(file: Blob, filename: string) {
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
@@ -309,7 +286,6 @@ function handleApprovalSignal(signal: SignalMessage) {
       }
 
       // Transition session to incoming_request
-      upsertPeer(signal.from, signal.data);
       receiveRequest(signal.from);
       store.setState({
         incomingRequest: {
@@ -332,7 +308,6 @@ function handleApprovalSignal(signal: SignalMessage) {
       const desktopWsUrl = signal.data?.wsUrl as string | undefined;
       const desktopWtUrl = signal.data?.wtUrl as string | undefined;
       const desktopCertHash = signal.data?.certHash as string | undefined;
-      upsertPeer(signal.from, signal.data);
 
       // Transition session to connecting
       beginConnecting(signal.from);
@@ -521,24 +496,6 @@ function selectPeer(peerCode: string) {
   });
 }
 
-function selectManualPeer(peerCode: string) {
-  if (!signalingRef) return;
-
-  const code = normalizePeerCode(peerCode);
-  if (!code || !/^[A-Z0-9]{1,16}$/.test(code)) {
-    showToast('Invalid Code', 'Enter the code from the other device.', 'destructive');
-    return;
-  }
-  if (code === normalizePeerCode(localPeerCode)) {
-    showToast('Invalid Code', 'Choose a different device code.', 'destructive');
-    return;
-  }
-
-  signalingRef.addManualPeer(code);
-  upsertPeer(code);
-  selectPeer(code);
-}
-
 function acceptRequest() {
   const { incomingRequest } = store.getState();
   if (!incomingRequest || !signalingRef) return;
@@ -555,10 +512,7 @@ function acceptRequest() {
   pendingDesktopWtUrl = null;
   pendingDesktopCertHash = null;
 
-  signalingRef.sendSignal('connection_accepted', {
-    deviceName: getDeviceName(),
-    deviceType: detectDeviceType(),
-  }, incomingRequest.peerCode);
+  signalingRef.sendSignal('connection_accepted', {}, incomingRequest.peerCode);
   store.setState({ incomingRequest: null, connectingTo: incomingRequest.peerCode, connectingPhase: 'establishing' });
 
   if (wsUrl && canUseDirectWs(wsUrl)) {
@@ -711,7 +665,6 @@ export function createPeerConnection(): HTMLElement {
   touchWrap.className = 'touch-manipulation';
   touchWrap.appendChild(createDeviceDiscovery(
     selectPeer,
-    selectManualPeer,
     disconnect,
     acceptRequest,
     declineRequest,

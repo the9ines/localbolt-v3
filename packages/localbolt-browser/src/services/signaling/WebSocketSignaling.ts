@@ -21,13 +21,7 @@ interface SignalOutMessage {
   payload: SignalMessage;
 }
 
-interface ManualSignalOutMessage {
-  type: 'manual_signal';
-  to: string;
-  payload: SignalMessage;
-}
-
-type ClientMessage = RegisterMessage | SignalOutMessage | ManualSignalOutMessage;
+type ClientMessage = RegisterMessage | SignalOutMessage;
 
 /** Messages received from server */
 interface PeersMessage {
@@ -82,7 +76,6 @@ export class WebSocketSignaling implements SignalingProvider {
 
   // Peer tracking
   private peers: Map<string, DiscoveredDevice> = new Map();
-  private manualPeerCodes: Set<string> = new Set();
 
   // Reconnection
   private reconnectAttempt = 0;
@@ -140,9 +133,8 @@ export class WebSocketSignaling implements SignalingProvider {
       throw new Error('WebSocket not connected');
     }
 
-    const normalizedTo = normalizePeerCode(to);
-    const msg: SignalOutMessage | ManualSignalOutMessage = {
-      type: this.manualPeerCodes.has(normalizedTo) ? 'manual_signal' : 'signal',
+    const msg: SignalOutMessage = {
+      type: 'signal',
       to,
       payload: {
         type,
@@ -153,11 +145,7 @@ export class WebSocketSignaling implements SignalingProvider {
     };
 
     this.ws.send(JSON.stringify(msg));
-    console.log(`[WS-SIGNAL] Sent ${type} to ${to}${msg.type === 'manual_signal' ? ' (manual)' : ''}`);
-  }
-
-  addManualPeer(peerCode: string): void {
-    this.manualPeerCodes.add(normalizePeerCode(peerCode));
+    console.log(`[WS-SIGNAL] Sent ${type} to ${to}`);
   }
 
   getPeers(): DiscoveredDevice[] {
@@ -181,7 +169,6 @@ export class WebSocketSignaling implements SignalingProvider {
     }
 
     this.peers.clear();
-    this.manualPeerCodes.clear();
     this.signalCallbacks = [];
     this.peerDiscoveredCallback = null;
     this.peerLostCallback = null;
@@ -336,9 +323,6 @@ export class WebSocketSignaling implements SignalingProvider {
 
   private handleSignal(msg: SignalInMessage): void {
     console.log(`[WS-SIGNAL] Received ${msg.payload.type} from ${msg.from}`);
-    if (!this.peers.has(msg.from)) {
-      this.manualPeerCodes.add(normalizePeerCode(msg.from));
-    }
     for (const cb of this.signalCallbacks) {
       cb(msg.payload);
     }
@@ -403,8 +387,4 @@ export class WebSocketSignaling implements SignalingProvider {
     }
     this.reconnectAttempt = 0;
   }
-}
-
-function normalizePeerCode(peerCode: string): string {
-  return peerCode.replace(/-/g, '').toUpperCase();
 }

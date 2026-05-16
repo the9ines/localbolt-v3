@@ -115,20 +115,6 @@ describe('signaling golden vectors — client → server (encode parity)', () =>
 
     expect(produced).toEqual(fixture);
   });
-
-  it('manual_signal (outbound): TS typed literal matches canonical Rust shape', () => {
-    const produced = {
-      type: 'manual_signal' as const,
-      to: 'XYZ789',
-      payload: { sdp: 'offer-data' },
-    };
-
-    expect(produced).toEqual({
-      type: 'manual_signal',
-      to: 'XYZ789',
-      payload: { sdp: 'offer-data' },
-    });
-  });
 });
 
 // ─── Full Roundtrip: JSON.stringify → JSON.parse structural equality ─────────
@@ -263,31 +249,6 @@ describe('signaling golden vectors — AC-19 error handler validation', () => {
     );
 
     warnSpy.mockRestore();
-    ws.disconnect();
-  });
-
-  it('sendSignal uses manual_signal for explicit manual peers', async () => {
-    const ws = new WebSocketSignaling('ws://localhost:0');
-    const sent: string[] = [];
-    (ws as any).ws = {
-      readyState: WebSocket.OPEN,
-      send: (data: string) => sent.push(data),
-    };
-    (ws as any).localPeerCode = 'LOCAL1';
-
-    ws.addManualPeer('XYZ-789');
-    await ws.sendSignal('connection_request', { deviceName: 'Mac', deviceType: 'desktop' }, 'XYZ789');
-
-    expect(JSON.parse(sent[0])).toMatchObject({
-      type: 'manual_signal',
-      to: 'XYZ789',
-      payload: {
-        type: 'connection_request',
-        from: 'LOCAL1',
-        to: 'XYZ789',
-      },
-    });
-
     ws.disconnect();
   });
 });
