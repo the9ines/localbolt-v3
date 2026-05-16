@@ -219,4 +219,19 @@ describe('AC-DM-13: Signal routing', () => {
     expect(dual.getPeers()).toHaveLength(0);
     expect((dual as any).peerSource.size).toBe(0);
   });
+
+  it('manual peer codes are source-routed without adding automatic discovery entries', () => {
+    const dual = new DualSignaling('ws://localhost:3001', 'wss://cloud.example.com');
+    const cloud = {
+      addManualPeer: vi.fn(),
+    };
+    (dual as any).cloud = cloud;
+    (dual as any).cloudConnected = true;
+
+    dual.addManualPeer('MANU-01');
+
+    expect(cloud.addManualPeer).toHaveBeenCalledWith('MANU01');
+    expect(dual.getPeers()).toHaveLength(0);
+    expect(((dual as any).peerSource as Map<string, string>).get('MANU01')).toBe('cloud');
+  });
 });

@@ -36,7 +36,9 @@ function renderDevicesButton(peerCount: number, onClick: () => void): HTMLElemen
 
 function renderDeviceList(
   peers: DiscoveredDevice[],
+  localPeerCode: string,
   onSelect: (code: string) => void,
+  onManualSelect: (code: string) => void,
   onClose: () => void,
 ): HTMLElement {
   const overlay = document.createElement('div');
@@ -92,6 +94,53 @@ function renderDeviceList(
 
     overlay.appendChild(list);
   }
+
+  const manual = document.createElement('div');
+  manual.className = 'pt-3 border-t border-white/5 space-y-2';
+  manual.innerHTML = `
+    <div class="flex items-center justify-between gap-3">
+      <span class="text-xs text-gray-500">Your code</span>
+      <code class="text-xs tracking-wider text-gray-300">${escapeHTML(formatPeerCode(localPeerCode))}</code>
+    </div>
+  `;
+
+  const form = document.createElement('form');
+  form.className = 'flex gap-2';
+
+  const input = document.createElement('input');
+  input.className = `
+    min-w-0 flex-1 px-3 py-2 rounded-md border border-white/10 bg-dark-accent/60
+    text-sm text-white placeholder:text-gray-600 outline-none focus:border-neon/30
+  `;
+  input.type = 'text';
+  input.inputMode = 'text';
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  input.maxLength = 19;
+  input.placeholder = 'Enter code';
+
+  const submit = document.createElement('button');
+  submit.className = `
+    shrink-0 px-3 py-2 rounded-md bg-neon text-black text-sm font-medium
+    hover:bg-neon/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed
+  `;
+  submit.type = 'submit';
+  submit.textContent = 'Connect';
+  submit.disabled = true;
+
+  input.addEventListener('input', () => {
+    submit.disabled = !isValidPeerCode(input.value);
+  });
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const code = normalizePeerCode(input.value);
+    if (!code) return;
+    onManualSelect(code);
+  });
+
+  form.append(input, submit);
+  manual.appendChild(form);
+  overlay.appendChild(manual);
 
   return overlay;
 }
@@ -212,6 +261,7 @@ function renderConnected(
 
 export function createDeviceDiscovery(
   onSelectPeer: (code: string) => void,
+  onManualPeer: (code: string) => void,
   onDisconnect: () => void,
   onAcceptRequest: () => void,
   onDeclineRequest: () => void,
@@ -242,7 +292,9 @@ export function createDeviceDiscovery(
     } else if (showDeviceList) {
       container.appendChild(renderDeviceList(
         peers,
+        store.getState().peerCode,
         onSelectPeer,
+        onManualPeer,
         () => store.setState({ showDeviceList: false }),
       ));
     } else {
@@ -256,4 +308,19 @@ export function createDeviceDiscovery(
   store.subscribe(render);
   render();
   return container;
+}
+
+function normalizePeerCode(value: string): string {
+  return value.trim().replace(/-/g, '').toUpperCase();
+}
+
+function isValidPeerCode(value: string): boolean {
+  const code = normalizePeerCode(value);
+  return code.length > 0 && code.length <= 16 && /^[A-Z0-9]+$/.test(code);
+}
+
+function formatPeerCode(value: string): string {
+  const code = normalizePeerCode(value);
+  if (code.length <= 4) return code;
+  return code.match(/.{1,4}/g)?.join('-') ?? code;
 }

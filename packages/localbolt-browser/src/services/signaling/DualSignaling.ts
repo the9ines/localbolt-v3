@@ -51,7 +51,7 @@ export class DualSignaling implements SignalingProvider {
       this.local = new WebSocketSignaling(this.localUrl);
       this.local.onPeerDiscovered((peer) => this.handlePeerDiscovered(peer, 'local'));
       this.local.onPeerLost((code) => this.handlePeerLost(code, 'local'));
-      this.local.onSignal((signal) => this.handleSignal(signal));
+      this.local.onSignal((signal) => this.handleSignal(signal, 'local'));
       connectPromises.push(
         this.local.connect(localPeerCode, deviceName, deviceType).then(() => {
           this.localConnected = true;
@@ -65,7 +65,7 @@ export class DualSignaling implements SignalingProvider {
       this.cloud = new WebSocketSignaling(this.cloudUrl);
       this.cloud.onPeerDiscovered((peer) => this.handlePeerDiscovered(peer, 'cloud'));
       this.cloud.onPeerLost((code) => this.handlePeerLost(code, 'cloud'));
-      this.cloud.onSignal((signal) => this.handleSignal(signal));
+      this.cloud.onSignal((signal) => this.handleSignal(signal, 'cloud'));
       connectPromises.push(
         this.cloud.connect(localPeerCode, deviceName, deviceType).then(() => {
           this.cloudConnected = true;
@@ -112,7 +112,8 @@ export class DualSignaling implements SignalingProvider {
   }
 
   async sendSignal(type: SignalMessage['type'], data: any, to: string): Promise<void> {
-    const source = this.peerSource.get(to);
+    const normalizedTo = normalizePeerCode(to);
+    const source = this.peerSource.get(normalizedTo) ?? this.peerSource.get(to);
 
     if (source === 'local' && this.local) {
       return this.local.sendSignal(type, data, to);
@@ -141,6 +142,20 @@ export class DualSignaling implements SignalingProvider {
     }
 
     throw new Error(`Could not send signal to ${to}: no connected server knows this peer`);
+  }
+
+  addManualPeer(peerCode: string): void {
+    const normalized = normalizePeerCode(peerCode);
+
+    if (this.cloud && this.cloudConnected) {
+      this.cloud.addManualPeer(normalized);
+      this.peerSource.set(normalized, 'cloud');
+      return;
+    }
+    if (this.local && this.localConnected) {
+      this.local.addManualPeer(normalized);
+      this.peerSource.set(normalized, 'local');
+    }
   }
 
   getPeers(): DiscoveredDevice[] {
@@ -181,24 +196,32 @@ export class DualSignaling implements SignalingProvider {
     if (this.allPeers.has(peer.peerCode)) return;
 
     this.allPeers.set(peer.peerCode, peer);
-    this.peerSource.set(peer.peerCode, source);
+    this.peerSource.set(normalizePeerCode(peer.peerCode), source);
     console.log(`[DUAL] Peer discovered via ${source}: ${peer.peerCode} (${peer.deviceName})`);
     this.peerDiscoveredCallback?.(peer);
   }
 
   private handlePeerLost(peerCode: string, source: 'local' | 'cloud') {
     // Only remove if this was the source that discovered the peer
-    if (this.peerSource.get(peerCode) !== source) return;
+    const normalized = normalizePeerCode(peerCode);
+    if (this.peerSource.get(normalized) !== source) return;
 
     this.allPeers.delete(peerCode);
-    this.peerSource.delete(peerCode);
+    this.peerSource.delete(normalized);
     console.log(`[DUAL] Peer lost via ${source}: ${peerCode}`);
     this.peerLostCallback?.(peerCode);
   }
 
-  private handleSignal(signal: SignalMessage) {
+  private handleSignal(signal: SignalMessage, source: 'local' | 'cloud') {
+    if (signal.from && !this.peerSource.has(normalizePeerCode(signal.from))) {
+      this.peerSource.set(normalizePeerCode(signal.from), source);
+    }
     for (const cb of this.signalCallbacks) {
       cb(signal);
     }
   }
+}
+
+function normalizePeerCode(peerCode: string): string {
+  return peerCode.replace(/-/g, '').toUpperCase();
 }

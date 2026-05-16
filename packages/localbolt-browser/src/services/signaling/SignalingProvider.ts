@@ -33,6 +33,9 @@ export interface SignalingProvider {
   /** Send a signaling message to a specific peer */
   sendSignal(type: SignalMessage['type'], data: any, to: string): Promise<void>;
 
+  /** Mark a peer code as explicit manual-pairing target when supported. */
+  addManualPeer?(peerCode: string): void;
+
   /** Get currently discovered peers */
   getPeers(): DiscoveredDevice[];
 
