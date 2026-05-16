@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@the9ines/bolt-core": "^0.6.4",
-    "@the9ines/localbolt-browser": "*",
-    "@the9ines/localbolt-core": "0.1.2",
+    "@the9ines/localbolt-browser": "0.1.1",
+    "@the9ines/localbolt-core": "0.1.4",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1"
   },

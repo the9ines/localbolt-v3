@@ -1,6 +1,6 @@
 {
   "name": "@the9ines/localbolt-core",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@the9ines/localbolt-browser": "*"
+    "@the9ines/localbolt-browser": "0.1.1"
   },
   "devDependencies": {
     "typescript": "^5.5.3",

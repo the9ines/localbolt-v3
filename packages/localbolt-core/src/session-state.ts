@@ -19,7 +19,7 @@
 
 import { store } from '@the9ines/localbolt-browser';
 import type { VerificationInfo } from '@the9ines/localbolt-browser';
-import { getVerificationState, resetVerificationState, setVerificationState } from './verification-state';
+import { getVerificationState, resetVerificationState, setVerificationState } from './verification-state.js';
 
 // ── Types ────────────────────────────────────────────────────────────────
 

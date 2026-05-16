@@ -1,5 +1,5 @@
 // ── Session orchestration ────────────────────────────────────────────────
-export type { SessionPhase, SessionSnapshot } from './session-state';
+export type { SessionPhase, SessionSnapshot } from './session-state.js';
 export {
   getPhase,
   getGeneration,
@@ -13,7 +13,7 @@ export {
   markConnected,
   resetSession,
   _resetForTest,
-} from './session-state';
+} from './session-state.js';
 
 // ── Verification state bus ──────────────────────────────────────────────
 export {
@@ -21,7 +21,7 @@ export {
   setVerificationState,
   onVerificationStateChange,
   resetVerificationState,
-} from './verification-state';
+} from './verification-state.js';
 
 // ── Transfer gating policy ──────────────────────────────────────────────
-export { isTransferAllowed } from './transfer-policy';
+export { isTransferAllowed } from './transfer-policy.js';
