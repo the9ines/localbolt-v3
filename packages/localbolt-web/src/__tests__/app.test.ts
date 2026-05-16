@@ -1,4 +1,52 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
+
+const sdkMocks = vi.hoisted(() => {
+  const state: Record<string, unknown> = {
+    signalingConnected: false,
+    isConnected: false,
+    peerCode: null,
+    peers: [],
+    connectingTo: null,
+    connectingPhase: null,
+    connectedDevice: null,
+    incomingRequest: null,
+    showDeviceList: false,
+    transferProgress: null,
+  };
+  const subs: Array<() => void> = [];
+  const addManualPeer = vi.fn();
+  const sendSignal = vi.fn().mockResolvedValue(undefined);
+  let manualPeerHandler: ((code: string) => void) | null = null;
+
+  return {
+    state,
+    subs,
+    addManualPeer,
+    sendSignal,
+    getManualPeerHandler: () => manualPeerHandler,
+    setManualPeerHandler: (handler: (code: string) => void) => {
+      manualPeerHandler = handler;
+    },
+    reset: () => {
+      Object.assign(state, {
+        signalingConnected: false,
+        isConnected: false,
+        peerCode: null,
+        peers: [],
+        connectingTo: null,
+        connectingPhase: null,
+        connectedDevice: null,
+        incomingRequest: null,
+        showDeviceList: false,
+        transferProgress: null,
+      });
+      subs.length = 0;
+      addManualPeer.mockClear();
+      sendSignal.mockClear();
+      manualPeerHandler = null;
+    },
+  };
+});
 
 // ── Mock @the9ines/bolt-core ────────────────────────────────────────────
 vi.mock('@the9ines/bolt-core', () => ({
@@ -7,33 +55,23 @@ vi.mock('@the9ines/bolt-core', () => ({
 
 // ── Mock @the9ines/localbolt-browser ───────────────────────────────────
 vi.mock('@the9ines/localbolt-browser', () => {
-  const state: Record<string, unknown> = {
-    signalingConnected: false,
-    isConnected: false,
-    peerCode: null,
-    peers: [],
-    connectingTo: null,
-    connectedDevice: null,
-    incomingRequest: null,
-    showDeviceList: false,
-    transferProgress: null,
-  };
-  const subs: Array<() => void> = [];
-
   const iconFn = (cls?: string) =>
     `<svg class="${cls ?? ''}"></svg>`;
 
   return {
     store: {
-      getState: () => ({ ...state }),
-      setState: (partial: Record<string, unknown>) => Object.assign(state, partial),
-      subscribe: (fn: () => void) => { subs.push(fn); },
+      getState: () => ({ ...sdkMocks.state }),
+      setState: (partial: Record<string, unknown>) => Object.assign(sdkMocks.state, partial),
+      subscribe: (fn: () => void) => { sdkMocks.subs.push(fn); },
     },
     icons: new Proxy({}, { get: () => iconFn }),
     showToast: vi.fn(),
     createFileUpload: () => document.createElement('div'),
     createConnectionStatus: () => document.createElement('div'),
-    createDeviceDiscovery: () => document.createElement('div'),
+    createDeviceDiscovery: (_onSelect: (code: string) => void, onManual: (code: string) => void) => {
+      sdkMocks.setManualPeerHandler(onManual);
+      return document.createElement('div');
+    },
     setWebrtcRef: vi.fn(),
     detectDeviceType: () => 'desktop',
     getDeviceName: () => 'Test Device',
@@ -44,7 +82,12 @@ vi.mock('@the9ines/localbolt-browser', () => {
       onPeerDiscovered() {}
       onPeerLost() {}
       onSignal() {}
-      sendSignal() { return Promise.resolve(); }
+      sendSignal(type: string, data: unknown, to: string) {
+        return sdkMocks.sendSignal(type, data, to);
+      }
+      addManualPeer(code: string) {
+        sdkMocks.addManualPeer(code);
+      }
       isConnected() { return false; }
     },
     WebRTCService: class {
@@ -79,6 +122,13 @@ vi.mock('@the9ines/localbolt-browser', () => {
 
 // ── Tests ───────────────────────────────────────────────────────────────
 import { createApp } from '../app';
+import { _resetForTest } from '@the9ines/localbolt-core';
+
+beforeEach(() => {
+  sdkMocks.reset();
+  _resetForTest();
+  sessionStorage.clear();
+});
 
 describe('createApp', () => {
   it('renders without throwing', () => {
@@ -90,5 +140,28 @@ describe('createApp', () => {
     const root = document.createElement('div');
     createApp(root);
     expect(root.children.length).toBeGreaterThan(0);
+  });
+
+  it('manual peer code fallback registers manual peer and sends request', async () => {
+    const root = document.createElement('div');
+    createApp(root);
+
+    const handler = sdkMocks.getManualPeerHandler();
+    expect(handler).toBeTruthy();
+    handler?.('abc-123');
+
+    expect(sdkMocks.addManualPeer).toHaveBeenCalledWith('ABC123');
+    expect(sdkMocks.state.connectingTo).toBe('ABC123');
+    expect(sdkMocks.state.peers).toEqual([
+      expect.objectContaining({
+        peerCode: 'ABC123',
+        deviceName: 'Peer ABC123',
+      }),
+    ]);
+    expect(sdkMocks.sendSignal).toHaveBeenCalledWith(
+      'connection_request',
+      { deviceName: 'Test Device', deviceType: 'desktop' },
+      'ABC123',
+    );
   });
 });
