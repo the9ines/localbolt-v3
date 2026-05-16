@@ -27,7 +27,7 @@
 - `packages/localbolt-browser` — Browser transport, signaling, identity, UI components, state (`@the9ines/localbolt-browser` v0.1.0, workspace package). Extracted from bolt-core-sdk. 344 tests (1 skipped).
 - `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org). Owns session state machine, generation guard, verification state bus, and transfer gating policy. 70 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). 75 tests.
-- `packages/localbolt-signal` — Rust WS signaling server (canonical `bolt-rendezvous` wrapper); deployed to Fly.io. 36 tests.
+- `packages/localbolt-signal` — Rust WS signaling compatibility wrapper around canonical `bolt-rendezvous`; CI-covered. Production cloud signaling uses `wss://bolt-rendezvous.fly.dev`.
 - **Deployment**: Netlify (web app, workspace build — no NPM_TOKEN required), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow builds full workspace chain (bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web), tests all TS packages, Rust fmt/clippy/test/build for signal server. All actions pinned by SHA.
 - **Test suite**: 489 tests total — 344 localbolt-browser, 70 localbolt-core, 75 localbolt-web
@@ -58,7 +58,7 @@
 
 ## Roadmap
 - **Phase A**: DONE — Copy/SEO overhaul (encryption emphasis) [v3.0.1]
-- **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5] + deployed to Fly.io at wss://localbolt-signal.fly.dev [v3.0.11]
+- **Phase B**: DONE — Rust WS signaling server (backend) [v3.0.2] + frontend signaling abstraction [v3.0.3, v3.0.5]. Current production cloud signaling endpoint is wss://bolt-rendezvous.fly.dev.
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
 - **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
 - **Phase V**: DONE — Vanilla TypeScript rewrite, React removal [v3.0.13]

@@ -24,11 +24,16 @@ localbolt-v3 was built from scratch as an npm workspace monorepo with `packages/
 
 localbolt-v3 retains `packages/localbolt-signal` as a **native workspace crate**, not a git subtree from bolt-rendezvous.
 
+**2026-05-16 deployment amendment:** production cloud signaling is now the
+canonical `bolt-rendezvous` Fly.io app at `wss://bolt-rendezvous.fly.dev`.
+`packages/localbolt-signal` remains a local compatibility wrapper covered by CI,
+not the production deployment authority.
+
 ### Rationale
 
 1. **Workspace co-versioning.** localbolt-v3 uses npm workspaces with `packages/` layout. The signal server is a first-class workspace member versioned alongside localbolt-web. Subtree injection would break this layout and create an orphaned directory with no workspace root awareness.
 
-2. **Fly.io deployment ownership.** The production signal server at `wss://localbolt-signal.fly.dev` is deployed directly from `packages/localbolt-signal` via `fly deploy`. The Fly.io configuration (`fly.toml`), Dockerfile, and deployment pipeline are localbolt-v3-native. Introducing a subtree would require maintaining deployment config in both bolt-rendezvous and localbolt-v3, creating a deployment authority conflict.
+2. **Fly.io deployment ownership.** Originally, the production signal server was owned by localbolt-v3. That has been superseded by the 2026-05-16 amendment: production cloud signaling is the canonical `bolt-rendezvous` Fly.io app. The local v3 signal crate remains useful for compatibility testing, not production deployment ownership.
 
 3. **Rust crate layout divergence.** `packages/localbolt-signal` is structured as a standalone Rust binary crate with its own `Cargo.toml`, `Cargo.lock`, and CI integration (the localbolt-v3 CI workflow builds and tests both the Rust signal server and the TypeScript web app). bolt-rendezvous has a different crate layout and CI pipeline. Subtree merging between divergent Rust project structures creates non-trivial merge conflicts in `Cargo.lock` and build configuration.
 
@@ -53,7 +58,7 @@ localbolt-v3 retains `packages/localbolt-signal` as a **native workspace crate**
 
 1. **Wire protocol changes.** If bolt-rendezvous changes the signaling wire format (message types, field names, room grouping logic, or IP classification), localbolt-v3 MUST update `packages/localbolt-signal` to match within the same release cycle. Protocol conformance is verified by integration testing between peers on different server implementations.
 
-2. **Deployment authority.** The Fly.io deployment at `wss://localbolt-signal.fly.dev` is owned by localbolt-v3. This remains the source of truth for production deployment unless explicitly migrated to bolt-rendezvous with a coordinated handoff.
+2. **Deployment authority.** The Fly.io deployment at `wss://bolt-rendezvous.fly.dev` is owned by `bolt-rendezvous`. localbolt-v3 must treat it as the production cloud signaling endpoint and keep `packages/localbolt-signal` compatible through CI evidence.
 
 3. **Subtree repos.** localbolt and localbolt-app MUST continue pulling bolt-rendezvous as canonical via `git subtree pull`. Both are currently aligned to bolt-rendezvous `4ea8709`. Direct modification of `signal/` in subtree repos is prohibited per ecosystem CLAUDE.md.
 

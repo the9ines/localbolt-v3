@@ -19,15 +19,15 @@ jobs:
       run:
         working-directory: packages/localbolt-core
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org
           scope: '@the9ines'
 
-      - name: Override scope registry to npmjs (repo .npmrc points to GitHub Packages)
+      - name: Pin scope registry to npmjs for publish
         run: |
           echo "@the9ines:registry=https://registry.npmjs.org" > .npmrc
           echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc

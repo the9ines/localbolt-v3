@@ -39,11 +39,12 @@
 ### I1. Signal server CI
 - Add dedicated CI for packages/localbolt-signal
 - cargo fmt, clippy, test, build independently
-- Deploy to Fly.io on tag push
+- Production Fly.io signaling is owned by `bolt-rendezvous`; local
+  `packages/localbolt-signal` remains CI-covered for compatibility only.
 
 ### I2. Monitoring
 - Signal server health endpoint
-- Uptime monitoring for localbolt.app and localbolt-signal.fly.dev
+- Uptime monitoring for localbolt.app and bolt-rendezvous.fly.dev
 - Alert on downtime
 
 ### I3. Performance baseline

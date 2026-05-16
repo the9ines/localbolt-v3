@@ -2,7 +2,8 @@
 
 **[localbolt.app](https://localbolt.app)** - the live website.
 
-Source code for the LocalBolt website and cloud signaling server. Encrypted peer-to-peer file transfer. Files go directly between devices, never stored on any server.
+Source code for the LocalBolt website. Encrypted peer-to-peer file transfer.
+Files go directly between devices, never stored on any server.
 
 ## What's Here
 
@@ -12,7 +13,7 @@ packages/
   localbolt-browser/   # Browser transport, signaling, UI, state (@the9ines/localbolt-browser)
   localbolt-core/      # Session orchestration, verification state (@the9ines/localbolt-core)
   localbolt-web/       # Website frontend (Vanilla TypeScript, Tailwind, Vite)
-  localbolt-signal/    # Rust signaling server (Tokio + Tungstenite WebSocket)
+  localbolt-signal/    # Rust signaling compatibility wrapper
 ```
 
 ## Features
@@ -54,7 +55,8 @@ npm run build
 ## Deployment
 
 - **Website**: Deployed to Netlify (static build)
-- **Signal server**: Deployed to Fly.io (`wss://localbolt-signal.fly.dev`)
+- **Signal server**: Canonical hosted endpoint on Fly.io
+  (`wss://bolt-rendezvous.fly.dev`)
 
 ## Architecture
 
@@ -82,7 +84,9 @@ LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-pro
 | Lite self-hosted | [localbolt](https://github.com/the9ines/localbolt) |
 | Native/mobile shells | [localbolt-app](https://github.com/the9ines/localbolt-app) |
 
-This repo does **not** bundle the rendezvous server or daemon. It connects to a hosted endpoint only.
+This repo does **not** own the production rendezvous server or daemon. It
+connects to the hosted `bolt-rendezvous` endpoint. The local
+`packages/localbolt-signal` crate remains a compatibility wrapper covered by CI.
 
 This is an **open-source** project.
 

@@ -2,6 +2,8 @@
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
+# Historical v3-native Fly config. Current production cloud signaling is the
+# canonical bolt-rendezvous app at wss://bolt-rendezvous.fly.dev.
 
 app = 'localbolt-signal'
 primary_region = 'ewr'
