@@ -9,7 +9,7 @@
 - **WASM**: Rust/WASM protocol authority active (RUSTIFY-BROWSER-CORE-1)
 
 ## Architecture
-- **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework)
+- **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework). Production build emits a static prerendered HTML shell before the browser app takes over.
 - **Signaling**: Rendezvous signaling is used for LAN/local-network discovery only. `DualSignaling` can connect to a local WS server and a hosted WS endpoint, but LocalBolt must not expose cross-network peer discovery; ByteBolt owns internet-wide transfer.
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
@@ -24,13 +24,13 @@
 
 ## Packages
 - `packages/bolt-core-browser` — Browser crypto primitives (`@the9ines/bolt-core` v0.6.5, workspace package). Source rehomed from bolt-core-sdk as part of TS-EXTRACTION-1.
-- `packages/localbolt-browser` — Browser transport, signaling, identity, UI components, state (`@the9ines/localbolt-browser` v0.1.0, workspace package). Extracted from bolt-core-sdk. 344 tests (1 skipped).
-- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.2, published to npmjs.org). Owns session state machine, generation guard, verification state bus, and transfer gating policy. 70 tests.
+- `packages/localbolt-browser` — Browser transport, signaling, identity, UI components, state (`@the9ines/localbolt-browser` v0.1.1, workspace package, published to npmjs.org). Extracted from bolt-core-sdk. 350 tests (1 skipped).
+- `packages/localbolt-core` — Shared app-layer orchestration (`@the9ines/localbolt-core` v0.1.4, published to npmjs.org). Owns session state machine, generation guard, verification state bus, and transfer gating policy. 106 tests.
 - `packages/localbolt-web` — Production web app (vanilla TypeScript, fully functional). 75 tests.
 - `packages/localbolt-signal` — Rust WS signaling compatibility wrapper around canonical `bolt-rendezvous`; CI-covered. Production cloud signaling uses `wss://bolt-rendezvous.fly.dev`.
 - **Deployment**: Netlify (web app, workspace build — no NPM_TOKEN required), Fly.io (signal server)
 - **CI/CD**: GitHub Actions — CI workflow builds full workspace chain (bolt-core-browser → localbolt-browser → localbolt-core → localbolt-web), tests all TS packages, Rust fmt/clippy/test/build for signal server. All actions pinned by SHA.
-- **Test suite**: 489 tests total — 344 localbolt-browser, 70 localbolt-core, 75 localbolt-web
+- **Test suite**: 531 tests total — 350 localbolt-browser, 106 localbolt-core, 75 localbolt-web
 - `apps/tauri` — Retired historical scaffold only. It is no longer an npm
   workspace and has no root package scripts. Native/mobile apps live in
   `localbolt-app`.
@@ -53,7 +53,7 @@
 - **Primary color**: #A4E200 (previously #14FF6A)
 - **Logo**: Inline Zap icon + "LocalBolt" text brand in header (JetBrains Mono, no external SVG)
 - **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
-- **Copy style**: No em dashes; commas, periods, or hyphens only. No "military-grade" marketing language; use accurate technical descriptions (e.g. "end-to-end encrypted"). Cross-network and dual signaling emphasized throughout.
+- **Copy style**: No em dashes; commas, periods, or hyphens only. No "military-grade" marketing language; use accurate technical descriptions (e.g. "end-to-end encrypted"). LocalBolt copy must stay LAN/local-network scoped. It may mention hosted signaling for same-network discovery, but must not imply cross-internet discovery or transfer; ByteBolt owns that product promise.
 - **README**: Repo root `README.md` with project description, features, dev/deploy instructions, architecture overview, and related project links
 
 ## Roadmap
@@ -62,7 +62,7 @@
 - **Phase D**: DONE — Tauri v2 scaffold [v3.0.4]
 - **Phase C**: DONE — AirDrop-style device discovery UI [v3.0.8, v3.0.9]
 - **Phase V**: DONE — Vanilla TypeScript rewrite, React removal [v3.0.13]
-- **Phase W**: DONE — Copy refresh for dual signaling/cross-network, logo, README, self-hosting FAQ, em dash removal [v3.0.22]
+- **Phase W**: DONE — Historical copy refresh, logo, README, self-hosting FAQ, em dash removal [v3.0.22]. Cross-network wording from this phase has been superseded by LAN-only LocalBolt governance.
 - **Phase X**: DONE — Hero-first layout simplification: removed how-it-works, features, FAQ, trust-strip sections; hero + transfer card only; pulsating grid centered on card [v3.0.25]
 - **Phase Y**: DONE — Full-viewport transfer card: 3-screen layout (hero, card, SEO content); green neon scroll arrow; restored how-it-works, features, FAQ below the fold; section-level pulsating bg [v3.0.26, v3.0.27, v3.0.28]
 - **Phase Z**: DONE — Security hardening: SAS verification, XSS sanitization, peer code validation/collision detection, relay ICE filtering, CSP meta tag, base64 fix, private IP room grouping [v3.0.29]
@@ -82,7 +82,7 @@
 - ~~Phase E: Tauri native features~~ — RETIRED (Tauri path retired; native features live in localbolt-app)
 - ~~Phase F: Mobile polish + app store~~ — DEFERRED (future governance decision)
 - ~~Phase G: Desktop builds + CI/CD~~ — RETIRED (desktop builds via localbolt-app native shell)
-- Future: Nostr global signaling (not started)
+- Future remote-network discovery/transfer is ByteBolt scope, not LocalBolt scope.
 
 ## Tag History
 | Tag | Hash | Description |

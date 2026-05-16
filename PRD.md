@@ -8,7 +8,7 @@
 ## 1. Current State Summary
 
 **Version:** v3.0.104-netlify-logo lineage (production web, live at localbolt.app)
-**Stack:** Vanilla TypeScript, Tailwind CSS, Vite, TweetNaCl/Bolt packages, Netlify + Fly.io rendezvous
+**Stack:** Vanilla TypeScript, Tailwind CSS, Vite static prerender, TweetNaCl/Bolt packages, Netlify + Fly.io rendezvous
 **Test coverage:** Automated Vitest + Rust signal compatibility tests
 **Deployment:** Netlify (web), Fly.io canonical rendezvous endpoint at wss://bolt-rendezvous.fly.dev for same-network discovery
 
@@ -20,6 +20,7 @@
 - Security hardening (CSP, XSS prevention, peer validation, ICE relay blocking, SAS verification)
 - Netlify deployment with Observatory A+ security headers (HSTS, COOP, Permissions-Policy)
 - Comprehensive SEO (structured data, Open Graph, FAQ schema)
+- Static prerendered HTML shell generated at build time for first paint and crawlability
 - CI/CD (GitHub Actions: fmt, clippy, tests, build; registry guards; Dependabot)
 - Documentation (CHANGELOG.md with 39 entries, STATE.md, CLAUDE.md)
 - Consent-based analytics (Google Analytics with denied-by-default storage)
@@ -34,7 +35,6 @@
 - TypeScript strict mode (noImplicitAny, strictNullChecks disabled)
 - File resume on interrupted transfer
 - Directory transfer
-- Persistent identity keys
 - Compression
 
 ### Unstable
@@ -94,7 +94,7 @@ LocalBolt v3 is the flagship hosted web experience:
 
 ## 5. Technical Constraints
 
-- Must deploy as static site on Netlify (no server-side rendering)
+- Must deploy as a static site on Netlify. Server-rendered HTML may be generated at build time, but LocalBolt v3 must not require a runtime SSR server.
 - Signal server must deploy on Fly.io (or compatible platform) without expanding LocalBolt beyond LAN-only discovery
 - Frontend must remain vanilla TypeScript (no React/Vue/Svelte)
 - Must maintain Observatory A+ security rating

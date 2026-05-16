@@ -53,9 +53,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      // Canonical alias: localbolt uses @the9ines/bolt-transport-web (published npm name).
-      // v3 workspace resolves to @the9ines/localbolt-browser (workspace package).
-      // This alias lets v3 consume localbolt's canonical source files byte-identical.
+      // Compatibility alias for canonical source that still imports the legacy package name.
+      // The v3 workspace resolves it to @the9ines/localbolt-browser.
       "@the9ines/bolt-transport-web": "@the9ines/localbolt-browser",
     },
   },

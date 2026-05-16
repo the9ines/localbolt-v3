@@ -25,7 +25,7 @@ export function createApp(root: HTMLElement) {
   hero.innerHTML = `
     <div class="max-w-3xl space-y-4">
       <h1 class="text-5xl sm:text-6xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent pb-1 leading-[1.15]">Open-Source Encrypted File Transfer</h1>
-      <p class="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">Send files directly between browsers or to the desktop app. End-to-end encrypted, peer-to-peer, no servers. Built on the <span class="text-white/70">Bolt Protocol</span>.</p>
+      <p class="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">Send files directly between nearby devices on the same local network. End-to-end encrypted, peer-to-peer, no cloud storage. Built on the <span class="text-white/70">Bolt Protocol</span>.</p>
     </div>
     <button class="scroll-btn inline-flex items-center gap-1 text-sm text-neon/70 hover:text-neon transition-colors pt-6" aria-label="Scroll to file transfer">
       <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
