@@ -1,8 +1,8 @@
 /**
- * EnvelopeCodec — stateless Profile Envelope v1 encode/decode + dcSendMessage.
+ * EnvelopeCodec - stateless Profile Envelope v1 encode/decode + dcSendMessage.
  *
  * Extracted from WebRTCService (A2). Thin wrapper around existing
- * seal/open primitives — no new crypto, no behavior change.
+ * seal/open primitives - no new crypto, no behavior change.
  *
  * BTR-4: Extended with optional BTR envelope-level fields (§16.2).
  */

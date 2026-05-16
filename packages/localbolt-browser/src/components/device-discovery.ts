@@ -10,7 +10,7 @@ const deviceIconMap: Record<string, (cls: string) => string> = {
   desktop: icons.monitor,
 };
 
-// ── State A: Default — "Devices" button ──────────────────────────────────
+// ── State A: Default - "Devices" button ──────────────────────────────────
 
 function renderDevicesButton(peerCount: number, onClick: () => void): HTMLElement {
   const wrap = document.createElement('div');
@@ -111,9 +111,9 @@ function renderAwaitingApproval(deviceName: string, onCancel: () => void, phase:
       helpText = 'Setting up encrypted channel';
       break;
     case 'slow':
-      // RU3: intermediate timeout feedback — still trying, not failed yet
+      // RU3: intermediate timeout feedback - still trying, not failed yet
       statusText = `Still connecting to <span class="text-neon">${escapeHTML(deviceName)}</span>...`;
-      helpText = 'This is taking longer than usual — the other device may be slow to respond';
+      helpText = 'This is taking longer than usual - the other device may be slow to respond';
       break;
     default:
       statusText = `Waiting for <span class="text-neon">${escapeHTML(deviceName)}</span> to accept...`;

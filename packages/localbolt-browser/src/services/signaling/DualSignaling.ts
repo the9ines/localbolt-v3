@@ -44,7 +44,7 @@ export class DualSignaling implements SignalingProvider {
     deviceName: string,
     deviceType: DiscoveredDevice['deviceType']
   ): Promise<void> {
-    // Create signaling instances — skip local if URL is empty (HTTPS origin).
+    // Create signaling instances - skip local if URL is empty (HTTPS origin).
     const connectPromises: Promise<void>[] = [];
 
     if (this.localUrl) {
@@ -75,7 +75,7 @@ export class DualSignaling implements SignalingProvider {
       );
     }
 
-    // Connect configured endpoints — don't fail if one fails
+    // Connect configured endpoints - don't fail if one fails
     const results = await Promise.allSettled(connectPromises);
 
     // At least one must succeed
@@ -121,7 +121,7 @@ export class DualSignaling implements SignalingProvider {
       return this.cloud.sendSignal(type, data, to);
     }
 
-    // Unknown peer — try both (one will fail, that's fine)
+    // Unknown peer - try both (one will fail, that's fine)
     const errors: Error[] = [];
     if (this.local && this.localConnected) {
       try {
@@ -177,7 +177,7 @@ export class DualSignaling implements SignalingProvider {
   // ─── Internal ───────────────────────────────────────────────────────────
 
   private handlePeerDiscovered(peer: DiscoveredDevice, source: 'local' | 'cloud') {
-    // Don't duplicate — if already known from the other source, skip
+    // Don't duplicate - if already known from the other source, skip
     if (this.allPeers.has(peer.peerCode)) return;
 
     this.allPeers.set(peer.peerCode, peer);

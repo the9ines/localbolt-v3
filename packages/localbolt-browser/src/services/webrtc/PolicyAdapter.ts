@@ -1,10 +1,10 @@
 /**
- * PolicyAdapter — bridges Rust WASM policy decisions to the TS transport layer.
+ * PolicyAdapter - bridges Rust WASM policy decisions to the TS transport layer.
  *
  * Two implementations:
  * - WasmPolicyAdapter: calls compiled Rust policy via wasm-bindgen exports.
  * - TsFallbackPolicyAdapter: replicates current TransferManager behavior
- *   exactly — sequential send (all pending chunks returned in order),
+ *   exactly - sequential send (all pending chunks returned in order),
  *   no pacing delay, progress emitted every call, stall always healthy.
  *
  * The factory attempts WASM init; on failure, silently falls back to TS.
@@ -95,7 +95,7 @@ const STALL_TAGS: StallTag[] = ['healthy', 'warning', 'stalled', 'complete'];
 const BACKPRESSURE_SIGNALS: BackpressureSignal[] = ['pause', 'resume', 'no-change'];
 
 /**
- * WasmPolicyAdapter — delegates to compiled Rust policy via wasm-bindgen.
+ * WasmPolicyAdapter - delegates to compiled Rust policy via wasm-bindgen.
  *
  * Constructed by PolicyAdapterFactory after successful WASM init.
  */
@@ -175,7 +175,7 @@ class WasmPolicyAdapter implements PolicyAdapter {
 // ─── TS fallback adapter ──────────────────────────────────────────────
 
 /**
- * TsFallbackPolicyAdapter — replicates exact current TransferManager behavior.
+ * TsFallbackPolicyAdapter - replicates exact current TransferManager behavior.
  *
  * Current behavior (TransferManager.sendFile, lines 151-224):
  * - Sequential loop: sends ALL pending chunks in order, one per iteration.
@@ -236,13 +236,13 @@ let activeAdapter: PolicyAdapter | null = null;
 /**
  * Initialize the policy adapter. Attempts WASM, falls back to TS.
  *
- * Safe to call multiple times — returns cached adapter after first init.
+ * Safe to call multiple times - returns cached adapter after first init.
  */
 export async function initPolicyAdapter(): Promise<PolicyAdapter> {
   if (activeAdapter) return activeAdapter;
 
   try {
-    // Dynamic import — bundlers will code-split the WASM binary.
+    // Dynamic import - bundlers will code-split the WASM binary.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const wasm = await import('../../../wasm/bolt_transfer_policy_wasm.js' as any);
     console.log('[POLICY] WASM glue loaded, calling init...');
@@ -261,7 +261,7 @@ export async function initPolicyAdapter(): Promise<PolicyAdapter> {
 /**
  * Get the current policy adapter (fallback if not yet initialized).
  *
- * Synchronous — returns the TS fallback if WASM hasn't been loaded yet.
+ * Synchronous - returns the TS fallback if WASM hasn't been loaded yet.
  * Use `initPolicyAdapter()` at startup, then `getPolicyAdapter()` in hot paths.
  */
 export function getPolicyAdapter(): PolicyAdapter {

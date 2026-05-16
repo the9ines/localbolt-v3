@@ -1,5 +1,5 @@
 /**
- * TransferManager — owns file send/receive, chunk processing,
+ * TransferManager - owns file send/receive, chunk processing,
  * pause/resume/cancel, progress, stats, backpressure, and metrics.
  *
  * Extracted from WebRTCService (A2). All behavior preserved exactly.
@@ -12,7 +12,7 @@ import { sealBoxPayload, openBoxPayload, DEFAULT_CHUNK_SIZE, EncryptionError, In
 
 import type { BtrModeValue } from '@the9ines/bolt-core';
 
-/** BTR mode string constant — avoids importing BtrMode (which breaks mocked tests). */
+/** BTR mode string constant - avoids importing BtrMode (which breaks mocked tests). */
 const BTR_FULL = 'FULL_BTR' as const;
 import { WebRTCError, TransferError } from '../../types/webrtc-errors.js';
 import { ENABLE_TRANSFER_METRICS, TransferMetricsCollector, summarizeTransfer } from './transferMetrics.js';
@@ -23,18 +23,18 @@ import type { FileChunkMessage, ActiveTransfer, TransferProgress, DcControlMessa
 function classifyTransferError(error: Error): string {
   const msg = error.message.toLowerCase();
   if (error instanceof EncryptionError || msg.includes('encrypt') || msg.includes('decrypt')) {
-    return 'Encryption error — please reconnect and try again';
+    return 'Encryption error - please reconnect and try again';
   }
   if (error instanceof IntegrityError || msg.includes('integrity') || msg.includes('hash')) {
-    return 'File verification failed — data may be corrupted';
+    return 'File verification failed - data may be corrupted';
   }
   if (msg.includes('timeout') || msg.includes('timed out')) {
-    return 'Transfer timed out — connection may be too slow';
+    return 'Transfer timed out - connection may be too slow';
   }
   if (msg.includes('disconnect') || msg.includes('closed') || msg.includes('connection')) {
     return 'Connection lost during transfer';
   }
-  return 'Transfer failed — please try again';
+  return 'Transfer failed - please try again';
 }
 import { CANONICAL_CONTROL_TYPES } from './types.js';
 import { getPolicyAdapter } from './PolicyAdapter.js';
@@ -49,7 +49,7 @@ function generateTransferId(): string {
 }
 
 /**
- * TransferContext — the subset of shared state that TransferManager needs.
+ * TransferContext - the subset of shared state that TransferManager needs.
  */
 export interface TransferContext {
   // Crypto keys
@@ -131,7 +131,7 @@ export class TransferManager {
   // ─── File Transfer (Send) ──────────────────────────────────────────
 
   async sendFile(file: File): Promise<void> {
-    // DP-9: Prevent concurrent sendFile calls — property-based onbufferedamountlow
+    // DP-9: Prevent concurrent sendFile calls - property-based onbufferedamountlow
     // only supports one handler at a time; concurrent sends overwrite each other.
     if (this.sendInProgress) {
       throw new TransferError('Transfer already in progress');
@@ -290,7 +290,7 @@ export class TransferManager {
             ...(fileHash && chunkIndex === 0 ? { fileHash } : {}),
           };
 
-          // Backpressure — wait for buffer to drain (N1: cancelable by disconnect)
+          // Backpressure - wait for buffer to drain (N1: cancelable by disconnect)
           await this.awaitBackpressureDrain();
 
           if (this.ctx.getTransferCancelled()) throw new TransferError('Transfer cancelled by user');
@@ -300,7 +300,7 @@ export class TransferManager {
           this.ctx.getMetricsCollector()?.recordChunkSend(this.ctx.getDc()!.bufferedAmount, chunksSent);
           this.ctx.sendMessage(msg, btrFields);
 
-          // Progress cadence — policy decides whether to emit
+          // Progress cadence - policy decides whether to emit
           const now = Date.now();
           const cadence = policy.progressCadence({
             bytesTransferred: end,
@@ -395,7 +395,7 @@ export class TransferManager {
     const currentDc = this.ctx.getDc();
     if (!currentDc) return;
     // WebSocket: bufferedAmountLowThreshold is undefined (RTCDataChannel-only).
-    // WS bufferedAmount drains to kernel instantly — skip backpressure wait entirely.
+    // WS bufferedAmount drains to kernel instantly - skip backpressure wait entirely.
     if (currentDc.bufferedAmountLowThreshold === undefined || currentDc.bufferedAmount <= currentDc.bufferedAmountLowThreshold) {
       return;
     }
@@ -419,7 +419,7 @@ export class TransferManager {
         resolve();
       };
       currentDc.onbufferedamountlow = settle;
-      // DP-9: Timeout fallback — poll bufferedAmount if event never fires
+      // DP-9: Timeout fallback - poll bufferedAmount if event never fires
       setTimeout(() => {
         if (settled) return;
         const dcCheck = this.ctx.getDc();
@@ -429,7 +429,7 @@ export class TransferManager {
           reject(new TransferError('Data channel closed during backpressure wait'));
           return;
         }
-        console.warn('[TRANSFER] Backpressure timeout — forcing drain resolve (bufferedAmount=' + dcCheck.bufferedAmount + ')');
+        console.warn('[TRANSFER] Backpressure timeout - forcing drain resolve (bufferedAmount=' + dcCheck.bufferedAmount + ')');
         settle();
       }, BACKPRESSURE_TIMEOUT_MS);
     });
@@ -458,23 +458,23 @@ export class TransferManager {
       return;
     }
 
-    // ─── Legacy file-chunk control flags (deprecated — receive-only compat) ──
+    // ─── Legacy file-chunk control flags (deprecated - receive-only compat) ──
     if (msg.type !== 'file-chunk' || !msg.filename) return;
 
     if (msg.paused) {
-      console.warn('[UI-XFER-1] Legacy pause control received (type=file-chunk) — accepted but deprecated');
+      console.warn('[UI-XFER-1] Legacy pause control received (type=file-chunk) - accepted but deprecated');
       this.ctx.setTransferPaused(true);
       this.emitProgress(msg.filename, 0, 0, 0, 0, 'paused');
       return;
     }
     if (msg.resumed) {
-      console.warn('[UI-XFER-1] Legacy resume control received (type=file-chunk) — accepted but deprecated');
+      console.warn('[UI-XFER-1] Legacy resume control received (type=file-chunk) - accepted but deprecated');
       this.ctx.setTransferPaused(false);
       this.emitProgress(msg.filename, 0, 0, 0, 0, 'transferring');
       return;
     }
     if (msg.cancelled) {
-      console.warn('[UI-XFER-1] Legacy cancel control received (type=file-chunk) — accepted but deprecated');
+      console.warn('[UI-XFER-1] Legacy cancel control received (type=file-chunk) - accepted but deprecated');
       this.handleRemoteCancel(msg);
       return;
     }
@@ -488,11 +488,11 @@ export class TransferManager {
     // Check guarded transfers (receiver side)
     const guarded = this.ctx.getGuardedTransfers().get(transferId);
     if (guarded) return guarded.filename;
-    // Check send transfer IDs (sender side — reverse lookup)
+    // Check send transfer IDs (sender side - reverse lookup)
     for (const [fn, tid] of this.ctx.getSendTransferIds()) {
       if (tid === transferId) return fn;
     }
-    // Check recv transfer IDs (receiver side — reverse lookup)
+    // Check recv transfer IDs (receiver side - reverse lookup)
     for (const [fn, tid] of this.ctx.getRecvTransferIds()) {
       if (tid === transferId) return fn;
     }
@@ -540,11 +540,11 @@ export class TransferManager {
   private isValidChunkFields(msg: FileChunkMessage): boolean {
     const { chunkIndex, totalChunks } = msg;
     if (!Number.isFinite(totalChunks) || !Number.isInteger(totalChunks!) || totalChunks! <= 0) {
-      console.warn(`[REPLAY_OOB] invalid totalChunks=${totalChunks} — rejected`);
+      console.warn(`[REPLAY_OOB] invalid totalChunks=${totalChunks} - rejected`);
       return false;
     }
     if (!Number.isFinite(chunkIndex) || !Number.isInteger(chunkIndex!) || chunkIndex! < 0 || chunkIndex! >= totalChunks!) {
-      console.warn(`[REPLAY_OOB] chunkIndex=${chunkIndex} out of range [0, ${totalChunks}) — rejected`);
+      console.warn(`[REPLAY_OOB] chunkIndex=${chunkIndex} out of range [0, ${totalChunks}) - rejected`);
       return false;
     }
     return true;
@@ -564,9 +564,9 @@ export class TransferManager {
       });
     } else {
       if (msg.transferId && !this.ctx.isHelloComplete()) {
-        console.warn('[REPLAY_UNGUARDED] transferId present but HELLO incomplete — falling back to legacy');
+        console.warn('[REPLAY_UNGUARDED] transferId present but HELLO incomplete - falling back to legacy');
       } else {
-        console.warn('[REPLAY_UNGUARDED] chunk received without transferId — legacy peer');
+        console.warn('[REPLAY_UNGUARDED] chunk received without transferId - legacy peer');
       }
       this.processChunkLegacy(msg);
     }
@@ -621,14 +621,14 @@ export class TransferManager {
         console.log(`[BTR_TRANSFER_RECV] DH ratchet step complete, generation=${btrAdapter.generation}`);
       }
     } else if (transfer.remoteIdentityKey !== identityKey) {
-      // Same transferId but different sender identity — cross-peer collision
-      console.warn(`[REPLAY_XFER_MISMATCH] transferId=${transferId} bound to different sender identity — ignored`);
+      // Same transferId but different sender identity - cross-peer collision
+      console.warn(`[REPLAY_XFER_MISMATCH] transferId=${transferId} bound to different sender identity - ignored`);
       return;
     }
 
     // Dedup check
     if (transfer.receivedSet.has(chunkIndex!)) {
-      console.warn(`[REPLAY_DUP] chunkIndex=${chunkIndex} already received for tid=${transferId} — ignored`);
+      console.warn(`[REPLAY_DUP] chunkIndex=${chunkIndex} already received for tid=${transferId} - ignored`);
       return;
     }
 
@@ -663,7 +663,7 @@ export class TransferManager {
               console.error(`[INTEGRITY_MISMATCH] expected=${transfer.expectedHash} actual=${actual} (tid=${transferId})`);
               guardedTransfers.delete(transferId!);
               this.ctx.getRecvTransferIds().delete(filename);
-              this.emitProgress(filename, 0, totalChunks!, 0, fileSize!, 'error', 'File verification failed — data may be corrupted');
+              this.emitProgress(filename, 0, totalChunks!, 0, fileSize!, 'error', 'File verification failed - data may be corrupted');
               this.ctx.onError(new IntegrityError('File integrity check failed: hash mismatch'));
               this.ctx.sendMessage({
                 type: 'error',
@@ -757,7 +757,7 @@ export class TransferManager {
       ? this.ctx.getRecvTransferIds().get(filename)
       : this.ctx.getSendTransferIds().get(filename);
     if (!transferId) {
-      console.error(`[UI-XFER-1] pauseTransfer: no transferId for "${filename}" — no control message sent`);
+      console.error(`[UI-XFER-1] pauseTransfer: no transferId for "${filename}" - no control message sent`);
       return;
     }
     this.ctx.setTransferPaused(true);
@@ -772,7 +772,7 @@ export class TransferManager {
       ? this.ctx.getRecvTransferIds().get(filename)
       : this.ctx.getSendTransferIds().get(filename);
     if (!transferId) {
-      console.error(`[UI-XFER-1] resumeTransfer: no transferId for "${filename}" — no control message sent`);
+      console.error(`[UI-XFER-1] resumeTransfer: no transferId for "${filename}" - no control message sent`);
       return;
     }
     const lastPausedAt = this.ctx.getLastPausedAt();
@@ -791,7 +791,7 @@ export class TransferManager {
       ? this.ctx.getRecvTransferIds().get(filename)
       : this.ctx.getSendTransferIds().get(filename);
     if (!transferId) {
-      console.error(`[UI-XFER-1] cancelTransfer: no transferId for "${filename}" — no control message sent`);
+      console.error(`[UI-XFER-1] cancelTransfer: no transferId for "${filename}" - no control message sent`);
       // Still set cancelled state locally to stop any in-progress send loop
       this.ctx.setTransferCancelled(true);
       this.clearCompletionTimeout();

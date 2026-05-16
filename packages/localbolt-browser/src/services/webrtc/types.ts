@@ -37,7 +37,7 @@ export interface FileChunkMessage {
   fileSize?: number;
   transferId?: string;
   fileHash?: string;
-  // Legacy control flags — deprecated (UI-XFER-1). Receive-only for backward compat.
+  // Legacy control flags - deprecated (UI-XFER-1). Receive-only for backward compat.
   // Removal target: next major SDK version after all peers emit canonical control messages.
   cancelled?: boolean;
   cancelledBy?: 'sender' | 'receiver';
@@ -71,7 +71,7 @@ export type DcControlMessage = PauseMessage | ResumeMessage | CancelMessage;
 /** Set of canonical control type strings for gate checks. */
 export const CANONICAL_CONTROL_TYPES = new Set(['pause', 'resume', 'cancel']);
 
-/** Profile Envelope v1 wire format — encrypts inner messages over DataChannel. */
+/** Profile Envelope v1 wire format - encrypts inner messages over DataChannel. */
 export interface ProfileEnvelopeV1 {
   type: 'profile-envelope';
   version: 1;

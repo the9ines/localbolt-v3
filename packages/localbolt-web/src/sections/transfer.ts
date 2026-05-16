@@ -38,7 +38,7 @@ export function createTransfer(): HTMLElement {
   // Policy (C-pre-2 stabilization):
   //   verified  → transfer allowed
   //   legacy    → transfer allowed (pre-SAS peer, encryption still active)
-  //   unverified → transfer BLOCKED (SAS pending — user must verify or reject)
+  //   unverified → transfer BLOCKED (SAS pending - user must verify or reject)
   //   mismatch  → transfer BLOCKED (fail-closed, connection should already be down)
   function updateFileUploadVisibility() {
     const { isConnected } = store.getState();

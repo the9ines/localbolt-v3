@@ -33,11 +33,11 @@ export function createApp(root: HTMLElement) {
   `;
   main.appendChild(hero);
 
-  // Screen 2: Transfer card — own full viewport, pulsating grid bg
+  // Screen 2: Transfer card - own full viewport, pulsating grid bg
   const transferSection = document.createElement('section');
   transferSection.className = 'relative min-h-screen flex items-center justify-center px-4';
 
-  // Pulsating circular bg — fills section, centered on card (card is flex-centered)
+  // Pulsating circular bg - fills section, centered on card (card is flex-centered)
   const bgGlow = document.createElement('div');
   bgGlow.className = 'absolute inset-0 pointer-events-none';
   const radialBg = document.createElement('div');
@@ -60,7 +60,7 @@ export function createApp(root: HTMLElement) {
     transferCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  // Screen 3: SEO content — below the fold, not visible from card screen
+  // Screen 3: SEO content - below the fold, not visible from card screen
   const seoContent = document.createElement('div');
   seoContent.className = 'container mx-auto px-4 py-24 lg:py-32 space-y-20';
   seoContent.appendChild(createHowItWorks());

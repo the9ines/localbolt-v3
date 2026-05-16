@@ -68,7 +68,7 @@ export class IndexedDBPinStore implements PinPersistence {
           // v2 format: { identityPub: base64, verified: boolean }
           resolve({ identityPub: fromBase64(val.identityPub), verified: !!val.verified });
         } catch {
-          // Corrupted entry — treat as absent
+          // Corrupted entry - treat as absent
           resolve(null);
         }
       };

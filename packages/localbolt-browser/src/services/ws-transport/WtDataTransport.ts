@@ -12,8 +12,8 @@
  * sends and receives frames.
  *
  * Log tokens:
- *   [WT_TRANSPORT]  — connection lifecycle
- *   [WT_FRAMING]    — frame-level events
+ *   [WT_TRANSPORT]  - connection lifecycle
+ *   [WT_FRAMING]    - frame-level events
  */
 
 import { generateEphemeralKeyPair, toBase64, fromBase64, openBoxPayload, isValidWireErrorCode, scalarMult, BtrMode } from '@the9ines/bolt-core';
@@ -147,7 +147,7 @@ class WtDataTransportBridge implements DataTransport {
     this._writer = writer;
   }
 
-  /** Synchronous send — queues internally, flushes async. */
+  /** Synchronous send - queues internally, flushes async. */
   send(data: string): void {
     if (this._readyState !== 'open') return;
     this._sendQueue.push(encodeFrame(data));
@@ -282,7 +282,7 @@ export class WtDataTransport {
           return;
         }
 
-        // Build WebTransport options — include cert hash for self-signed certs
+        // Build WebTransport options - include cert hash for self-signed certs
         const wtOptions: Record<string, unknown> = {};
         if (this.opts.certHashHex) {
           const hashBytes = new Uint8Array(
@@ -501,7 +501,7 @@ export class WtDataTransport {
       // HELLO routing
       if (msg.type === 'hello' && msg.payload) {
         if (this.sessionState !== 'pre_hello') {
-          console.warn('[WT_TRANSPORT] Duplicate HELLO — disconnecting');
+          console.warn('[WT_TRANSPORT] Duplicate HELLO - disconnecting');
           this.sendErrorAndDisconnect('DUPLICATE_HELLO', 'Duplicate HELLO');
           return;
         }
@@ -514,7 +514,7 @@ export class WtDataTransport {
 
       // Pre-handshake gate
       if (this.sessionState === 'pre_hello' || this.sessionState === 'key_exchange') {
-        console.warn('[WT_TRANSPORT] Non-HELLO message before handshake — disconnecting');
+        console.warn('[WT_TRANSPORT] Non-HELLO message before handshake - disconnecting');
         this.sendErrorAndDisconnect('INVALID_STATE', 'Handshake not complete');
         return;
       }
@@ -522,12 +522,12 @@ export class WtDataTransport {
       // Profile Envelope v1 unwrap
       if (msg.type === 'profile-envelope') {
         if (!this.negotiatedEnvelopeV1()) {
-          console.warn('[WT_TRANSPORT] Envelope received but not negotiated — disconnecting');
+          console.warn('[WT_TRANSPORT] Envelope received but not negotiated - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_UNNEGOTIATED', 'Profile envelope not negotiated');
           return;
         }
         if (msg.version !== 1 || msg.encoding !== 'base64' || typeof msg.payload !== 'string') {
-          console.warn('[WT_TRANSPORT] Invalid envelope format — disconnecting');
+          console.warn('[WT_TRANSPORT] Invalid envelope format - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_INVALID', 'Invalid profile envelope format');
           return;
         }
@@ -535,7 +535,7 @@ export class WtDataTransport {
         try {
           innerBytes = openBoxPayload(msg.payload, this.remotePublicKey!, this.keyPair!.secretKey);
         } catch {
-          console.warn('[WT_TRANSPORT] Envelope decrypt failed — disconnecting');
+          console.warn('[WT_TRANSPORT] Envelope decrypt failed - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_DECRYPT_FAIL', 'Failed to decrypt profile envelope');
           return;
         }
@@ -543,7 +543,7 @@ export class WtDataTransport {
         try {
           inner = JSON.parse(new TextDecoder().decode(innerBytes));
         } catch {
-          console.warn('[WT_TRANSPORT] Invalid inner JSON — disconnecting');
+          console.warn('[WT_TRANSPORT] Invalid inner JSON - disconnecting');
           this.sendErrorAndDisconnect('INVALID_MESSAGE', 'Invalid inner message');
           return;
         }
@@ -583,7 +583,7 @@ export class WtDataTransport {
 
       // Envelope-required enforcement
       if (this.negotiatedEnvelopeV1()) {
-        console.warn('[WT_TRANSPORT] Plaintext in envelope-required session — disconnecting');
+        console.warn('[WT_TRANSPORT] Plaintext in envelope-required session - disconnecting');
         this.sendErrorAndDisconnect('ENVELOPE_REQUIRED', 'Envelope required');
         return;
       }

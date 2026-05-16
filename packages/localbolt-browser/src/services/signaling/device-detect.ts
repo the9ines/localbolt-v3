@@ -31,7 +31,7 @@ export function detectDeviceType(): DiscoveredDevice['deviceType'] {
 
 /**
  * Generate a clean device name like "iPhone", "Mac", "Windows PC".
- * Parses navigator.userAgent for the device/OS only — no browser prefix.
+ * Parses navigator.userAgent for the device/OS only - no browser prefix.
  */
 export function getDeviceName(): string {
   const ua = navigator.userAgent;

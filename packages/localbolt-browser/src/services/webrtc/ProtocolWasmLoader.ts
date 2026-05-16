@@ -1,5 +1,5 @@
 /**
- * Protocol WASM loader — loads bolt-protocol-wasm from embedded artifact
+ * Protocol WASM loader - loads bolt-protocol-wasm from embedded artifact
  * and initializes bolt-core's WASM crypto adapter.
  *
  * BR2: This is the production entry point for WASM protocol authority.
@@ -24,7 +24,7 @@ let _initResult = false;
  * BR3: Logs a consolidated summary after every init attempt showing
  * the resulting authority mode (wasm / ts-fallback).
  *
- * Falls back silently — returns false if WASM is not available.
+ * Falls back silently - returns false if WASM is not available.
  * PM-RB-03: TS fallback remains operational if this fails.
  */
 export async function initProtocolWasm(): Promise<boolean> {
@@ -32,7 +32,7 @@ export async function initProtocolWasm(): Promise<boolean> {
   _initAttempted = true;
 
   try {
-    // Relative import — Vite/webpack resolve this from the published package.
+    // Relative import - Vite/webpack resolve this from the published package.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const wasm = await import('../../../wasm/bolt_protocol_wasm.js' as any);
     await wasm.default();
@@ -48,7 +48,7 @@ export async function initProtocolWasm(): Promise<boolean> {
     _initResult = false;
   }
 
-  // BR3: consolidated summary — always emitted after init attempt
+  // BR3: consolidated summary - always emitted after init attempt
   const mode = getProtocolAuthorityMode();
   console.log(`[BOLT-WASM] Authority mode: ${mode}`);
 

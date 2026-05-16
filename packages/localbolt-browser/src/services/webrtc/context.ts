@@ -1,5 +1,5 @@
 /**
- * ConnectionContext — shared state surface for decomposed WebRTC managers.
+ * ConnectionContext - shared state surface for decomposed WebRTC managers.
  *
  * State ownership: All state lives on WebRTCService. Managers read/write
  * through this interface so that tests (which set fields directly via
@@ -8,7 +8,7 @@
 import type { WebRTCServiceOptions, VerificationInfo } from './types.js';
 
 /**
- * HandshakeContext — the subset of ConnectionContext that HandshakeManager needs.
+ * HandshakeContext - the subset of ConnectionContext that HandshakeManager needs.
  * Provides read/write access to handshake-related fields on WebRTCService.
  */
 export interface HandshakeContext {

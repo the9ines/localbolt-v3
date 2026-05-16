@@ -72,7 +72,7 @@ export function createVerificationStatus(
     }
   }
 
-  // Initial render — legacy until verification state arrives
+  // Initial render - legacy until verification state arrives
   render({ state: 'legacy', sasCode: null });
 
   return { element: container, update: render };

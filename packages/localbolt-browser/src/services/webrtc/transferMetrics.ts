@@ -1,4 +1,4 @@
-// ─── Transfer Metrics — S2B Instrumentation ─────────────────────────────────
+// ─── Transfer Metrics - S2B Instrumentation ─────────────────────────────────
 //
 // Passive observability for the transfer path. No behavior change.
 // Feature-gated via ENABLE_TRANSFER_METRICS (default OFF).

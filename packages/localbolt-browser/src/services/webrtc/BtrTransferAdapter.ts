@@ -1,8 +1,8 @@
 /**
- * BtrTransferAdapter — WASM-backed BTR for transfer send/receive.
+ * BtrTransferAdapter - WASM-backed BTR for transfer send/receive.
  *
  * TS BTR fallback deleted (RUST-AUTHORITY-MIGRATION-2).
- * Only WasmBtrTransferAdapter remains — all BTR state and crypto
+ * Only WasmBtrTransferAdapter remains - all BTR state and crypto
  * live in Rust/WASM opaque handles.
  */
 
@@ -107,6 +107,6 @@ export function createBtrAdapter(sharedSecret: Uint8Array): WasmBtrTransferAdapt
     console.log('[BTR_INIT] WASM-backed BTR adapter (Rust authority)');
     return new WasmBtrTransferAdapter(engine);
   }
-  console.warn('[BTR_INIT] WASM BTR unavailable — BTR disabled (Rust authority required)');
+  console.warn('[BTR_INIT] WASM BTR unavailable - BTR disabled (Rust authority required)');
   return null;
 }

@@ -45,21 +45,21 @@ export function createTransferProgress(
   const wrap = document.createElement('div');
   wrap.className = 'space-y-2 w-full';
 
-  // RU4: incoming transfer state — receiver sees file arriving before progress starts
+  // RU4: incoming transfer state - receiver sees file arriving before progress starts
   if (isReceiving) {
     wrap.innerHTML = `
       <div class="flex items-center gap-2 w-full bg-dark-accent rounded-lg p-3 border border-neon/20 animate-pulse">
         ${icons.file('w-5 h-5 shrink-0 text-neon/60')}
         <div class="flex flex-col flex-1 min-w-0">
           <span class="truncate text-sm">${escapeHTML(progress.filename)}</span>
-          <span class="text-xs text-neon/60">Incoming file — ${formatSize(progress.total)}</span>
+          <span class="text-xs text-neon/60">Incoming file - ${formatSize(progress.total)}</span>
         </div>
       </div>
     `;
     return wrap;
   }
 
-  // RU5: Cancelled state — brief visible confirmation before UI clears
+  // RU5: Cancelled state - brief visible confirmation before UI clears
   if (isCancelled) {
     wrap.innerHTML = `
       <div class="flex items-center gap-2 w-full bg-dark-accent rounded-lg p-3 border border-gray-500/30">
@@ -73,7 +73,7 @@ export function createTransferProgress(
     return wrap;
   }
 
-  // RU2: Distinct completion state — green checkmark + filename confirmation
+  // RU2: Distinct completion state - green checkmark + filename confirmation
   if (isComplete) {
     wrap.innerHTML = `
       <div class="flex items-center gap-2 w-full bg-dark-accent rounded-lg p-3 border border-green-500/30">
@@ -87,7 +87,7 @@ export function createTransferProgress(
     return wrap;
   }
 
-  // RU2: Paused badge — explicit text label, not just icon swap
+  // RU2: Paused badge - explicit text label, not just icon swap
   const pausedBadge = isPaused
     ? '<span class="ml-2 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">Paused</span>'
     : '';
@@ -123,7 +123,7 @@ export function createTransferProgress(
         <div>Avg: ${formatSpeed(progress.stats.averageSpeed)}</div>
         <div>${formatSize(progress.loaded)} / ${formatSize(progress.total)}</div>
         <div>${progress.stats.estimatedTimeRemaining > 0 ? `~${formatTime(progress.stats.estimatedTimeRemaining)} remaining` : 'Calculating...'}</div>
-        ${progress.stats.retryCount > 0 ? `<div class="col-span-2 text-yellow-500">Auto-retrying (${progress.stats.retryCount}/${progress.stats.maxRetries}) — normal on slower connections</div>` : ''}
+        ${progress.stats.retryCount > 0 ? `<div class="col-span-2 text-yellow-500">Auto-retrying (${progress.stats.retryCount}/${progress.stats.maxRetries}) - normal on slower connections</div>` : ''}
       </div>
     ` : ''}
   `;

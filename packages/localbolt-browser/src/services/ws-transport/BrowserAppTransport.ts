@@ -204,7 +204,7 @@ export class BrowserAppTransport {
    */
   private async connectWebRTC(): Promise<void> {
     if (!this.options.createWebRTCFallback) {
-      throw new Error('[TRANSPORT_FALLBACK] WebRTC fallback not configured — no createWebRTCFallback factory');
+      throw new Error('[TRANSPORT_FALLBACK] WebRTC fallback not configured - no createWebRTCFallback factory');
     }
 
     this.webrtcService = await this.options.createWebRTCFallback();
@@ -225,7 +225,7 @@ export class BrowserAppTransport {
     if (this.transportMode === 'webrtc' && this.webrtcService) {
       return this.webrtcService.sendFile(file);
     }
-    throw new Error('No active transport — call connect() first');
+    throw new Error('No active transport - call connect() first');
   }
 
   /** Mark the connected peer as verified (TOFU). */

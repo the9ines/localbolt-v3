@@ -2,7 +2,7 @@ import { generateEphemeralKeyPair, toBase64, fromBase64, openBoxPayload, isValid
 import type { BtrModeValue } from '@the9ines/bolt-core';
 import { WebRTCError, ConnectionError, TransferError } from '../../types/webrtc-errors.js';
 import { getLocalOnlyRTCConfig, isLocalCandidate } from '../../lib/platform-utils.js';
-// SignalingProvider/SignalMessage types — extracted to @the9ines/localbolt-browser.
+// SignalingProvider/SignalMessage types - extracted to @the9ines/localbolt-browser.
 // Inline the minimal type shapes needed here to avoid circular dependency.
 interface SignalingProvider {
   connect(localPeerCode: string, deviceName: string, deviceType: any): Promise<void>;
@@ -38,7 +38,7 @@ class WebRTCService {
   private dc: RTCDataChannel | null = null;
   private signaling: SignalingProvider;
 
-  // Encryption — generated per session in connect() / handleOffer()
+  // Encryption - generated per session in connect() / handleOffer()
   private keyPair: { publicKey: Uint8Array; secretKey: Uint8Array } | null = null;
   private remotePublicKey: Uint8Array | null = null;
 
@@ -87,10 +87,10 @@ class WebRTCService {
   // SA6: signaling listener unsubscribe handle
   private signalUnsub?: () => void;
 
-  // N1: backpressure cancel hook — settled by disconnect() to prevent hang
+  // N1: backpressure cancel hook - settled by disconnect() to prevent hang
   private backpressureReject?: (err: Error) => void;
 
-  // N10: completion timer — cleared by disconnect() to prevent stale event
+  // N10: completion timer - cleared by disconnect() to prevent stale event
   private completionTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // SAS verification state
@@ -102,7 +102,7 @@ class WebRTCService {
   private remoteCapabilities: string[] = [];
   private negotiatedCapabilities: string[] = [];
 
-  // BTR state — WASM-backed when available, TS fallback otherwise (RB5)
+  // BTR state - WASM-backed when available, TS fallback otherwise (RB5)
   private btrMode: BtrModeValue | null = null;
   private btrAdapter: WasmBtrTransferAdapter | null = null;
 
@@ -124,7 +124,7 @@ class WebRTCService {
     this.signaling = signaling;
     this.signalUnsub = this.signaling.onSignal((signal) => this.handleSignal(signal));
 
-    // Build capabilities list — BTR capability only when kill switch is on
+    // Build capabilities list - BTR capability only when kill switch is on
     this.localCapabilities = ['bolt.file-hash', 'bolt.profile-envelope-v1'];
     if (this.options.btrEnabled) {
       this.localCapabilities.push('bolt.transfer-ratchet-v1');
@@ -137,7 +137,7 @@ class WebRTCService {
 
   // ─── Context bridges ──────────────────────────────────────────────────
 
-  /** Build the HandshakeContext bridge — maps to fields on this instance. */
+  /** Build the HandshakeContext bridge - maps to fields on this instance. */
   private buildHandshakeContext(): HandshakeContext {
     return {
       getKeyPair: () => this.keyPair,
@@ -181,7 +181,7 @@ class WebRTCService {
     };
   }
 
-  /** Build the TransferContext bridge — maps to fields on this instance. */
+  /** Build the TransferContext bridge - maps to fields on this instance. */
   private buildTransferContext(): TransferContext {
     return {
       getKeyPair: () => this.keyPair,
@@ -438,7 +438,7 @@ class WebRTCService {
       const remote = reports.find((r: any) => r.id === (pair as any).remoteCandidateId) as any;
       if (!local || !remote) return;
 
-      console.log('[POLICY] Selected pair — local:', local.candidateType, local.address, '→ remote:', remote.candidateType, remote.address);
+      console.log('[POLICY] Selected pair - local:', local.candidateType, local.address, '→ remote:', remote.candidateType, remote.address);
 
       if (local.candidateType !== 'host' || remote.candidateType !== 'host') {
         throw new ConnectionError('LAN-only policy violation: non-host candidate selected');
@@ -632,7 +632,7 @@ class WebRTCService {
       // ─── HELLO routing (exactly-once) ──────────────────────────
       if (msg.type === 'hello' && msg.payload) {
         if (this.sessionState !== 'pre_hello') {
-          console.warn('[DUPLICATE_HELLO] HELLO received after handshake complete — disconnecting');
+          console.warn('[DUPLICATE_HELLO] HELLO received after handshake complete - disconnecting');
           this.sendErrorAndDisconnect('DUPLICATE_HELLO', 'Duplicate HELLO');
           return;
         }
@@ -645,7 +645,7 @@ class WebRTCService {
 
       // ─── Pre-handshake gate ────────────────────────────────────
       if (this.sessionState === 'pre_hello') {
-        console.warn('[INVALID_STATE] non-HELLO message before handshake complete — disconnecting');
+        console.warn('[INVALID_STATE] non-HELLO message before handshake complete - disconnecting');
         this.onError(new ConnectionError('Received message before handshake complete'));
         this.sendErrorAndDisconnect('INVALID_STATE', 'Handshake not complete');
         return;
@@ -654,12 +654,12 @@ class WebRTCService {
       // ─── Profile Envelope v1: unwrap if negotiated ─────────────
       if (msg.type === 'profile-envelope') {
         if (!this.negotiatedEnvelopeV1()) {
-          console.warn('[ENVELOPE_UNNEGOTIATED] profile-envelope received but not negotiated — disconnecting');
+          console.warn('[ENVELOPE_UNNEGOTIATED] profile-envelope received but not negotiated - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_UNNEGOTIATED', 'Profile envelope not negotiated');
           return;
         }
         if (msg.version !== 1 || msg.encoding !== 'base64' || typeof msg.payload !== 'string') {
-          console.warn('[ENVELOPE_INVALID] invalid profile-envelope version/encoding — disconnecting');
+          console.warn('[ENVELOPE_INVALID] invalid profile-envelope version/encoding - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_INVALID', 'Invalid profile envelope format');
           return;
         }
@@ -667,7 +667,7 @@ class WebRTCService {
         try {
           innerBytes = openBoxPayload(msg.payload, this.remotePublicKey!, this.keyPair!.secretKey);
         } catch {
-          console.warn('[ENVELOPE_DECRYPT_FAIL] failed to decrypt profile-envelope — disconnecting');
+          console.warn('[ENVELOPE_DECRYPT_FAIL] failed to decrypt profile-envelope - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_DECRYPT_FAIL', 'Failed to decrypt profile envelope');
           return;
         }
@@ -675,18 +675,18 @@ class WebRTCService {
         try {
           inner = JSON.parse(new TextDecoder().decode(innerBytes));
         } catch {
-          console.warn('[INVALID_MESSAGE] failed to parse inner message JSON — disconnecting');
+          console.warn('[INVALID_MESSAGE] failed to parse inner message JSON - disconnecting');
           this.sendErrorAndDisconnect('INVALID_MESSAGE', 'Invalid inner message');
           return;
         }
         if (inner.type === 'error') {
           if (!isValidWireErrorCode(inner.code)) {
-            console.warn(`[PROTOCOL_VIOLATION] enveloped error with invalid code: ${JSON.stringify(inner.code)} — disconnecting`);
+            console.warn(`[PROTOCOL_VIOLATION] enveloped error with invalid code: ${JSON.stringify(inner.code)} - disconnecting`);
             this.sendErrorAndDisconnect('PROTOCOL_VIOLATION', 'Invalid inbound error code');
             return;
           }
           if (inner.message !== undefined && typeof inner.message !== 'string') {
-            console.warn(`[PROTOCOL_VIOLATION] enveloped error with non-string message — disconnecting`);
+            console.warn(`[PROTOCOL_VIOLATION] enveloped error with non-string message - disconnecting`);
             this.sendErrorAndDisconnect('PROTOCOL_VIOLATION', 'Invalid inbound error message type');
             return;
           }
@@ -698,7 +698,7 @@ class WebRTCService {
         // UI-XFER-1: canonical control messages (pause/resume/cancel) route to transfer manager
         if (CANONICAL_CONTROL_TYPES.has(inner.type)) {
           if (!inner.transferId) {
-            console.warn(`[INVALID_MESSAGE] enveloped ${inner.type} missing transferId — disconnecting`);
+            console.warn(`[INVALID_MESSAGE] enveloped ${inner.type} missing transferId - disconnecting`);
             this.sendErrorAndDisconnect('INVALID_MESSAGE', `${inner.type} missing transferId`);
             return;
           }
@@ -706,13 +706,13 @@ class WebRTCService {
           return;
         }
         if (inner.type !== 'file-chunk') {
-          console.warn(`[UNKNOWN_MESSAGE_TYPE] unknown inner type "${inner.type}" — disconnecting`);
+          console.warn(`[UNKNOWN_MESSAGE_TYPE] unknown inner type "${inner.type}" - disconnecting`);
           this.sendErrorAndDisconnect('UNKNOWN_MESSAGE_TYPE', `Unknown message type: ${inner.type}`);
           return;
         }
-        // NF-1: reject malformed file-chunk (missing/empty filename) — mirrors plaintext path
+        // NF-1: reject malformed file-chunk (missing/empty filename) - mirrors plaintext path
         if (!inner.filename) {
-          console.warn('[INVALID_MESSAGE] enveloped file-chunk with missing/empty filename — disconnecting');
+          console.warn('[INVALID_MESSAGE] enveloped file-chunk with missing/empty filename - disconnecting');
           this.sendErrorAndDisconnect('INVALID_MESSAGE', 'file-chunk missing filename');
           return;
         }
@@ -727,7 +727,7 @@ class WebRTCService {
 
       // ─── Envelope-required enforcement ─────────────────────────
       if (this.negotiatedEnvelopeV1()) {
-        console.warn('[ENVELOPE_REQUIRED] plaintext message received in envelope-required session — disconnecting');
+        console.warn('[ENVELOPE_REQUIRED] plaintext message received in envelope-required session - disconnecting');
         this.sendErrorAndDisconnect('ENVELOPE_REQUIRED', 'Envelope required');
         return;
       }
@@ -735,12 +735,12 @@ class WebRTCService {
       // ─── Plaintext error handling (pre-envelope) ────────────────
       if (msg.type === 'error') {
         if (!isValidWireErrorCode(msg.code)) {
-          console.warn(`[PROTOCOL_VIOLATION] plaintext error with invalid code: ${JSON.stringify(msg.code)} — disconnecting`);
+          console.warn(`[PROTOCOL_VIOLATION] plaintext error with invalid code: ${JSON.stringify(msg.code)} - disconnecting`);
           this.sendErrorAndDisconnect('PROTOCOL_VIOLATION', 'Invalid inbound error code');
           return;
         }
         if (msg.message !== undefined && typeof msg.message !== 'string') {
-          console.warn(`[PROTOCOL_VIOLATION] plaintext error with non-string message — disconnecting`);
+          console.warn(`[PROTOCOL_VIOLATION] plaintext error with non-string message - disconnecting`);
           this.sendErrorAndDisconnect('PROTOCOL_VIOLATION', 'Invalid inbound error message type');
           return;
         }
@@ -753,22 +753,22 @@ class WebRTCService {
       // UI-XFER-1: canonical control messages (pause/resume/cancel) route to transfer manager
       if (CANONICAL_CONTROL_TYPES.has(msg.type)) {
         if (!msg.transferId) {
-          console.warn(`[INVALID_MESSAGE] plaintext ${msg.type} missing transferId — disconnecting`);
+          console.warn(`[INVALID_MESSAGE] plaintext ${msg.type} missing transferId - disconnecting`);
           this.sendErrorAndDisconnect('INVALID_MESSAGE', `${msg.type} missing transferId`);
           return;
         }
         this.transfer.routeInnerMessage(msg);
         return;
       }
-      // SA9: reject unknown type (non-file-chunk) — no silent drops
+      // SA9: reject unknown type (non-file-chunk) - no silent drops
       if (msg.type !== 'file-chunk') {
-        console.warn(`[UNKNOWN_MESSAGE_TYPE] unknown plaintext type "${msg.type}" — disconnecting`);
+        console.warn(`[UNKNOWN_MESSAGE_TYPE] unknown plaintext type "${msg.type}" - disconnecting`);
         this.sendErrorAndDisconnect('UNKNOWN_MESSAGE_TYPE', `Unknown message type: ${msg.type}`);
         return;
       }
-      // SA9: reject malformed file-chunk (missing/empty filename) — no silent drops
+      // SA9: reject malformed file-chunk (missing/empty filename) - no silent drops
       if (!msg.filename) {
-        console.warn('[INVALID_MESSAGE] file-chunk with missing/empty filename — disconnecting');
+        console.warn('[INVALID_MESSAGE] file-chunk with missing/empty filename - disconnecting');
         this.sendErrorAndDisconnect('INVALID_MESSAGE', 'file-chunk missing filename');
         return;
       }
@@ -781,7 +781,7 @@ class WebRTCService {
 
   // ─── Transfer (delegated to TransferManager) ───────────────────────────
 
-  // Forwarding methods for test compat — tests call these via (service as any).methodName
+  // Forwarding methods for test compat - tests call these via (service as any).methodName
   private processChunk(msg: FileChunkMessage) {
     this.transfer.processChunk(msg);
   }
@@ -854,7 +854,7 @@ class WebRTCService {
     return this.negotiatedCapabilities.includes('bolt.profile-envelope-v1');
   }
 
-  // SA18: decodeProfileEnvelopeV1 removed — dead code with silent null return.
+  // SA18: decodeProfileEnvelopeV1 removed - dead code with silent null return.
   // Inline decryption in handleMessage() is the active path (fail-closed).
 
   private dcSendMessage(innerMsg: any, btrFields?: BtrEnvelopeFields): void {

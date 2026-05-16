@@ -303,7 +303,7 @@ export class WsDataTransport {
     try {
       const msg = JSON.parse(event.data);
 
-      // Session-key exchange (WS transport protocol — before HELLO)
+      // Session-key exchange (WS transport protocol - before HELLO)
       if (msg.type === 'session-key' && msg.publicKey) {
         const remoteSessionPk = fromBase64(msg.publicKey);
         this.remotePublicKey = remoteSessionPk;
@@ -342,7 +342,7 @@ export class WsDataTransport {
       // HELLO routing
       if (msg.type === 'hello' && msg.payload) {
         if (this.sessionState !== 'pre_hello') {
-          console.warn('[WS_TRANSPORT] Duplicate HELLO — disconnecting');
+          console.warn('[WS_TRANSPORT] Duplicate HELLO - disconnecting');
           this.sendErrorAndDisconnect('DUPLICATE_HELLO', 'Duplicate HELLO');
           return;
         }
@@ -355,7 +355,7 @@ export class WsDataTransport {
 
       // Pre-handshake gate
       if (this.sessionState === 'pre_hello') {
-        console.warn('[WS_TRANSPORT] Non-HELLO message before handshake — disconnecting');
+        console.warn('[WS_TRANSPORT] Non-HELLO message before handshake - disconnecting');
         this.sendErrorAndDisconnect('INVALID_STATE', 'Handshake not complete');
         return;
       }
@@ -363,12 +363,12 @@ export class WsDataTransport {
       // Profile Envelope v1 unwrap
       if (msg.type === 'profile-envelope') {
         if (!this.negotiatedEnvelopeV1()) {
-          console.warn('[WS_TRANSPORT] Envelope received but not negotiated — disconnecting');
+          console.warn('[WS_TRANSPORT] Envelope received but not negotiated - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_UNNEGOTIATED', 'Profile envelope not negotiated');
           return;
         }
         if (msg.version !== 1 || msg.encoding !== 'base64' || typeof msg.payload !== 'string') {
-          console.warn('[WS_TRANSPORT] Invalid envelope format — disconnecting');
+          console.warn('[WS_TRANSPORT] Invalid envelope format - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_INVALID', 'Invalid profile envelope format');
           return;
         }
@@ -376,7 +376,7 @@ export class WsDataTransport {
         try {
           innerBytes = openBoxPayload(msg.payload, this.remotePublicKey!, this.keyPair!.secretKey);
         } catch {
-          console.warn('[WS_TRANSPORT] Envelope decrypt failed — disconnecting');
+          console.warn('[WS_TRANSPORT] Envelope decrypt failed - disconnecting');
           this.sendErrorAndDisconnect('ENVELOPE_DECRYPT_FAIL', 'Failed to decrypt profile envelope');
           return;
         }
@@ -384,7 +384,7 @@ export class WsDataTransport {
         try {
           inner = JSON.parse(new TextDecoder().decode(innerBytes));
         } catch {
-          console.warn('[WS_TRANSPORT] Invalid inner JSON — disconnecting');
+          console.warn('[WS_TRANSPORT] Invalid inner JSON - disconnecting');
           this.sendErrorAndDisconnect('INVALID_MESSAGE', 'Invalid inner message');
           return;
         }
@@ -424,7 +424,7 @@ export class WsDataTransport {
 
       // Envelope-required enforcement
       if (this.negotiatedEnvelopeV1()) {
-        console.warn('[WS_TRANSPORT] Plaintext in envelope-required session — disconnecting');
+        console.warn('[WS_TRANSPORT] Plaintext in envelope-required session - disconnecting');
         this.sendErrorAndDisconnect('ENVELOPE_REQUIRED', 'Envelope required');
         return;
       }

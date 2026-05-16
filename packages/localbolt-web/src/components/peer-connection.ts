@@ -29,7 +29,7 @@ let pendingDesktopWtUrl: string | null = null;
 let pendingDesktopCertHash: string | null = null;
 
 /** Whether a ws:// direct URL is reachable from the current origin.
- *  HTTPS pages cannot connect to ws:// (mixed content — browser blocks it). */
+ *  HTTPS pages cannot connect to ws:// (mixed content - browser blocks it). */
 function canUseDirectWs(url: string): boolean {
   if (window.location.protocol !== 'https:') return true;
   return url.startsWith('wss://');
@@ -179,7 +179,7 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
     });
     setWebrtcRef(rtcServiceRef);
   } else if (TERMINAL_CONNECTION_STATES.has(state)) {
-    // Only reset on terminal states — ignore intermediates ('new', 'connecting')
+    // Only reset on terminal states - ignore intermediates ('new', 'connecting')
     transferTerminal = false;
     // RECON-XFER-1: disconnect SDK service on terminal WebRTC state so transfer
     // maps/flags/timers are cleaned up and the one-shot service is retired
@@ -189,7 +189,7 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
     }
     resetSession();
     setWebrtcRef(null);
-    // RU5: connection drop guidance — tell user what happened and how to recover
+    // RU5: connection drop guidance - tell user what happened and how to recover
     showToast('Connection Lost', 'The connection was interrupted. Select the device again to reconnect.', 'destructive');
   }
 }
@@ -236,7 +236,7 @@ function handleReceiveProgress(progress: TransferProgress) {
   } else if (progress.status === 'canceled_by_sender' || progress.status === 'canceled_by_receiver') {
     transferTerminal = true;
     // RU5: keep cancelled state visible briefly (transfer-progress.ts renders it)
-    // then clear after 2s — matches cancel feedback timing
+    // then clear after 2s - matches cancel feedback timing
     showToast('Transfer Canceled', 'The file transfer was cancelled');
     setTimeout(() => store.setState({ transferProgress: null }), 2000);
   } else if (progress.status === 'error') {
@@ -246,7 +246,7 @@ function handleReceiveProgress(progress: TransferProgress) {
     const reason = progress.errorDetail || 'The transfer was terminated due to an error';
     showToast('Transfer Error', reason, 'destructive');
   } else {
-    // Non-terminal status (receiving, sending) — reset terminal flag for new transfer
+    // Non-terminal status (receiving, sending) - reset terminal flag for new transfer
     transferTerminal = false;
   }
 }
@@ -254,19 +254,19 @@ function handleReceiveProgress(progress: TransferProgress) {
 // ── Connection Approval Protocol ─────────────────────────────────────────
 
 function handleApprovalSignal(signal: SignalMessage) {
-  // Only handle connection approval types — ignore WebRTC types
+  // Only handle connection approval types - ignore WebRTC types
   switch (signal.type) {
     case 'connection_request': {
       console.log('[APPROVAL] Received connection request from', signal.from);
       const currentPhase = getPhase();
       if (currentPhase !== 'idle') {
-        // Duplicate request from same peer (arrives via both local + cloud) — ignore
+        // Duplicate request from same peer (arrives via both local + cloud) - ignore
         const { incomingRequest } = store.getState();
         if (incomingRequest?.peerCode === signal.from) {
           console.log('[APPROVAL] Ignoring duplicate request from same peer:', signal.from);
           return;
         }
-        // Actually busy with a different peer — auto-decline
+        // Actually busy with a different peer - auto-decline
         signalingRef?.sendSignal('connection_declined', { reason: 'busy' }, signal.from);
         return;
       }
@@ -281,7 +281,7 @@ function handleApprovalSignal(signal: SignalMessage) {
         if (canUseDirectWs(pendingDesktopWsUrl)) {
           console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
         } else if (!canUseSecureDirect(pendingDesktopWtUrl, pendingDesktopCertHash)) {
-          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked — HTTPS origin, no WT available, will use WebRTC)');
+          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked - HTTPS origin, no WT available, will use WebRTC)');
         }
       }
 
@@ -435,7 +435,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       }
 
       if (desktopWsUrl && !canUseDirectWs(desktopWsUrl)) {
-        console.log('[DIRECT] ws:// blocked from HTTPS origin, no WT available — falling back to WebRTC');
+        console.log('[DIRECT] ws:// blocked from HTTPS origin, no WT available - falling back to WebRTC');
       }
 
       // ── Path 3: Standard browser↔browser WebRTC fallback ──
@@ -459,7 +459,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       console.log('[APPROVAL] Connection declined by', signal.from);
       const { connectingTo, incomingRequest } = store.getState();
       if (connectingTo === signal.from) {
-        // We were waiting for approval — they declined
+        // We were waiting for approval - they declined
         resetSession();
         showToast('Connection Declined', 'The other device declined the connection request');
       } else if (incomingRequest?.peerCode === signal.from) {
@@ -619,7 +619,7 @@ function cancelRequest() {
 }
 
 function disconnect() {
-  // Idempotent — skip if already idle
+  // Idempotent - skip if already idle
   if (getPhase() === 'idle') return;
 
   // RECON-XFER-1: detach handler before disconnect to prevent re-entrant
@@ -644,7 +644,7 @@ function disconnect() {
     dt.disconnect();
   }
   pendingDesktopWsUrl = null;
-  // Canonical reset — clears all state via session-state
+  // Canonical reset - clears all state via session-state
   transferTerminal = false;
   resetSession();
   setWebrtcRef(null);
@@ -691,7 +691,7 @@ export function createPeerConnection(): HTMLElement {
   verificationStatusUpdate = verificationStatus.update;
   verificationRow.appendChild(verificationStatus.element);
 
-  // Reject button — visible only in unverified state
+  // Reject button - visible only in unverified state
   const rejectBtn = document.createElement('button');
   rejectBtn.className =
     'ml-auto px-2 py-0.5 text-xs rounded border border-red-400/30 ' +
@@ -701,7 +701,7 @@ export function createPeerConnection(): HTMLElement {
   rejectBtn.addEventListener('click', () => {
     console.log('[TOFU] User rejected unverified peer');
     disconnect();
-    showToast('Peer Rejected', 'Connection closed — peer identity was not verified');
+    showToast('Peer Rejected', 'Connection closed - peer identity was not verified');
   });
   rejectBtnRef = rejectBtn;
   verificationRow.appendChild(rejectBtn);
@@ -735,18 +735,18 @@ export function createPeerConnection(): HTMLElement {
   const cloudUrl = import.meta.env.VITE_SIGNAL_URL as string | undefined;
 
   // Local signaling endpoint: only attempt ws:// from http:// origins.
-  // HTTPS pages MUST NOT attempt ws:// (mixed content — blocked by browsers).
+  // HTTPS pages MUST NOT attempt ws:// (mixed content - blocked by browsers).
   // Local signaling is for dev mode and desktop-app embedded rendezvous only.
   const isSecureOrigin = window.location.protocol === 'https:';
   const localUrl = isSecureOrigin
-    ? '' // Skip local signaling from HTTPS — no local rendezvous reachable
+    ? '' // Skip local signaling from HTTPS - no local rendezvous reachable
     : (import.meta.env.VITE_LOCAL_SIGNAL_URL || `ws://${window.location.hostname}:3001`);
 
   if (!cloudUrl) {
-    console.warn('[SIGNALING] VITE_SIGNAL_URL not set — cloud signaling disabled, local-only mode');
+    console.warn('[SIGNALING] VITE_SIGNAL_URL not set - cloud signaling disabled, local-only mode');
   }
   if (isSecureOrigin && !localUrl) {
-    console.log('[SIGNALING] HTTPS origin — local ws:// signaling disabled (mixed content policy)');
+    console.log('[SIGNALING] HTTPS origin - local ws:// signaling disabled (mixed content policy)');
   }
 
   const signaling = new DualSignaling(localUrl, cloudUrl ?? '');

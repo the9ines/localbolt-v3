@@ -1,4 +1,4 @@
-// @the9ines/localbolt-browser — Browser-layer code for LocalBolt web apps.
+// @the9ines/localbolt-browser - Browser-layer code for LocalBolt web apps.
 //
 // Extracted from bolt-core-sdk/ts/bolt-transport-web as part of the
 // headless-core migration. These are product/browser-layer concerns,
@@ -40,7 +40,7 @@ export type { IdentityPersistence } from './services/identity/identity-store.js'
 export { IndexedDBPinStore } from './services/identity/pin-store.js';
 export type { PinPersistence, PinRecord, PinVerifyResult } from './services/identity/pin-store.js';
 
-// WebRTC (legacy tribute — browser↔browser)
+// WebRTC (legacy tribute - browser↔browser)
 export { default as WebRTCService } from './services/webrtc/WebRTCService.js';
 export type { TransferProgress, TransferStats, WebRTCServiceOptions, VerificationInfo, VerificationState } from './services/webrtc/WebRTCService.js';
 

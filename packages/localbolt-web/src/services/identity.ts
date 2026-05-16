@@ -1,5 +1,5 @@
 /**
- * Local identity persistence — H5-v3.
+ * Local identity persistence - H5-v3.
  *
  * Uses SDK-provided IndexedDBIdentityStore to persist a long-lived X25519
  * identity keypair in the browser. Keys survive page reloads and browser
@@ -18,7 +18,7 @@ let cachedIdentity: IdentityKeyPair | null = null;
 
 /**
  * Load or create the local identity keypair.
- * Safe to call multiple times — returns cached result after first call.
+ * Safe to call multiple times - returns cached result after first call.
  */
 export async function initIdentity(): Promise<IdentityKeyPair> {
   if (cachedIdentity) return cachedIdentity;
