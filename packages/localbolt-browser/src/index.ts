@@ -12,7 +12,12 @@ export {
   setWebrtcRef,
   setDirectTransportRef,
 } from './components/file-upload.js';
-export { createTransferProgress } from './components/transfer-progress.js';
+export {
+  createTransferProgress,
+  formatSpeed,
+  formatTime,
+  formatSize,
+} from './components/transfer-progress.js';
 export { createVerificationStatus } from './components/verification-status.js';
 
 // UI utilities
@@ -20,7 +25,7 @@ export { showToast } from './ui/toast.js';
 export { icons } from './ui/icons.js';
 
 // State
-export { store } from './state/store.js';
+export { AppStore, store } from './state/store.js';
 export type { AppState, ConnectionRequest } from './state/store.js';
 
 // Signaling
@@ -44,6 +49,7 @@ export { WsDataTransport, WtDataTransport, BrowserAppTransport } from './service
 export type { WsDataTransportOptions, WtDataTransportOptions, DataTransport, BrowserAppTransportOptions } from './services/ws-transport/index.js';
 
 // Platform / Lib
+export { escapeHTML } from './lib/sanitize.js';
 export {
   detectDevice,
   getDeviceName as getPlatformDeviceName,
