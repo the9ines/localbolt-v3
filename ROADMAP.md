@@ -26,10 +26,11 @@
 - **Depends on:** bolt-core-sdk npm publish, S1 (tests)
 
 ### S4. Tauri scaffold resolution
-- Decision: complete apps/tauri or remove in favor of localbolt-app
-- If keep: update to match current localbolt-app architecture
-- If remove: delete apps/ directory, update package.json scripts
-- **Depends on:** Ecosystem decision (ECOSYSTEM_PRD)
+- **Resolved:** Tauri is retired for v3. Native/mobile apps live in
+  `localbolt-app`.
+- `apps/tauri` may remain as historical scaffold only, but it is not an active
+  npm workspace and root package scripts must not expose Tauri dev/build paths.
+- Forward web work stays in `packages/*`.
 
 ---
 
