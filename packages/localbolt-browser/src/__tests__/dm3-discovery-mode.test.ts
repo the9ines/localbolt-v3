@@ -2,15 +2,16 @@
  * DM3 — Discovery Mode Acceptance Harness
  *
  * Tests DualSignaling peer-list composition, dedup, source-aware loss,
- * and signal routing. Validates LAN_ONLY and HYBRID (shared contract) behavior.
+ * and signal routing. Validates local-only composition and source-routing
+ * behavior for the shared signaling primitive.
  *
  * AC-DM-10: Peer-list composition per mode
  * AC-DM-11: Dedup correctness
  * AC-DM-12: Source-aware loss correctness
  * AC-DM-13: Signal routing uses recorded source
  *
- * DM1 policy: LocalBolt = LAN_ONLY. HYBRID tests cover shared DualSignaling
- * contract only (not LocalBolt default UX).
+ * DM1 policy: LocalBolt = LAN_ONLY. Multi-source tests cover the shared
+ * DualSignaling contract only (not LocalBolt default UX).
  *
  * Runtime code unchanged — test-only harness.
  */
@@ -62,24 +63,19 @@ describe('AC-DM-10: Peer-list composition', () => {
     expect(discovered[0].peerCode).toBe('LAN001');
   });
 
-  it('LAN_ONLY: no cloud-origin peers in list when cloud not connected', () => {
+  it('local-only configuration: only local peers appear when hosted endpoint is not connected', () => {
     const dual = new DualSignaling('ws://localhost:3001', '');
     const handler = (dual as any).handlePeerDiscovered.bind(dual);
 
     // Add a local peer
     handler(makePeer('LOCAL1'), 'local');
-    // Simulate cloud peer (shouldn't happen in LAN_ONLY, but test guard)
-    handler(makePeer('CLOUD1'), 'cloud');
 
     const peers = dual.getPeers();
-    // Both appear in the list (DualSignaling doesn't filter by mode —
-    // LAN_ONLY is enforced by not connecting cloud, not by filtering)
-    // This verifies the composition: if cloud doesn't connect, no cloud peers arrive
-    expect(peers.length).toBeGreaterThanOrEqual(1);
+    expect(peers).toHaveLength(1);
     expect(peers.some(p => p.peerCode === 'LOCAL1')).toBe(true);
   });
 
-  it('HYBRID: peers from both sources appear in merged list', () => {
+  it('shared multi-source contract: peers from both sources appear in merged list', () => {
     const dual = new DualSignaling('ws://localhost:3001', 'wss://cloud.example.com');
     const handler = (dual as any).handlePeerDiscovered.bind(dual);
 

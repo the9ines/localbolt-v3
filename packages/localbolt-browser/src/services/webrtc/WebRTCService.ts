@@ -1,7 +1,7 @@
 import { generateEphemeralKeyPair, toBase64, fromBase64, openBoxPayload, isValidWireErrorCode, scalarMult, BtrMode } from '@the9ines/bolt-core';
 import type { BtrModeValue } from '@the9ines/bolt-core';
 import { WebRTCError, ConnectionError, TransferError } from '../../types/webrtc-errors.js';
-import { getLocalOnlyRTCConfig } from '../../lib/platform-utils.js';
+import { getLocalOnlyRTCConfig, isLocalCandidate } from '../../lib/platform-utils.js';
 // SignalingProvider/SignalMessage types — extracted to @the9ines/localbolt-browser.
 // Inline the minimal type shapes needed here to avoid circular dependency.
 interface SignalingProvider {
@@ -299,6 +299,11 @@ class WebRTCService {
     const candidate = new RTCIceCandidate(signal.data);
     console.log('[ICE] Remote candidate:', candidate.type, candidate.address, candidate.protocol);
 
+    if (!isLocalCandidate(candidate)) {
+      console.log('[ICE] Blocking non-host remote candidate (LAN-only policy)');
+      return;
+    }
+
     if (!this.pc || !this.pc.remoteDescription) {
       console.log('[ICE] Queuing candidate (no PC or remote desc)');
       this.pendingCandidates.push(signal.data);
@@ -346,8 +351,8 @@ class WebRTCService {
 
     this.pc.onicecandidate = (event) => {
       if (event.candidate) {
-        if (event.candidate.type === 'relay') {
-          console.log('[ICE] Blocking relay candidate (same-network policy)');
+        if (!isLocalCandidate(event.candidate)) {
+          console.log('[ICE] Blocking non-host local candidate (LAN-only policy)');
           return;
         }
         console.log('[ICE] Local candidate:', event.candidate.type, event.candidate.address, event.candidate.protocol);
@@ -435,19 +440,11 @@ class WebRTCService {
 
       console.log('[POLICY] Selected pair — local:', local.candidateType, local.address, '→ remote:', remote.candidateType, remote.address);
 
-      if (local.candidateType === 'relay' || remote.candidateType === 'relay') {
-        throw new ConnectionError('Same-network policy violation: relay candidate selected');
+      if (local.candidateType !== 'host' || remote.candidateType !== 'host') {
+        throw new ConnectionError('LAN-only policy violation: non-host candidate selected');
       }
 
-      if (
-        (local.candidateType === 'srflx' || remote.candidateType === 'srflx') &&
-        local.address && remote.address &&
-        local.address !== remote.address
-      ) {
-        throw new ConnectionError('Same-network policy violation: different public addresses');
-      }
-
-      console.log('[POLICY] Same-network check passed');
+      console.log('[POLICY] LAN-only ICE check passed');
     } catch (error) {
       if (error instanceof ConnectionError) {
         console.error('[POLICY]', error.message);

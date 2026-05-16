@@ -92,12 +92,9 @@ export const getMaxChunkSize = (): number => {
 };
 
 export const getPlatformICEServers = (): RTCIceServer[] => {
-  // Same-network policy with robust connectivity:
-  // use STUN for candidate discovery, but never allow relay transport.
-  return [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' }
-  ];
+  // LocalBolt is LAN-only. Do not configure STUN/TURN here: server-reflexive
+  // candidates can create same-public-IP paths that are broader than a LAN.
+  return [];
 };
 
 /**
@@ -151,6 +148,6 @@ export const isLocalCandidate = (candidate: RTCIceCandidate): boolean => {
   const parsed = parseCandidate(candidate.candidate || '');
   const candidateType = candidate.type || parsed.type;
 
-  // Allow direct candidates only. Never allow TURN relay.
-  return candidateType === 'host' || candidateType === 'srflx';
+  // Allow only host candidates. Reject srflx and relay candidates.
+  return candidateType === 'host';
 };

@@ -1,7 +1,8 @@
 // ─── Dual Signaling ─────────────────────────────────────────────────────────
-// Connects to both a local signal server (LAN discovery) and a cloud signal
-// server (internet discovery). Merges peer lists and routes signals through
-// whichever server knows the target peer.
+// Connects to configured local/hosted signal endpoints, merges peer lists,
+// and routes signals through whichever endpoint knows the target peer.
+// LocalBolt product policy remains LAN/local-network scoped; hosted rendezvous
+// must not be treated as internet-wide discovery.
 //
 // Graceful degradation: if either connection fails, the other still works.
 
