@@ -141,13 +141,20 @@ const parseCandidate = (candidateLine: string): { address?: string; type?: strin
   };
 };
 
+const isMdnsHostCandidate = (address: string): boolean => {
+  const lower = address.toLowerCase();
+  return lower.endsWith('.local') || lower.endsWith('.local.');
+};
+
 /**
  * Check if an ICE candidate is local-only
  */
 export const isLocalCandidate = (candidate: RTCIceCandidate): boolean => {
   const parsed = parseCandidate(candidate.candidate || '');
   const candidateType = candidate.type || parsed.type;
+  const address = candidate.address || parsed.address || '';
 
-  // Allow only host candidates. Reject srflx and relay candidates.
-  return candidateType === 'host';
+  // Allow only local host candidates. Public host addresses can appear on
+  // globally reachable IPv6 networks, which is outside LocalBolt's LAN scope.
+  return candidateType === 'host' && (isPrivateIP(address) || isMdnsHostCandidate(address));
 };
