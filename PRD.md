@@ -10,12 +10,12 @@
 **Version:** v3.0.104-netlify-logo lineage (production web, live at localbolt.app)
 **Stack:** Vanilla TypeScript, Tailwind CSS, Vite, TweetNaCl/Bolt packages, Netlify + Fly.io rendezvous
 **Test coverage:** Automated Vitest + Rust signal compatibility tests
-**Deployment:** Netlify (web), Fly.io canonical rendezvous endpoint at wss://bolt-rendezvous.fly.dev
+**Deployment:** Netlify (web), Fly.io canonical rendezvous endpoint at wss://bolt-rendezvous.fly.dev for same-network discovery
 
 ### Implemented and Working
 
 - Full encrypted file transfer (NaCl box, per-chunk nonce, 16KB chunks, WebRTC)
-- Dual signaling (cloud Fly.io + local LAN if running localbolt/localbolt-app nearby)
+- LAN-only discovery using hosted or local rendezvous signaling
 - IP-based peer discovery with CGNAT/Tailscale support
 - Security hardening (CSP, XSS prevention, peer validation, ICE relay blocking, SAS verification)
 - Netlify deployment with Observatory A+ security headers (HSTS, COOP, Permissions-Policy)
@@ -49,7 +49,7 @@
 ### Production-Ready
 
 - Web frontend (localbolt.app)
-- Hosted rendezvous endpoint (bolt-rendezvous.fly.dev)
+- Hosted rendezvous endpoint (bolt-rendezvous.fly.dev) for same-network discovery
 - Deployment pipeline (Netlify + Fly.io)
 - Security posture (A+ Observatory, CSP, hardened headers)
 
@@ -95,11 +95,11 @@ LocalBolt v3 is the flagship hosted web experience:
 ## 5. Technical Constraints
 
 - Must deploy as static site on Netlify (no server-side rendering)
-- Signal server must deploy on Fly.io (or compatible platform)
+- Signal server must deploy on Fly.io (or compatible platform) without expanding LocalBolt beyond LAN-only discovery
 - Frontend must remain vanilla TypeScript (no React/Vue/Svelte)
 - Must maintain Observatory A+ security rating
 - Must maintain structured data for SEO (JSON-LD)
-- Signal server endpoint: wss://bolt-rendezvous.fly.dev (canonical hosted URL)
+- Signal server endpoint: wss://bolt-rendezvous.fly.dev (canonical hosted URL; LocalBolt remains LAN-only)
 - Private repository (not publicly visible on GitHub)
 
 ---

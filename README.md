@@ -20,7 +20,7 @@ packages/
 
 - **NaCl/Curve25519 encryption** - same crypto as Signal and WireGuard
 - **WebRTC P2P transfer** - files never touch a server
-- **Dual signaling** - discovers devices on the same LAN and across the internet
+- **LAN discovery** - discovers nearby devices on the same local network
 - **Auto-discovery** - devices appear automatically, tap to connect
 - **No accounts** - no sign-up, no cloud storage, no data collection
 - **No file size limits** - limited only by device storage
@@ -65,11 +65,13 @@ Two transfer paths:
 - **Browser → App** (forward path): connects to the native app daemon via WebTransport (HTTPS origins) or WebSocket direct (localhost/HTTP origins). Encrypted, daemon-mediated, peer-to-peer.
 - **Browser ↔ Browser** (compatibility path): WebRTC data channels for browser-only file sharing without a native app.
 
-The website connects to both the cloud signal server and any local signal server via `DualSignaling`. This means users of the website can discover:
+The website uses rendezvous signaling only to find nearby LocalBolt peers on the
+same local network. LocalBolt does not provide internet-wide discovery or
+cross-network transfer; that belongs to ByteBolt.
 
-- Devices running the native app (via cloud or local signaling) — forward path
-- Other users on localbolt.app (via cloud signaling) — browser↔browser
-- Devices running the self-hosted version on the same LAN (via local signaling)
+- Devices running the native app on the same LAN — forward path
+- Other users on localbolt.app on the same LAN — browser↔browser
+- Devices running the self-hosted version on the same LAN — local signaling
 
 ## Ecosystem
 

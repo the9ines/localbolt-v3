@@ -731,7 +731,7 @@ export function createPeerConnection(): HTMLElement {
   // Start identity load in parallel with signaling connect
   const identityPromise = initIdentity();
 
-  // Dual signaling: cloud (internet) + local (LAN)
+  // Hosted + local signaling. LocalBolt policy remains LAN/local-network scoped.
   const cloudUrl = import.meta.env.VITE_SIGNAL_URL as string | undefined;
 
   // Local signaling endpoint: only attempt ws:// from http:// origins.

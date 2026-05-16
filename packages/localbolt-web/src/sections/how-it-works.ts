@@ -6,7 +6,7 @@ export function createHowItWorks(): HTMLElement {
   section.className = 'space-y-6 max-w-4xl mx-auto';
 
   const steps = [
-    { icon: icons.smartphone('w-4 h-4 text-neon/70'), step: '1', title: 'Open on Both Devices', desc: 'Visit localbolt.app in a browser or use the desktop app. Same network or different networks.' },
+    { icon: icons.smartphone('w-4 h-4 text-neon/70'), step: '1', title: 'Open on Both Devices', desc: 'Visit localbolt.app in a browser or use the desktop app on devices on the same local network.' },
     { icon: icons.share2('w-4 h-4 text-neon/70'), step: '2', title: 'Select a Device', desc: 'Devices appear automatically. Tap one to send an encrypted connection request.' },
     { icon: icons.zap('w-4 h-4 text-neon/70'), step: '3', title: 'Transfer Directly', desc: 'Drag and drop files. End-to-end encrypted, peer-to-peer, no size limits.' },
   ];

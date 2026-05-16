@@ -14,7 +14,7 @@ export function createFeatures(): HTMLElement {
     { icon: icons.laptop, title: 'Browser &amp; Desktop App', desc: 'Use localbolt.app in any browser or download the native desktop app for macOS 14+: <a href="/download/macos/apple-silicon" class="text-neon/70 hover:text-neon transition-colors underline underline-offset-2">Apple Silicon</a> · <a href="/download/macos/intel" class="text-neon/70 hover:text-neon transition-colors underline underline-offset-2">Intel</a>. <span class="block mt-1.5 text-[10px] text-gray-600">Ad-hoc signed — right-click → Open on first launch. <a href="https://github.com/the9ines/localbolt-native/releases/tag/localbolt-app-v2.0.0" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-400 transition-colors">Release notes &amp; checksums</a></span>' },
     { icon: icons.lock, title: 'Fully Open Source', desc: "Source code, protocol spec, and cryptographic SDK are all public on GitHub. Audit the code, self-host your own instance, or build on top of bolt-core-sdk." },
     { icon: icons.zap, title: 'Lightning Fast', desc: 'Direct peer connections transfer at local network speed. Same-network transfers never leave your LAN.' },
-    { icon: icons.globe, title: 'Works Everywhere', desc: 'Same network or different networks. Dual signaling discovers devices both locally and across the internet. No account needed.' },
+    { icon: icons.globe, title: 'Works on Your LAN', desc: 'Nearby devices on the same local network appear automatically. For remote-network transfer, use ByteBolt.' },
     { icon: icons.clock, title: 'Real-time Transfer', desc: 'Live progress tracking, transfer speed monitoring, and pause/resume control.' },
   ];
 
