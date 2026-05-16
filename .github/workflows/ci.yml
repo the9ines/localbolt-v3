@@ -22,6 +22,9 @@ jobs:
       - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
         with:
           workspaces: packages/localbolt-signal
+      - name: Checkout bolt-core-sdk path dependency
+        working-directory: ..
+        run: git clone --depth 1 https://github.com/the9ines/bolt-core-sdk.git bolt-core-sdk
       - run: cargo fmt --check
       - run: cargo clippy -- -D warnings
       - run: cargo test

@@ -34,6 +34,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - run: npm run build --workspace=packages/bolt-core-browser
+      - run: npm run build --workspace=packages/localbolt-browser
       - run: npm run build --workspace=packages/localbolt-core
       - run: npm test -w packages/localbolt-core
 
