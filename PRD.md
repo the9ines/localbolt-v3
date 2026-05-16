@@ -8,7 +8,7 @@
 ## 1. Current State Summary
 
 **Version:** v3.0.104-netlify-logo lineage (production web, live at localbolt.app)
-**Stack:** Vanilla TypeScript, Tailwind CSS, Vite static prerender, TweetNaCl/Bolt packages, Netlify + Fly.io rendezvous
+**Stack:** Vanilla TypeScript, Tailwind CSS, Vite static shell generation, TweetNaCl/Bolt packages, Netlify + Fly.io rendezvous
 **Test coverage:** Automated Vitest + Rust signal compatibility tests
 **Deployment:** Netlify (web), Fly.io canonical rendezvous endpoint at wss://bolt-rendezvous.fly.dev for same-network discovery
 
@@ -20,7 +20,7 @@
 - Security hardening (CSP, XSS prevention, peer validation, ICE relay blocking, SAS verification)
 - Netlify deployment with Observatory A+ security headers (HSTS, COOP, Permissions-Policy)
 - Comprehensive SEO (structured data, Open Graph, FAQ schema)
-- Static prerendered HTML shell generated at build time for first paint and crawlability
+- Static HTML shell generated at build time for first paint and crawlability
 - CI/CD (GitHub Actions: fmt, clippy, tests, build; registry guards; Dependabot)
 - Documentation (CHANGELOG.md with 39 entries, STATE.md, CLAUDE.md)
 - Consent-based analytics (Google Analytics with denied-by-default storage)
@@ -87,7 +87,7 @@ LocalBolt v3 is the flagship hosted web experience:
 2. **Not a native app.** Native/mobile shells are localbolt-app.
 3. **No accounts.** Zero-knowledge design.
 4. **No server-side file storage.** Files are always peer-to-peer.
-5. **No relay support.** Local discovery + cloud signaling only. Global relay is ByteBolt.
+5. **No relay support.** Local discovery + hosted same-network signaling only. Global relay is ByteBolt.
 6. **No paid features.** This is a free, open-source product.
 
 ---

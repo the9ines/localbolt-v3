@@ -67,7 +67,7 @@ Two transfer paths:
 
 The website uses rendezvous signaling only to find nearby LocalBolt peers on the
 same local network. LocalBolt does not provide internet-wide discovery or
-cross-network transfer; that belongs to ByteBolt.
+cross-network transfer.
 
 - Devices running the native app on the same LAN — forward path
 - Other users on localbolt.app on the same LAN — browser↔browser

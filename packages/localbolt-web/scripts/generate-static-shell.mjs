@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 const distIndex = resolve('dist/index.html');
 const html = readFileSync(distIndex, 'utf8');
 
-const prerenderedRoot = String.raw`<div id="root" data-render="ssr">
+const staticRoot = String.raw`<div id="root" data-render="static-shell">
   <div class="relative bg-dark text-white">
     <div class="relative z-10">
       <header class="border-b border-white/[0.06] bg-dark/80 backdrop-blur-sm sticky top-0 z-50">
@@ -71,7 +71,7 @@ const prerenderedRoot = String.raw`<div id="root" data-render="ssr">
               <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5"><h3 class="text-sm font-semibold mb-1">End-to-End Encryption</h3><p class="text-xs text-gray-500 leading-relaxed">Every file is encrypted with NaCl/Curve25519 before transfer.</p></div>
               <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5"><h3 class="text-sm font-semibold mb-1">Direct P2P Transfer</h3><p class="text-xs text-gray-500 leading-relaxed">Files transfer directly between connected devices over encrypted data channels.</p></div>
               <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5"><h3 class="text-sm font-semibold mb-1">Zero Cloud Storage</h3><p class="text-xs text-gray-500 leading-relaxed">Your file contents are not uploaded to LocalBolt servers.</p></div>
-              <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5"><h3 class="text-sm font-semibold mb-1">Works on Your LAN</h3><p class="text-xs text-gray-500 leading-relaxed">Nearby devices on the same local network appear automatically. For remote-network transfer, use ByteBolt.</p></div>
+              <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5"><h3 class="text-sm font-semibold mb-1">Works on Your LAN</h3><p class="text-xs text-gray-500 leading-relaxed">Nearby devices on the same local network appear automatically. Remote-network transfer is outside LocalBolt scope.</p></div>
             </div>
           </section>
 
@@ -81,7 +81,7 @@ const prerenderedRoot = String.raw`<div id="root" data-render="ssr">
               <p class="text-sm text-gray-500">Common questions about encrypted peer-to-peer file transfer</p>
             </div>
             <div class="space-y-1.5">
-              <details class="group border border-white/5 rounded-lg px-5 bg-white/[0.02]"><summary class="cursor-pointer text-left text-sm py-4 list-none">Does LocalBolt work without internet?</summary><p class="text-xs text-gray-500 pb-4">Yes. LocalBolt is designed for local-network transfer. When you self-host or run the desktop app, devices on the same LAN can find each other with no internet connection needed. LocalBolt does not provide cross-internet discovery or transfer; that belongs to ByteBolt.</p></details>
+              <details class="group border border-white/5 rounded-lg px-5 bg-white/[0.02]"><summary class="cursor-pointer text-left text-sm py-4 list-none">Does LocalBolt work without internet?</summary><p class="text-xs text-gray-500 pb-4">Yes. LocalBolt is designed for local-network transfer. When you self-host or run the desktop app, devices on the same LAN can find each other with no internet connection needed. LocalBolt does not provide cross-internet discovery or transfer.</p></details>
               <details class="group border border-white/5 rounded-lg px-5 bg-white/[0.02]"><summary class="cursor-pointer text-left text-sm py-4 list-none">Can I self-host LocalBolt?</summary><p class="text-xs text-gray-500 pb-4">Yes. Clone the repo, run the start script, and you have your own private instance with its own signaling server for LAN use.</p></details>
             </div>
           </section>
@@ -95,5 +95,5 @@ if (!html.includes('<div id="root"></div>')) {
   throw new Error('Expected empty root div was not found in dist/index.html');
 }
 
-writeFileSync(distIndex, html.replace('<div id="root"></div>', prerenderedRoot));
-console.log('Prerendered LocalBolt shell into dist/index.html');
+writeFileSync(distIndex, html.replace('<div id="root"></div>', staticRoot));
+console.log('Generated LocalBolt static shell into dist/index.html');

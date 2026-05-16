@@ -24,7 +24,7 @@ Run these from the repo root before pushing to production.
 | 2 | localbolt-browser tests | `npm test -w packages/localbolt-browser` | 350/351 pass (1 skipped) |
 | 3 | localbolt-core tests | `npm test -w packages/localbolt-core` | 106/106 pass |
 | 4 | localbolt-web tests | `npm test -w packages/localbolt-web` | 75/75 pass |
-| 5 | localbolt-v3 build | `npm run build --workspace=packages/localbolt-web` | Vite build + static prerender succeeds |
+| 5 | localbolt-v3 build | `npm run build --workspace=packages/localbolt-web` | Vite build + static shell generation succeeds |
 | 6 | WASM artifact in build | `ls packages/localbolt-web/dist/assets/bolt_protocol_wasm*` | `.wasm` file + `.js` glue both present |
 | 7 | WASM size gate | `cd ../bolt-core-sdk && ./scripts/build-wasm-protocol.sh --gate` | `[SIZE_GATE] PASS` (≤300 KiB gzipped) |
 
@@ -38,7 +38,7 @@ Run these in a browser after Netlify deploy.
 |---|-------|--------|---------------|
 | 8 | WASM loads | Open browser DevTools Console on deployed site | `[BOLT-WASM] Protocol WASM loaded and initialized` visible |
 | 9 | Authority mode | Look for summary line in console | `[BOLT-WASM] Authority mode: wasm` |
-| 10 | Static prerender | View page source before JS runs | `<div id="root" data-render="ssr">` is present |
+| 10 | Static shell | View page source before JS runs | `<div id="root" data-render="static-shell">` is present |
 | 11 | Peer discovery | Open site on two devices on same network | Both devices see each other in device list |
 | 12 | Small file transfer | Send a ~100 KiB file between two peers | Transfer completes, received file opens correctly |
 | 13 | Medium file transfer | Send a ~5 MiB file | Transfer completes with progress indication, file intact |

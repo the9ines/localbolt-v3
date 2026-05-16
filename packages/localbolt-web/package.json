@@ -6,9 +6,9 @@
   "description": "LocalBolt — Encrypted P2P File Transfer",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:client && npm run prerender",
+    "build": "npm run build:client && npm run generate:static-shell",
     "build:client": "vite build",
-    "prerender": "node scripts/prerender.mjs",
+    "generate:static-shell": "node scripts/generate-static-shell.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

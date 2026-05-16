@@ -9,7 +9,7 @@
 - **WASM**: Rust/WASM protocol authority active (RUSTIFY-BROWSER-CORE-1)
 
 ## Architecture
-- **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework). Production build emits a static prerendered HTML shell before the browser app takes over.
+- **Frontend**: Vanilla TypeScript + Vite + Tailwind CSS (no React, no framework). Production build emits a static HTML shell before the browser app takes over. This is build-time static generation, not Netlify legacy prerendering or runtime SSR.
 - **Signaling**: Rendezvous signaling is used for LAN/local-network discovery only. `DualSignaling` can connect to a local WS server and a hosted WS endpoint, but LocalBolt must not expose cross-network peer discovery; ByteBolt owns internet-wide transfer.
 - **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305); base64 via tweetnacl-util (encodeBase64/decodeBase64)
 - **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered; relay ICE candidates blocked (same-network policy)
@@ -53,7 +53,7 @@
 - **Primary color**: #A4E200 (previously #14FF6A)
 - **Logo**: Inline Zap icon + "LocalBolt" text brand in header (JetBrains Mono, no external SVG)
 - **Fonts**: JetBrains Mono (header brand, ACTIVE label, footer links), Inter (body text)
-- **Copy style**: No em dashes; commas, periods, or hyphens only. No "military-grade" marketing language; use accurate technical descriptions (e.g. "end-to-end encrypted"). LocalBolt copy must stay LAN/local-network scoped. It may mention hosted signaling for same-network discovery, but must not imply cross-internet discovery or transfer; ByteBolt owns that product promise.
+- **Copy style**: No em dashes; commas, periods, or hyphens only. No "military-grade" marketing language; use accurate technical descriptions (e.g. "end-to-end encrypted"). LocalBolt website copy must stay LAN/local-network scoped. It may mention hosted signaling for same-network discovery, but must not mention ByteBolt or imply cross-internet discovery or transfer until that product is released.
 - **README**: Repo root `README.md` with project description, features, dev/deploy instructions, architecture overview, and related project links
 
 ## Roadmap

@@ -52,11 +52,13 @@
 - Track performance score, FCP, LCP across releases
 - Fail CI if score drops below 90
 
-### I4. Static prerender
-- **Resolved:** `packages/localbolt-web` now builds a static prerendered HTML
-  shell after the Vite client bundle.
-- Netlify remains a static deployment. There is no runtime SSR server.
-- The prerender shell must stay LAN-only in visible copy and structured data.
+### I4. Static shell generation
+- **Resolved:** `packages/localbolt-web` now generates a static HTML shell
+  after the Vite client bundle.
+- This is build-time static site generation, not Netlify legacy prerendering
+  and not a runtime SSR server.
+- Netlify remains the sponsored static deployment host.
+- The generated shell must stay LAN-only in visible copy and structured data.
 
 ---
 
