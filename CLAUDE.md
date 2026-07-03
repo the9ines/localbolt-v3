@@ -1,59 +1,47 @@
 # LocalBolt v3 — Claude Code Instructions
 
-## SRE Protocol (STRICT — No Exceptions)
+> Ecosystem governance is canonical at the workspace root: `bolt-ecosystem/CLAUDE.md`
+> (SRE policy, commit/tag discipline, No-Push Policy, documentation homes) plus
+> `bolt-ecosystem/os/rules/`. This file adds only what is specific to localbolt-v3.
+> **Where this file and the root conflict, the root wins.**
 
-Every change to this project MUST follow strict SRE discipline. These rules apply to ALL Claude agents working in this repo.
+## SRE Protocol
 
-- **No uncommitted work leaves your session.** Before ending any task, ALL changes must be staged and committed. No loose files, no "I'll commit later."
-- **Working tree must be clean when you're done.** Run `git status` before and after work. Zero untracked or modified files when you finish.
-- **If you touch it, git tracks it.** Every file modification, creation, or deletion must be reflected in a commit. Nothing happens off-the-books.
-- **Never commit secrets.** No API keys, passwords, tokens, `.env` files, or credentials in any commit. Check `git diff --cached` before committing.
+Follow the root SRE policy strictly. Repo-specific notes:
 
-## Commit Protocol (MANDATORY)
+- Working tree clean before and after every task. Check tracked files with
+  `git diff --name-only HEAD` — avoid full `git status` scans; this workspace sits
+  on iCloud-synced Desktop and untracked-file scans can hang on cloud-only files.
+- Never commit secrets. Review `git diff --cached` before every commit.
 
-Every commit made by any Claude instance MUST follow this exact workflow:
+## Commit Protocol
 
-### 1. Hash
-- Run `git rev-parse HEAD` after every commit and record the short + full hash.
-- Include the short hash in any summary output to the user.
+- Imperative subject under 72 chars; body explaining what changed and why;
+  `Files changed:` section listing modified files.
+- Commit messages MUST NOT include `Co-Authored-By` trailers (root rule).
+- Run `git rev-parse HEAD` after every commit; report the short hash.
+- Tag format: `v3.0.<N>-<slug>` — next N via `git tag --list 'v3.0.*' | sort -V | tail -1`.
+  Tags are immutable once pushed. Whether every commit or only releases get tagged is
+  a pending PM decision (see ecosystem `os/NOW.md`) — when in doubt, ask.
+- **Do NOT push commits or tags.** Pushes require explicit human authorization
+  (root No-Push Policy).
 
-### 2. Tag
-- Every commit MUST be tagged: `v3.0.<N>-<slug>` where `<N>` is the next sequential patch number and `<slug>` is a 2-4 word kebab-case summary of the change.
-- Check existing tags with `git tag --list 'v3.0.*'` to determine the next number.
-- Tags are **immutable** — never move or delete a pushed tag.
-- Push tags with `git push origin <tag>`.
+## Documentation
 
-### 3. Comment
-- Every commit message MUST include:
-  - A concise imperative subject line (< 72 chars)
-  - A blank line followed by a body explaining **what changed and why**
-  - A `Files changed:` section listing modified files
-  - The `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>` trailer
-
-### 4. Docs Sync (Subagent)
-- After every commit, spawn a **background subagent** (Task tool, subagent_type=general-purpose) that:
-  1. Reads the diff of the commit just made (`git diff HEAD~1 HEAD`)
-  2. Updates `docs/CHANGELOG.md` with the new entry (tag, date, hash, summary, files changed)
-  3. Updates `docs/STATE.md` to reflect the current project state
-  4. Commits the doc updates as a separate commit: `docs: sync after <tag>`
-  5. Tags the docs commit: `<tag>-docs`
-- The docs subagent MUST NOT modify any source code — only files under `docs/`.
+- Append release entries to `docs/CHANGELOG.md` in the same commit as the work.
+- `docs/STATE.md` is retired. Current state is generated at the ecosystem root
+  (`os/bin/status.sh` → `os/DASHBOARD.md`). No docs-sync commits, no `-docs` tags,
+  no docs subagents.
 
 ## Project Context
 
-- **Repo**: LocalBolt v3 — Encrypted P2P file transfer web app
+- **Repo**: LocalBolt v3 — encrypted P2P file transfer web app, deployed at localbolt.app
 - **Stack**: Vanilla TypeScript, Vite, Tailwind CSS, Rust (signaling)
 - **Monorepo**: npm workspaces — `packages/localbolt-web`, `packages/localbolt-signal` (Rust crate)
-- **Native app**: Separate repo ([localbolt-native](https://github.com/the9ines/localbolt-native)) — SwiftUI + Rust, not part of this monorepo
+- **Native app**: lives in the `localbolt-app` repo in the ecosystem workspace, not here
 - **Branch**: `main` (single branch, linear history preferred)
-
-## Architecture
-
-- **Signaling**: Custom Rust WebSocket server (replaces Supabase). IP-based peer grouping for device discovery.
-- **Encryption**: TweetNaCl NaCl box (Curve25519 + XSalsa20-Poly1305). Per-chunk random nonce.
-- **Transfer**: WebRTC data channel, 16KB chunks, reliable + ordered.
-- **Discovery**: WS server groups same-IP peers (web).
-- **Future**: Nostr relays for global reach (not implemented yet).
+- Deeper architecture facts live in `README.md`, the code, and the workspace
+  `ARCHITECTURE.md` — do not restate protocol/transport claims here, where they rot.
 
 ## Code Standards
 
@@ -66,5 +54,5 @@ Every commit made by any Claude instance MUST follow this exact workflow:
 
 - Modify files outside the current task scope
 - Add dependencies without explicit user approval
-- Skip the tag/hash/docs workflow for any commit
 - Use `git push --force` or destructive git operations
+- Hand-write state, version, or status claims into any doc that claims to be current
