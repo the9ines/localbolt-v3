@@ -1,5 +1,11 @@
 # LocalBolt v3 Changelog
 
+## v3.0.105-download-2.0.1 — Point macOS download at the 2.0.1 native app (2026-07-07)
+- **Download redirect**: `/download/macos`, `/download/macos/apple-silicon`, and `/download/macos/intel` now redirect to the `localbolt-app-v2.0.1` GitHub release, replacing the stale April `2.0.0` build. 2.0.1 carries this cycle's app-to-app connection + file-transfer fixes; the old build was buggy.
+- **Note**: the native app is still ad-hoc signed (Gatekeeper: right-click → Open) pending Apple Developer notarization — a follow-up once the Developer Program enrollment is active.
+- Files changed:
+  - `netlify.toml`
+
 ## v3.0.104-netlify-logo — Replace Netlify text with official logo in footer attribution (2026-04-09, 3d25302)
 - **Netlify logo**: Replaced "Netlify" text link (teal #30E6E2) with the official Netlify fullcolor darkmode logo (WebP image, 24px height) in the footer attribution line. The logo is wrapped in the same anchor tag linking to netlify.com.
 - **Attribution text bump**: Font size increased from 10px to 12px, text opacity brightened from 20% (`rgba(255,255,255,0.20)`) to 35% (`rgba(255,255,255,0.35)`) for better readability.
