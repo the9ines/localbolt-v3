@@ -4,7 +4,6 @@ import { createTransfer } from '@/sections/transfer';
 import { createFeatures } from '@/sections/features';
 import { createFAQ } from '@/sections/faq';
 import { createFooter } from '@/sections/footer';
-import { createConsentModal } from '@/sections/consent-modal';
 
 export function createApp(root: HTMLElement) {
   root.innerHTML = '';
@@ -73,6 +72,4 @@ export function createApp(root: HTMLElement) {
 
   wrapper.appendChild(zLayer);
   root.appendChild(wrapper);
-
-  createConsentModal();
 }

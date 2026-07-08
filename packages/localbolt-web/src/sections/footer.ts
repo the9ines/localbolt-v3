@@ -21,7 +21,7 @@ function createPrivacyDialog(): HTMLDialogElement {
 
       <div class="overflow-y-auto max-h-[60vh] space-y-5 pr-2">
         <div class="space-y-2">
-          <p class="text-xs text-gray-600 uppercase tracking-wider">Last updated: February 2026</p>
+          <p class="text-xs text-gray-600 uppercase tracking-wider">Last updated: July 2026</p>
           <p class="text-sm text-gray-300 leading-relaxed">LocalBolt is designed to transfer files directly between devices with minimal data collection.</p>
         </div>
 
@@ -39,6 +39,10 @@ function createPrivacyDialog(): HTMLDialogElement {
               <li class="flex items-start gap-2 text-xs text-gray-400 leading-relaxed">
                 <span class="w-1 h-1 rounded-full bg-neon/40 mt-1.5 flex-shrink-0"></span>
                 Basic service requests needed to load the site
+              </li>
+              <li class="flex items-start gap-2 text-xs text-gray-400 leading-relaxed">
+                <span class="w-1 h-1 rounded-full bg-neon/40 mt-1.5 flex-shrink-0"></span>
+                Anonymous, aggregated visit stats (page views, referrers) via cookieless, server-side analytics. No cookies, no cross-site tracking, no third-party trackers.
               </li>
             </ul>
           </div>
