@@ -1,5 +1,17 @@
 # LocalBolt v3 Changelog
 
+## v3.0.106-honest-verification — Honest pre-EA1 verification wording + no persisted "verified" (2026-07-15)
+- **Item-6 (no verified/persistent-pin semantics pre-EA1)**: a session became "Verified" from a user button click after eyeballing the SAS, was persisted to the pin store, and was silently re-asserted on reconnect — none of which is cryptographic device verification (no EA1/PAKE exists yet). Made the web SDK honest **without** a breaking contract rename (the internal `verified` state name is kept).
+- **Wording** (`verification-status.ts`): "Verified" → "Approved for this session"; "Mark Verified" → "Approve this session". No "Trusted"/"Authenticated"/"Verified device".
+- **No reconnect auto-trust** (`HandshakeManager.ts`): a TOFU key-continuity match NEVER auto-promotes a session to verified; every session starts unverified and the user re-reviews the SAS. `markPeerVerified()` now records session-scoped approval only and no longer persists.
+- **No persisted verified** (`pin-store.ts`): `markVerified()` is a pre-EA1 no-op (never writes `verified: true`); `verifyPinnedIdentity` ignores any stored `verified: true` (old pins are not migrated, just not trusted as proof). Key-continuity / mismatch detection is unchanged (still fail-closed).
+- **Tests**: reconnect does not auto-verify; a stored `verified:true` pin is ignored; approval does not persist; UI wording no longer claims "Verified"/"Authenticated" — all mutation-verified. Suites: browser 353, core 106, web 75.
+- Files changed:
+  - `packages/localbolt-browser/src/components/verification-status.ts`
+  - `packages/localbolt-browser/src/services/webrtc/HandshakeManager.ts`
+  - `packages/localbolt-browser/src/services/identity/pin-store.ts`
+  - `packages/localbolt-browser/src/__tests__/verification.test.ts`
+
 ## v3.0.105-download-2.0.1 — Point macOS download at the 2.0.1 native app (2026-07-07)
 - **Download redirect**: `/download/macos`, `/download/macos/apple-silicon`, and `/download/macos/intel` now redirect to the `localbolt-app-v2.0.1` GitHub release, replacing the stale April `2.0.0` build. 2.0.1 carries this cycle's app-to-app connection + file-transfer fixes; the old build was buggy.
 - **Note**: the native app is still ad-hoc signed (Gatekeeper: right-click → Open) pending Apple Developer notarization — a follow-up once the Developer Program enrollment is active.

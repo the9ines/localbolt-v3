@@ -25,10 +25,14 @@ export function createVerificationStatus(
 
     switch (info.state) {
       case 'verified': {
+        // Item-6 / pre-EA1: the user compared the SAS and approved THIS session. This
+        // is session-scoped authorization, NOT cryptographic device verification, so the
+        // label must not claim "Verified"/"Trusted"/"Authenticated". The internal state
+        // name `verified` is retained to avoid a breaking contract rename.
         dot.classList.add('bg-green-400');
         const label = document.createElement('span');
         label.className = 'text-green-400';
-        label.textContent = 'Verified';
+        label.textContent = 'Approved for this session';
         container.append(dot, label);
         break;
       }
@@ -54,7 +58,7 @@ export function createVerificationStatus(
         btn.className =
           'ml-2 px-2 py-0.5 text-xs rounded border border-yellow-400/30 ' +
           'text-yellow-400 hover:bg-yellow-400/10 transition-colors';
-        btn.textContent = 'Mark Verified';
+        btn.textContent = 'Approve this session';
         btn.addEventListener('click', options.onMarkVerified);
 
         container.append(dot, sasWrap, btn);

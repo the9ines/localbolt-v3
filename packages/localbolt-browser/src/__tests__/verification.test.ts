@@ -52,14 +52,16 @@ describe('Pin store schema evolution', () => {
     expect(pin!.verified).toBe(true);
   });
 
-  it('markVerified flips verified to true', async () => {
+  it('markVerified does NOT persist verified pre-EA1 (item-6 no-op)', async () => {
     const store = new MemoryPinStore();
     const key = randomKey();
     await store.setPin('PEER01', key);
 
     expect((await store.getPin('PEER01'))!.verified).toBe(false);
     await store.markVerified('PEER01');
-    expect((await store.getPin('PEER01'))!.verified).toBe(true);
+    // Pre-EA1 there is no cryptographic device verification, so markVerified must not
+    // write `verified: true` — session approval is never persisted as a verified pin.
+    expect((await store.getPin('PEER01'))!.verified).toBe(false);
   });
 
   it('markVerified is no-op for unknown peer', async () => {
@@ -86,14 +88,17 @@ describe('Pin store schema evolution', () => {
     expect(result).toEqual({ outcome: 'verified', verified: false });
   });
 
-  it('verifyPinnedIdentity returns { outcome: "verified", verified: true } after markVerified', async () => {
+  it('verifyPinnedIdentity ignores a stored verified=true pin pre-EA1 (item-6)', async () => {
     const store = new MemoryPinStore();
     const key = randomKey();
-    await store.setPin('PEER01', key);
-    await store.markVerified('PEER01');
+    // Simulate an OLD persisted "verified" pin written before item-6.
+    await store.setPin('PEER01', key, true);
+    expect((await store.getPin('PEER01'))!.verified).toBe(true);
 
+    // On reconnect a stored verified flag must NOT be surfaced as proof: the match is
+    // key-continuity only, so verified is forced false and the user must re-approve.
     const result = await verifyPinnedIdentity(store, 'PEER01', key);
-    expect(result).toEqual({ outcome: 'verified', verified: true });
+    expect(result).toEqual({ outcome: 'verified', verified: false });
   });
 });
 
@@ -236,7 +241,7 @@ describe('SAS integration with WebRTCService', () => {
     expect(info.sasCode).toBeNull();
   });
 
-  it('markPeerVerified updates state and persists', async () => {
+  it('markPeerVerified approves the session but does NOT persist (item-6)', async () => {
     const { default: WebRTCService } = await import(
       '../services/webrtc/WebRTCService.js'
     );
@@ -282,18 +287,72 @@ describe('SAS integration with WebRTCService', () => {
     expect(states).toHaveLength(1);
     expect(states[0].state).toBe('unverified');
 
-    // Mark verified
+    // Approve this session
     await service.markPeerVerified();
 
-    // Callback fired again with verified state
+    // Callback fired again with the session-scoped approved state (internal name 'verified')
     expect(states).toHaveLength(2);
     expect(states[1].state).toBe('verified');
     // SAS code preserved
     expect(states[1].sasCode).toBe(states[0].sasCode);
 
-    // Pin store persisted the verified flag
+    // Item-6: approval is session-scoped ONLY — the pin store must NOT persist verified.
     const pin = await pinStore.getPin('REMOTE01');
-    expect(pin!.verified).toBe(true);
+    expect(pin!.verified).toBe(false);
+  });
+
+  it('reconnect does NOT auto-verify a known/pinned identity (item-6)', async () => {
+    const { default: WebRTCService } = await import(
+      '../services/webrtc/WebRTCService.js'
+    );
+    const signaling = createMockSignaling();
+    const localId = generateIdentityKeyPair();
+    const remoteId = generateIdentityKeyPair();
+    const pinStore = new MemoryPinStore();
+
+    // Simulate a prior session: identity already pinned AND (legacy) marked verified=true.
+    await pinStore.setPin('REMOTE01', remoteId.publicKey, true);
+    expect((await pinStore.getPin('REMOTE01'))!.verified).toBe(true);
+
+    const states: Array<{ state: string; sasCode: string | null }> = [];
+    const service = new WebRTCService(
+      signaling,
+      'LOCAL01',
+      vi.fn(),
+      vi.fn(),
+      undefined,
+      {
+        identityPublicKey: localId.publicKey,
+        pinStore,
+        onVerificationState: (info) => states.push({ ...info }),
+      },
+    );
+
+    const localEph = generateEphemeralKeyPair();
+    const remoteEph = generateEphemeralKeyPair();
+    (service as any).keyPair = localEph;
+    (service as any).remotePublicKey = remoteEph.publicKey;
+    (service as any).remotePeerCode = 'REMOTE01';
+
+    const hello = JSON.stringify({
+      type: 'hello',
+      version: 1,
+      identityPublicKey: toBase64(remoteId.publicKey),
+      capabilities: ['bolt.file-hash', 'bolt.profile-envelope-v1'],
+    });
+    const encrypted = sealBoxPayload(
+      new TextEncoder().encode(hello),
+      localEph.publicKey,
+      remoteEph.secretKey,
+    );
+    await (service as any).processHello({ type: 'hello', payload: encrypted });
+
+    // Even though the pin says verified=true, the reconnected session must be UNVERIFIED
+    // (SAS re-shown, no silent trust-upgrade) until the user approves again.
+    expect(states).toHaveLength(1);
+    expect(states[0].state).toBe('unverified');
+    expect(states[0].sasCode).toBeTruthy();
+    expect(service.getVerificationInfo().state).toBe('unverified');
   });
 
   it('disconnect clears verification info', async () => {
@@ -375,7 +434,7 @@ describe('createVerificationStatus component', () => {
     return mod.createVerificationStatus;
   }
 
-  it('renders "Verified" state with green dot', async () => {
+  it('renders session-approved state with honest wording (no "Verified"/"Authenticated")', async () => {
     const createVerificationStatus = await loadComponent();
     const { element, update } = createVerificationStatus({ onMarkVerified: vi.fn() });
 
@@ -386,7 +445,9 @@ describe('createVerificationStatus component', () => {
     const dot = element.children[0];
     const label = element.children[1];
     expect(dot.classList.contains('bg-green-400')).toBe(true);
-    expect(label.textContent).toBe('Verified');
+    expect(label.textContent).toBe('Approved for this session');
+    // Item-6: the label must not claim cryptographic device verification.
+    expect(label.textContent).not.toMatch(/verified|authenticated|trusted/i);
   });
 
   it('renders "Unverified" state with SAS code and button', async () => {
@@ -405,7 +466,9 @@ describe('createVerificationStatus component', () => {
     // RU2: SAS code is inside a wrapper that also contains guidance text
     expect(sasWrap.children[0].textContent).toBe('AABB11');
     expect(sasWrap.children[1].textContent).toBe('Compare this code with the other device.');
-    expect(btn.textContent).toBe('Mark Verified');
+    expect(btn.textContent).toBe('Approve this session');
+    // Item-6: the action must not be labelled "verify".
+    expect(btn.textContent).not.toMatch(/verify/i);
     expect(btn.addEventListener).toHaveBeenCalledWith('click', onMarkVerified);
   });
 

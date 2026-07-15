@@ -184,8 +184,13 @@ export class HandshakeManager {
             console.log('[TOFU] First contact - pinned identity for', this.ctx.getRemotePeerCode());
             verificationState = 'unverified';
           } else {
-            console.log('[TOFU] Identity verified for', this.ctx.getRemotePeerCode());
-            verificationState = result.verified ? 'verified' : 'unverified';
+            // Item-6 / pre-EA1: a key-continuity match is NOT cryptographic device
+            // verification. A known identity key must NEVER auto-promote a session to
+            // 'verified' — the user re-reviews the SAS and approves again each session.
+            // Any stored `verified` flag from before this change is ignored (result.verified
+            // is forced false by verifyPinnedIdentity).
+            console.log('[TOFU] Known identity key (continuity match), SAS review required for', this.ctx.getRemotePeerCode());
+            verificationState = 'unverified';
           }
         } catch (error) {
           if (error instanceof KeyMismatchError) {
@@ -240,12 +245,17 @@ export class HandshakeManager {
     return this.ctx.getNegotiatedCapabilities().includes('bolt.profile-envelope-v1');
   }
 
-  /** Mark the current peer as verified. Persists to pin store. */
+  /**
+   * Approve the current peer for THIS session only.
+   *
+   * Item-6 / pre-EA1: records session-scoped approval (the user compared the SAS and
+   * confirmed it). This is NOT cryptographic device verification and is NOT persisted —
+   * nothing is written to the pin store, so the approval does not survive a reconnect
+   * (the SAS must be reviewed again next session). The internal state name `verified` is
+   * retained to avoid a breaking contract rename.
+   */
   async markPeerVerified(): Promise<void> {
     const options = this.ctx.getOptions();
-    const remotePeerCode = this.ctx.getRemotePeerCode();
-    if (!options.pinStore || !remotePeerCode) return;
-    await options.pinStore.markVerified(remotePeerCode);
     const info = this.ctx.getVerificationInfo();
     this.ctx.setVerificationInfo({ ...info, state: 'verified' });
     options.onVerificationState?.(this.ctx.getVerificationInfo());

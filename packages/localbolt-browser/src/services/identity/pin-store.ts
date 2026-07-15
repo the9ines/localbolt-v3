@@ -2,7 +2,13 @@ import { toBase64, fromBase64, KeyMismatchError } from '@the9ines/bolt-core';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-/** Stored pin record with verification status. */
+/**
+ * Stored pin record. `identityPub` is the TOFU key-continuity anchor (mismatch → abort).
+ *
+ * Item-6 / pre-EA1: `verified` is a legacy field and is NOT trusted — nothing writes
+ * `true` anymore and `verifyPinnedIdentity` ignores any pre-existing `true`. It is kept
+ * only for record-shape compatibility until a real EA1/PAKE verification exists.
+ */
 export interface PinRecord {
   identityPub: Uint8Array;
   verified: boolean;
@@ -98,10 +104,11 @@ export class IndexedDBPinStore implements PinPersistence {
     });
   }
 
-  async markVerified(peerCode: string): Promise<void> {
-    const existing = await this.getPin(peerCode);
-    if (!existing) return;
-    await this.setPin(peerCode, existing.identityPub, true);
+  // Item-6 / pre-EA1: no-op. Session approval is NOT persisted as a verified pin —
+  // there is no cryptographic device verification yet, so nothing may write
+  // `verified: true`. Kept for interface compatibility; deliberately writes nothing.
+  async markVerified(_peerCode: string): Promise<void> {
+    /* intentionally no persistence pre-EA1 */
   }
 }
 
@@ -123,10 +130,10 @@ export class MemoryPinStore implements PinPersistence {
     this.pins.delete(peerCode);
   }
 
-  async markVerified(peerCode: string): Promise<void> {
-    const existing = this.pins.get(peerCode);
-    if (!existing) return;
-    existing.verified = true;
+  // Item-6 / pre-EA1: no-op (see IndexedDBPinStore.markVerified). Session approval is
+  // not persisted as a verified pin.
+  async markVerified(_peerCode: string): Promise<void> {
+    /* intentionally no persistence pre-EA1 */
   }
 }
 
@@ -160,7 +167,12 @@ export async function verifyPinnedIdentity(
   }
 
   if (uint8Equal(existing.identityPub, identityPublicKey)) {
-    return { outcome: 'verified', verified: existing.verified };
+    // Key-continuity match (TOFU): the identity key is unchanged since first contact.
+    // Item-6 / pre-EA1: a stored `verified` flag is NOT proof of device identity, so it
+    // is never surfaced as verified here. `verified: false` is returned unconditionally
+    // (old `verified: true` records are ignored, not migrated); callers must treat this
+    // as unverified and re-request user approval.
+    return { outcome: 'verified', verified: false };
   }
 
   throw new KeyMismatchError(peerCode, existing.identityPub, identityPublicKey);
