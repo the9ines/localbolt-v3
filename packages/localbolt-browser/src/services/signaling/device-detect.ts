@@ -24,7 +24,7 @@ export function detectDeviceType(): DiscoveredDevice['deviceType'] {
 
   // Desktop browsers: distinguish laptop vs desktop is unreliable,
   // so default to 'laptop' for web clients (most common form factor).
-  // Tauri native apps can override this with actual hardware detection.
+  // Native apps can override this with actual hardware detection.
   if (screenWidth >= 2560) return 'desktop'; // Large monitor likely a desktop
   return 'laptop';
 }

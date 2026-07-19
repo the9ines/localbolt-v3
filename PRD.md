@@ -22,7 +22,7 @@
 - Comprehensive SEO (structured data, Open Graph, FAQ schema)
 - Static HTML shell generated at build time for first paint and crawlability
 - CI/CD (GitHub Actions: fmt, clippy, tests, build; registry guards; Dependabot)
-- Documentation (CHANGELOG.md with 39 entries, STATE.md, CLAUDE.md)
+- Documentation (README, PRD, ROADMAP, CHANGELOG, public package docs)
 - Consent-based analytics (Google Analytics with denied-by-default storage)
 - Monorepo: packages/localbolt-web, browser/core packages, and signal compatibility wrapper
 
@@ -43,7 +43,7 @@
 
 ### Legacy Debt
 
-- apps/tauri scaffold from early v3 development — retired; native/mobile shells live in localbolt-app
+- Early native scaffold removed; native/mobile shells live in localbolt-app
 - Some SEO sections (how-it-works, features, FAQ) serve marketing purposes rather than app functionality
 
 ### Production-Ready
@@ -75,7 +75,7 @@ LocalBolt v3 is the flagship hosted web experience:
 | Encryption source | Inline TweetNaCl | bolt-core-sdk | SDK not yet published |
 | Test coverage | Enforced baseline | Raise over time | Coverage lift needed |
 | TypeScript strict | Disabled | Enabled | Incremental migration |
-| Tauri scaffold | Retired historical scaffold | Not active workspace | Keep inactive or remove under separate cleanup |
+| Native scaffold | Removed | Native shells live in localbolt-app | None |
 | PWA | No | Yes | Service worker + manifest |
 | Compression | No | Optional | Feature implementation |
 
@@ -122,7 +122,7 @@ LocalBolt v3 is the flagship hosted web experience:
 | Test suite | v3.1.0-tests | Maintain and expand Vitest/Rust coverage |
 | TS strict mode | v3.1.1-strict | Enable noImplicitAny and strictNullChecks |
 | SDK migration | v3.2.0-sdk | Replace inline TweetNaCl with bolt-core-sdk |
-| Tauri resolution | v3.2.1-tauri-cleanup | Keep retired scaffold inactive or remove under cleanup task |
+| Native scaffold cleanup | v3.2.1-native-cleanup | Removed from v3; native shells live in localbolt-app |
 | PWA support | v3.3.0-pwa | Service worker, offline manifest, install prompt |
 | Compression | v3.3.1-compression | Optional gzip before encryption |
 
@@ -134,7 +134,7 @@ LocalBolt v3 is the flagship hosted web experience:
 |------|:---:|:---:|-----------|
 | No tests → regression on refactor | High | High | Prioritize test suite (milestone 1) |
 | SDK migration breaks crypto | Low | Critical | Conformance vectors validate equivalence |
-| Tauri scaffold confuses contributors | Medium | Low | Resolve in v3.2.1 |
+| Native/web ownership confuses contributors | Medium | Low | Keep v3 web-only; native shells live in localbolt-app |
 | Fly.io pricing changes | Low | Medium | Signal server can deploy anywhere (Docker) |
 | Netlify build limits | Low | Low | Static site, minimal build compute |
 

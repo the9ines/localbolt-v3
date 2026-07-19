@@ -1,11 +1,11 @@
-# localbolt-v3 — Documentation
+# LocalBolt v3 Docs
 
-## Doc Routing
+LocalBolt v3 is the hosted browser app at `localbolt.app`.
 
-- **Canonical routing table:** [`bolt-ecosystem/os/rules/doc-routing.md`](https://github.com/the9ines/bolt-ecosystem/blob/main/os/rules/doc-routing.md)
-- **Canonical audit tracker:** [`bolt-ecosystem/docs/AUDIT_TRACKER.md`](https://github.com/the9ines/bolt-ecosystem/blob/main/docs/AUDIT_TRACKER.md)
+| File | Purpose |
+|------|---------|
+| `CHANGELOG.md` | Current public changelog |
+| `adr/` | Public architecture decisions that still describe active behavior |
 
-## Update Rules
-
-- Only update this repo's `docs/CHANGELOG.md` (append-only). `docs/STATE.md` is retired — current state is generated at the ecosystem root (`os/bin/status.sh` → `os/DASHBOARD.md`).
-- All other governance docs are routed via `os/rules/doc-routing.md` in the ecosystem repo.
+Native/mobile shells live in `localbolt-app`. Internal governance and audit
+trackers are not part of the public web app docs.

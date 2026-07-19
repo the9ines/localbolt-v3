@@ -25,11 +25,9 @@
 - Validate with conformance test vectors
 - **Depends on:** bolt-core-sdk npm publish, S1 (tests)
 
-### S4. Tauri scaffold resolution
-- **Resolved:** Tauri is retired for v3. Native/mobile apps live in
-  `localbolt-app`.
-- `apps/tauri` may remain as historical scaffold only, but it is not an active
-  npm workspace and root package scripts must not expose Tauri dev/build paths.
+### S4. Native scaffold resolution
+- **Resolved:** Native/mobile apps live in `localbolt-app`.
+- The old v3 native scaffold has been removed from the active tree.
 - Forward web work stays in `packages/*`.
 
 ---
@@ -87,7 +85,7 @@
 S1 (tests) ──► S2 (TS strict) ──► S3 (SDK migration) ──► F2 (compression)
                                        │                       │
                                        ▼                       ▼
-                                  S4 (Tauri decision)     F3 (adaptive chunks)
+                                  S4 (native decision)    F3 (adaptive chunks)
 
 I1 (signal CI) ──► I2 (monitoring)
                        │

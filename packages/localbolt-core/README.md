@@ -13,7 +13,7 @@ This package owns:
 
 ## What this package does NOT own
 
-- WebRTC service instantiation, signaling, identity persistence, UI — those belong to shell packages (`@localbolt/web`, Tauri app, etc.).
+- WebRTC service instantiation, signaling, identity persistence, UI — those belong to shell packages (`@localbolt/web`, native app shell, etc.).
 - Protocol, wire format, cryptographic primitives — those belong to `@the9ines/bolt-core` and `@the9ines/bolt-transport-web`.
 - This package orchestrates on top of the SDK. It does not fork or duplicate SDK logic.
 

@@ -60,6 +60,6 @@ not the production deployment authority.
 
 2. **Deployment authority.** The Fly.io deployment at `wss://bolt-rendezvous.fly.dev` is owned by `bolt-rendezvous`. localbolt-v3 must treat it as the production cloud signaling endpoint and keep `packages/localbolt-signal` compatible through CI evidence.
 
-3. **Subtree repos.** localbolt and localbolt-app MUST continue pulling bolt-rendezvous as canonical via `git subtree pull`. Both are currently aligned to bolt-rendezvous `4ea8709`. Direct modification of `signal/` in subtree repos is prohibited per ecosystem CLAUDE.md.
+3. **Subtree repos.** localbolt and localbolt-app MUST continue pulling bolt-rendezvous as canonical via `git subtree pull`. Both are currently aligned to bolt-rendezvous `4ea8709`. Direct modification of `signal/` in subtree repos is prohibited by the ecosystem repository-boundary policy.
 
 4. **Audit cadence.** On any bolt-rendezvous release that touches wire protocol or IP classification logic, compare against `packages/localbolt-signal` and file a tracking issue if drift is detected.
