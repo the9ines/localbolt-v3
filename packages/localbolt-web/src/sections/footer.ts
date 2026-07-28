@@ -42,7 +42,7 @@ function createPrivacyDialog(): HTMLDialogElement {
               </li>
               <li class="flex items-start gap-2 text-xs text-gray-400 leading-relaxed">
                 <span class="w-1 h-1 rounded-full bg-neon/40 mt-1.5 flex-shrink-0"></span>
-                Anonymous, aggregated visit stats (page views, referrers) via cookieless, server-side analytics. No cookies, no cross-site tracking, no third-party trackers.
+                Consent preferences and receipts through Crumbproof, plus anonymous aggregated visit stats through server-side analytics.
               </li>
             </ul>
           </div>
@@ -116,6 +116,8 @@ export function createFooter(): HTMLElement {
         <span class="text-white/[0.08]">/</span>
         <button class="privacy-btn hover:text-white/50 transition-colors">Privacy</button>
         <span class="text-white/[0.08]">/</span>
+        <button class="cookie-settings-btn hover:text-white/50 transition-colors">Cookie Settings</button>
+        <span class="text-white/[0.08]">/</span>
         <a href="https://the9ines.com" target="_blank" rel="noopener noreferrer"
            class="hover:text-[rgb(255,141,197)] transition-colors">the9ines</a>
         <span class="text-white/[0.08]">/</span>
@@ -126,6 +128,10 @@ export function createFooter(): HTMLElement {
 
   footer.appendChild(privacyDialog);
   footer.querySelector('.privacy-btn')!.addEventListener('click', () => privacyDialog.showModal());
+  footer.querySelector('.cookie-settings-btn')!.addEventListener('click', () => {
+    const crumbproof = (window as unknown as { Crumbproof?: { openPreferences: () => void } }).Crumbproof;
+    crumbproof?.openPreferences();
+  });
 
   const badge = footer.querySelector('.policy-badge') as HTMLElement;
   initPolicyAdapter().then((adapter) => {

@@ -146,7 +146,17 @@
     ]
     </script>
 
-    <!-- Analytics: cookieless, server-side (Netlify Analytics). No client scripts, no cookies, no third parties, no consent banner needed. -->
+    <!-- Crumbproof cookie consent -->
+    <script>
+      window.CrumbproofConfig = {
+        siteId: 'localbolt',
+        apiBase: 'https://crumbproof.com',
+        showToggleButton: false,
+        theme: 'dark',
+        accent: '#A4E200'
+      };
+    </script>
+    <script src="https://crumbproof.com/v1/crumbproof.js"></script>
   </head>
 
   <body>
