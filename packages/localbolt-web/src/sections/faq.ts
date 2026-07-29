@@ -7,8 +7,9 @@ const faqs = [
   { q: "What's the maximum file size I can send?", a: 'LocalBolt does not enforce a file size cap. Practical limits are your device storage, memory, and network quality.' },
   { q: 'Does LocalBolt work without internet?', a: 'Yes. LocalBolt is designed for local-network transfer. When you self-host or run the desktop app, devices on the same LAN can find each other with no internet connection needed. LocalBolt does not provide cross-internet discovery or transfer.' },
   { q: 'Can I self-host LocalBolt?', a: 'Yes. LocalBolt is fully open source. Clone the repo from GitHub, run the start script, and you have your own private instance with its own signaling server. Works offline on your LAN with no internet required.' },
-  { q: 'Is LocalBolt open source?', a: 'Yes. LocalBolt is fully open source, built on the Bolt Protocol and bolt-core-sdk. The source code, protocol specification, and cryptographic SDK are all publicly available on GitHub. You can audit the code, self-host your own instance, or build on top of the SDK.' },
+  { q: 'Is LocalBolt open source?', a: 'Yes. LocalBolt is fully open source, built on the Bolt Protocol and bolt-core-sdk. You can audit the code, self-host your own instance, build on the SDK, or help review the next protocol milestone.' },
   { q: 'Does LocalBolt have a desktop app?', a: 'Yes. LocalBolt has a native macOS desktop app that connects directly with browser users on the same local network. Open localbolt.app in your browser on one device and use the desktop app on another nearby device to transfer files with the same end-to-end encryption.' },
+  { q: 'How can developers help?', a: 'We need practical help from Rust, browser, native macOS, testing, and docs contributors. We also need cryptographers, protocol engineers, and formal methods reviewers to examine EA1 before verified device pairing is implemented or claimed. Open an issue on GitHub if you can help.' },
 ];
 
 export function createFAQ(): HTMLElement {
