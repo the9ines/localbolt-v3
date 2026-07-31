@@ -26,8 +26,8 @@ export function createApp(root: HTMLElement) {
       <h1 class="text-5xl sm:text-6xl font-bold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent pb-1 leading-[1.15]">Open Source Encrypted File Transfer</h1>
       <p class="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">Send files directly between nearby devices on the same local network. Encrypted, direct, no cloud storage. Built on the <span class="text-white/70">Bolt Protocol</span>.</p>
       <div class="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs">
-        <a href="https://github.com/the9ines/bolt-protocol" target="_blank" rel="noopener noreferrer" class="rounded-md border border-neon/25 px-3 py-2 text-neon/80 hover:text-neon hover:border-neon/50 transition-colors">Protocol review wanted</a>
-        <a href="https://github.com/the9ines/localbolt-v3" target="_blank" rel="noopener noreferrer" class="rounded-md border border-white/10 px-3 py-2 text-white/60 hover:text-white/80 hover:border-white/25 transition-colors">Contribute on GitHub</a>
+        <a href="https://github.com/bolt-ecosystem/bolt-protocol" target="_blank" rel="noopener noreferrer" class="rounded-md border border-neon/25 px-3 py-2 text-neon/80 hover:text-neon hover:border-neon/50 transition-colors">Protocol review wanted</a>
+        <a href="https://github.com/bolt-ecosystem/localbolt-v3" target="_blank" rel="noopener noreferrer" class="rounded-md border border-white/10 px-3 py-2 text-white/60 hover:text-white/80 hover:border-white/25 transition-colors">Contribute on GitHub</a>
       </div>
     </div>
     <button class="scroll-btn inline-flex items-center gap-1 text-sm text-neon/70 hover:text-neon transition-colors pt-6" aria-label="Scroll to file transfer">

@@ -75,16 +75,16 @@ cross-network transfer.
 
 ## Ecosystem
 
-LocalBolt v3 is part of the [Bolt Protocol](https://github.com/the9ines/bolt-protocol) ecosystem. See [PRD.md](PRD.md) and [ROADMAP.md](ROADMAP.md) in this repo for product requirements and roadmap.
+LocalBolt v3 is part of the [Bolt Protocol](https://github.com/bolt-ecosystem/bolt-protocol) ecosystem. See [PRD.md](PRD.md) and [ROADMAP.md](ROADMAP.md) in this repo for product requirements and roadmap.
 
 | Relationship | Repository |
 |-------------|-----------|
-| Ecosystem governance (mirror) | [bolt-ecosystem](https://github.com/the9ines/bolt-ecosystem) |
-| Protocol spec | [bolt-protocol](https://github.com/the9ines/bolt-protocol) |
-| SDK (Rust) | [bolt-core-sdk](https://github.com/the9ines/bolt-core-sdk) |
-| Hosted rendezvous | [bolt-rendezvous](https://github.com/the9ines/bolt-rendezvous) (endpoint only) |
-| Lite self-hosted | [localbolt](https://github.com/the9ines/localbolt) |
-| Native/mobile shells | [localbolt-app](https://github.com/the9ines/localbolt-app) |
+| Ecosystem governance (mirror) | [bolt-ecosystem](https://github.com/bolt-ecosystem/bolt-workspace) |
+| Protocol spec | [bolt-protocol](https://github.com/bolt-ecosystem/bolt-protocol) |
+| SDK (Rust) | [bolt-core-sdk](https://github.com/bolt-ecosystem/bolt-core-sdk) |
+| Hosted rendezvous | [bolt-rendezvous](https://github.com/bolt-ecosystem/bolt-rendezvous) (endpoint only) |
+| Lite self-hosted | [localbolt](https://github.com/bolt-ecosystem/localbolt) |
+| Native/mobile shells | [localbolt-app](https://github.com/bolt-ecosystem/localbolt-native) |
 
 This repo does **not** own the production rendezvous server or daemon. It
 connects to the hosted `bolt-rendezvous` endpoint. The local
@@ -95,8 +95,8 @@ This is an **open-source** project.
 ## Related
 
 - **[localbolt.app](https://localbolt.app)** — use it now
-- **[LocalBolt (self-hosted)](https://github.com/the9ines/localbolt)** — download and run on your own network
-- **[LocalBolt App](https://github.com/the9ines/localbolt-app)** — native/mobile shells over the shared Rust core
+- **[LocalBolt (self-hosted)](https://github.com/bolt-ecosystem/localbolt)** — download and run on your own network
+- **[LocalBolt App](https://github.com/bolt-ecosystem/localbolt-native)** — native/mobile shells over the shared Rust core
 
 ## Code of Conduct
 

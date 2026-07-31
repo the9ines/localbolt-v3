@@ -62,7 +62,7 @@ dependencies = [
 [[package]]
 name = "bolt-rendezvous"
 version = "0.1.1"
-source = "git+https://github.com/the9ines/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
+source = "git+https://github.com/bolt-ecosystem/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
 dependencies = [
  "bolt-rendezvous-protocol",
  "dashmap",
@@ -79,7 +79,7 @@ dependencies = [
 [[package]]
 name = "bolt-rendezvous-protocol"
 version = "0.1.0"
-source = "git+https://github.com/the9ines/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
+source = "git+https://github.com/bolt-ecosystem/bolt-rendezvous?tag=rendezvous-v0.2.2-s0-canonical-lib-verified#fd8d3df7196b25bfeb25d99868c0525c4a75f917"
 dependencies = [
  "serde",
  "serde_json",

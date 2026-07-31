@@ -108,10 +108,10 @@ export function createFooter(): HTMLElement {
            class="hover:opacity-70 transition-opacity inline-flex items-center"><img src="/netlify-logo.webp" alt="Netlify" style="height:30px" /></a>
       </div>
       <div class="flex items-center justify-center gap-3 text-white/20" style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.05em">
-        <a href="https://github.com/the9ines/localbolt" target="_blank" rel="noopener noreferrer"
+        <a href="https://github.com/bolt-ecosystem/localbolt" target="_blank" rel="noopener noreferrer"
            class="hover:text-white/50 transition-colors">GitHub</a>
         <span class="text-white/[0.08]">/</span>
-        <a href="https://github.com/the9ines/localbolt-native" target="_blank" rel="noopener noreferrer"
+        <a href="https://github.com/bolt-ecosystem/localbolt-native" target="_blank" rel="noopener noreferrer"
            class="hover:text-white/50 transition-colors">Desktop App</a>
         <span class="text-white/[0.08]">/</span>
         <button class="privacy-btn hover:text-white/50 transition-colors">Privacy</button>
