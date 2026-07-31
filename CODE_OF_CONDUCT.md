@@ -26,7 +26,7 @@ This Code of Conduct applies within all project spaces (issues, pull requests, d
 
 ## Enforcement
 
-Instances of unacceptable behavior may be reported to the project maintainers at **github.com/the9ines** or by opening an issue. All complaints will be reviewed and investigated. Maintainers are obligated to maintain confidentiality regarding the reporter.
+Instances of unacceptable behavior may be reported to the project maintainers at **github.com/bolt-ecosystem** or by opening an issue. All complaints will be reviewed and investigated. Maintainers are obligated to maintain confidentiality regarding the reporter.
 
 ## Attribution
 
