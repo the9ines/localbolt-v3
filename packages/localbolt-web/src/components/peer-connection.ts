@@ -57,8 +57,24 @@ function canUseSecureDirect(wtUrl: string | null, certHash: string | null): bool
   return true;
 }
 
-/** Generation captured when the current WebRTC service was created. */
-let serviceGeneration = 0;
+/** Generation captured when the current connection attempt began.
+ *  Guards the callbacks shared by every transport (verification, progress,
+ *  connection state), so it is NOT WebRTC-specific - see captureGeneration. */
+let activeGeneration = 0;
+
+/**
+ * R3a: capture the session generation for the connection being established.
+ *
+ * resetSession() increments the generation on every disconnect, so any transport
+ * that does not capture on connect stays pinned to an older value and has its
+ * callbacks silently rejected from the first reconnect onward. On a direct
+ * transport that would drop the TOFU identity-mismatch alert and transfer
+ * progress, so every transport path must call this - WebRTC and direct alike.
+ */
+function captureGeneration(): number {
+  activeGeneration = getGeneration();
+  return activeGeneration;
+}
 
 /** Set true when current transfer reaches a terminal status (completed/canceled/error). */
 let transferTerminal = false;
@@ -110,7 +126,7 @@ function createFreshRtcService(): WebRTCService | null {
   );
   rtcService.setConnectionStateHandler(handleConnectionStateChange);
   rtcServiceRef = rtcService;
-  serviceGeneration = getGeneration();
+  captureGeneration();
   return rtcService;
 }
 
@@ -172,7 +188,7 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
   console.log('[UI] Connection state changed:', state);
 
   // Guard: reject callbacks from a previous session's RTC connection
-  if (!isCurrentGeneration(serviceGeneration)) return;
+  if (!isCurrentGeneration(activeGeneration)) return;
 
   const connected = state === 'connected';
   const { peers } = store.getState();
@@ -211,7 +227,7 @@ function handleConnectionStateChange(state: RTCPeerConnectionState) {
 
 function handleVerificationState(info: VerificationInfo) {
   // Guard: reject callbacks from a previous session's RTC connection
-  if (!isCurrentGeneration(serviceGeneration)) return;
+  if (!isCurrentGeneration(activeGeneration)) return;
 
   console.log('[TOFU] Verification state:', info.state, info.sasCode ? `SAS: ${info.sasCode}` : '');
   setVerificationState(info);
@@ -236,7 +252,7 @@ function handleFileReceive(file: Blob, filename: string) {
 
 function handleReceiveProgress(progress: TransferProgress) {
   // Guard: reject callbacks from a previous session's RTC connection
-  if (!isCurrentGeneration(serviceGeneration)) return;
+  if (!isCurrentGeneration(activeGeneration)) return;
 
   // Guard: ignore late progress after current transfer reached terminal status
   if (transferTerminal) return;
@@ -339,7 +355,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       if (desktopWsUrl && canUseDirectWs(desktopWsUrl)) {
         // Path 1: Direct WS (localhost / HTTP LAN only)
         console.log('[DIRECT] Using BrowserAppTransport to', desktopWsUrl);
-        const gen = getGeneration();
+        const gen = captureGeneration();
 
         directTransportRef = new BrowserAppTransport({
           daemonUrl: desktopWsUrl,
@@ -389,7 +405,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       if (canUseSecureDirect(desktopWtUrl ?? null, desktopCertHash ?? null)) {
         // Path 2: Secure direct via WebTransport with cert-hash pinning (HTTPS origins)
         console.log('[SECURE-DIRECT] Using WtDataTransport to', desktopWtUrl, 'with cert-hash pinning');
-        const gen = getGeneration();
+        const gen = captureGeneration();
 
         wtTransportRef = new WtDataTransport({
           daemonUrl: desktopWtUrl!,
@@ -533,7 +549,7 @@ function acceptRequest() {
   if (wsUrl && canUseDirectWs(wsUrl)) {
     // Path 1: Direct WS (localhost / HTTP LAN)
     console.log('[DIRECT] Accepting desktop request, connecting to', wsUrl);
-    const gen = getGeneration();
+    const gen = captureGeneration();
     directTransportRef = new BrowserAppTransport({
       daemonUrl: wsUrl,
       wsConnectTimeout: 10000,
@@ -567,7 +583,7 @@ function acceptRequest() {
   } else if (canUseSecureDirect(wtUrl, certHash)) {
     // Path 2: Secure direct via WebTransport (HTTPS origins)
     console.log('[SECURE-DIRECT] Accepting via WtDataTransport to', wtUrl);
-    const gen = getGeneration();
+    const gen = captureGeneration();
     wtTransportRef = new WtDataTransport({
       daemonUrl: wtUrl!,
       certHashHex: certHash!,
