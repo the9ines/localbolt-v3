@@ -10,6 +10,7 @@ import {
 } from '@the9ines/bolt-transport-web';
 import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ines/bolt-transport-web';
 import { initIdentity } from '@/services/identity';
+import { isLocalEndpointUrl, endpointScheme } from '@/lib/local-endpoint';
 import {
   setVerificationState,
   getPhase, getGeneration, isCurrentGeneration,
@@ -29,15 +30,29 @@ let pendingDesktopWtUrl: string | null = null;
 let pendingDesktopCertHash: string | null = null;
 
 /** Whether a ws:// direct URL is reachable from the current origin.
- *  HTTPS pages cannot connect to ws:// (mixed content - browser blocks it). */
+ *  The endpoint arrives over untrusted signaling, so it must clear two
+ *  independent checks: the local-host policy (LocalBolt never dials a public
+ *  host directly) and this transport's own scheme rule. BrowserAppTransport
+ *  speaks WebSocket only, so an https:// URL is not admissible here even when
+ *  the host is local.
+ *  HTTPS pages additionally cannot connect to ws:// (mixed content - browser blocks it). */
 function canUseDirectWs(url: string): boolean {
+  if (!isLocalEndpointUrl(url)) return false;
+  const scheme = endpointScheme(url);
+  if (scheme !== 'ws:' && scheme !== 'wss:') return false;
   if (window.location.protocol !== 'https:') return true;
   return url.startsWith('wss://');
 }
 
-/** Whether WebTransport with cert-hash pinning is available and applicable. */
+/** Whether WebTransport with cert-hash pinning is available and applicable.
+ *  A pinned cert hash proves who answers, not where they are, so the endpoint
+ *  must still pass the local-host policy. WebTransport runs over HTTP/3, so
+ *  only https:// is admissible - a ws:// or wss:// URL is rejected here even
+ *  when the host is local and the cert hash is present. */
 function canUseSecureDirect(wtUrl: string | null, certHash: string | null): boolean {
   if (!wtUrl || !certHash) return false;
+  if (!isLocalEndpointUrl(wtUrl)) return false;
+  if (endpointScheme(wtUrl) !== 'https:') return false;
   if (typeof globalThis.WebTransport === 'undefined') return false;
   return true;
 }
@@ -281,7 +296,7 @@ function handleApprovalSignal(signal: SignalMessage) {
         if (canUseDirectWs(pendingDesktopWsUrl)) {
           console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl);
         } else if (!canUseSecureDirect(pendingDesktopWtUrl, pendingDesktopCertHash)) {
-          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked - HTTPS origin, no WT available, will use WebRTC)');
+          console.log('[APPROVAL] Desktop peer provides wsUrl:', pendingDesktopWsUrl, '(blocked - not a local endpoint, or HTTPS origin with no WT available, will use WebRTC)');
         }
       }
 
@@ -435,7 +450,7 @@ function handleApprovalSignal(signal: SignalMessage) {
       }
 
       if (desktopWsUrl && !canUseDirectWs(desktopWsUrl)) {
-        console.log('[DIRECT] ws:// blocked from HTTPS origin, no WT available - falling back to WebRTC');
+        console.log('[DIRECT] ws:// blocked (non-local endpoint, or HTTPS origin with no WT available) - falling back to WebRTC');
       }
 
       // ── Path 3: Standard browser↔browser WebRTC fallback ──
