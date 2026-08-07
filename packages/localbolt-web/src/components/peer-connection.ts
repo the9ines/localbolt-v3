@@ -12,7 +12,7 @@ import type { TransferProgress, SignalMessage, VerificationInfo } from '@the9ine
 import { initIdentity } from '@/services/identity';
 import { isLocalEndpointUrl, endpointScheme } from '@/lib/local-endpoint';
 import {
-  setVerificationState,
+  setVerificationState, getVerificationState, isTransferAllowed,
   getPhase, getGeneration, isCurrentGeneration,
   beginRequest, receiveRequest, beginConnecting,
   markConnected, resetSession,
@@ -239,7 +239,37 @@ function handleVerificationState(info: VerificationInfo) {
   }
 }
 
+/**
+ * Inbound counterpart of the outbound gate in sections/transfer.ts. Both call
+ * isTransferAllowed, so one policy governs each direction and the two cannot
+ * drift apart.
+ *
+ * Every transport funnels here (WebRTC, direct WS, direct WebTransport) and both
+ * the modern and legacy TransferManager receive paths end here, so this single
+ * check covers all of them.
+ *
+ * This prevents WRITING the file, not receiving it: the bytes have already been
+ * transferred and assembled in memory by the time this runs, and are dropped
+ * rather than held. Refusing the transfer itself belongs at the protocol
+ * boundary, where the SDK already rejects pre-HELLO chunks.
+ */
 function handleFileReceive(file: Blob, filename: string) {
+  const { isConnected } = store.getState();
+  const vState = getVerificationState()?.state ?? null;
+
+  if (!isTransferAllowed(vState, isConnected)) {
+    console.warn(
+      '[TRANSFER] Blocked inbound file - session not allowed to transfer:',
+      filename, '(verification:', vState ?? 'none', ', connected:', isConnected, ')',
+    );
+    showToast(
+      'File Blocked',
+      'An incoming file was blocked because this connection is not verified yet. Verify the connection, then ask the sender to send it again.',
+      'destructive',
+    );
+    return;
+  }
+
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url;
