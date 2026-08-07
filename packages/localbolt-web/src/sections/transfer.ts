@@ -40,9 +40,12 @@ export function createTransfer(): HTMLElement {
   //   legacy    → transfer allowed (pre-SAS peer, encryption still active)
   //   unverified → transfer BLOCKED (SAS pending - user must verify or reject)
   //   mismatch  → transfer BLOCKED (fail-closed, connection should already be down)
+  // R3b: no verification info yet (null) → BLOCKED. That is the state before any
+  // handshake reports and after every reset, and it is not the same as a peer
+  // that genuinely negotiated legacy.
   function updateFileUploadVisibility() {
     const { isConnected } = store.getState();
-    const vState = getVerificationState().state;
+    const vState = getVerificationState()?.state ?? null;
     fileUploadWrap.hidden = !isTransferAllowed(vState, isConnected);
   }
 

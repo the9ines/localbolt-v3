@@ -265,6 +265,8 @@ describe('R3a: WebRTC path keeps working', () => {
 
     // createFreshRtcService captures the generation, so this already worked.
     expect(core.isCurrentGeneration(core.getGeneration())).toBe(true);
-    expect(core.getVerificationState().state).toBe('legacy'); // R3b default, deferred
+    // R3b: the post-reconnect default is now "no info yet" rather than the
+    // permissive 'legacy'. No verification has been reported on this path.
+    expect(core.getVerificationState()).toBeNull();
   });
 });

@@ -87,13 +87,13 @@ describe('R1-4: Crypto-path integrity around reconnect boundary', () => {
 
     // At boundary: generation stale, verification reset, transfer blocked
     expect(isCurrentGeneration(genA)).toBe(false);
-    expect(getVerificationState().state).toBe('legacy');
-    expect(isTransferAllowed(getVerificationState().state, false)).toBe(false);
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(isTransferAllowed(getVerificationState()?.state ?? null, false)).toBe(false);
 
     // Session B: new generation, new verification required
     const genB = connectToPeer('PEER-B');
     expect(genB).toBeGreaterThan(genA);
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
 
     // SDK emits unverified for B — transfer blocked until verified
     setVerificationState({ state: 'unverified', sasCode: 'SAS-B' });
@@ -117,8 +117,8 @@ describe('R1-4: Crypto-path integrity around reconnect boundary', () => {
     }
 
     // Guard prevented mutation — verification is legacy, transfer blocked
-    expect(getVerificationState().state).toBe('legacy');
-    expect(isTransferAllowed(getVerificationState().state, false)).toBe(false);
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(isTransferAllowed(getVerificationState()?.state ?? null, false)).toBe(false);
   });
 
   it('mismatch path: crypto-path correctly terminates and resets', () => {
@@ -132,15 +132,15 @@ describe('R1-4: Crypto-path integrity around reconnect boundary', () => {
 
     // All crypto-path state cleared
     expect(isCurrentGeneration(genBeforeMismatch)).toBe(false);
-    expect(getVerificationState().state).toBe('legacy');
-    expect(isTransferAllowed(getVerificationState().state, false)).toBe(false);
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(isTransferAllowed(getVerificationState()?.state ?? null, false)).toBe(false);
   });
 });
 
 // ── 2. Trust/verification state isolation between sessions ────────────────
 
 describe('R1-4: Trust/verification isolation between consecutive sessions', () => {
-  it('verified session A → disconnect → session B starts at legacy', () => {
+  it('verified session A → disconnect → session B starts with no verification info', () => {
     connectToPeer('PEER-A');
     setVerificationState({ state: 'verified', sasCode: 'SAS-A' });
 
@@ -148,8 +148,8 @@ describe('R1-4: Trust/verification isolation between consecutive sessions', () =
     mockState.isConnected = false;
 
     connectToPeer('PEER-B');
-    expect(getVerificationState().state).toBe('legacy');
-    expect(getVerificationState().sasCode).toBeNull();
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(getVerificationState()?.sasCode ?? null).toBeNull();
   });
 
   it('SAS code isolation: A and B have independent SAS codes', () => {
@@ -170,7 +170,7 @@ describe('R1-4: Trust/verification isolation between consecutive sessions', () =
 
     resetSession();
     connectToPeer('PEER-A'); // same peer, new session
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
     // SDK will re-emit verification state — must verify again
   });
 
@@ -180,7 +180,7 @@ describe('R1-4: Trust/verification isolation between consecutive sessions', () =
 
     for (let i = 0; i < peers.length; i++) {
       // Before each session: state must be legacy
-      expect(getVerificationState().state).toBe('legacy');
+      expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
 
       connectToPeer(peers[i]);
       setVerificationState({ state: 'unverified', sasCode: sasCodes[i] });
@@ -194,6 +194,6 @@ describe('R1-4: Trust/verification isolation between consecutive sessions', () =
     }
 
     // After all sessions: clean legacy
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
   });
 });

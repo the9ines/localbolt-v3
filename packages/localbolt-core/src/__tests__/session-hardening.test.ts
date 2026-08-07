@@ -192,14 +192,14 @@ describe('Canonical reset clears all session state', () => {
     expect(mockState.incomingRequest).toBeNull();
     expect(mockState.transferProgress).toBeNull();
     expect(mockState.showDeviceList).toBe(false);
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
   });
 
   it('clears verification state on reset', () => {
     setVerificationState({ state: 'verified', sasCode: 'DEADBE' });
     resetSession();
-    expect(getVerificationState().state).toBe('legacy');
-    expect(getVerificationState().sasCode).toBeNull();
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(getVerificationState()?.sasCode ?? null).toBeNull();
   });
 });
 
@@ -324,8 +324,8 @@ describe('Race: verification transitions around reconnect', () => {
     resetSession();
 
     // New session starts clean
-    expect(getVerificationState().state).toBe('legacy');
-    expect(getVerificationState().sasCode).toBeNull();
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(getVerificationState()?.sasCode ?? null).toBeNull();
   });
 
   it('verified state does not leak into new session', () => {
@@ -338,12 +338,12 @@ describe('Race: verification transitions around reconnect', () => {
 
     beginRequest('PEER-B');
     // Before SDK emits verification state for new session, state is legacy
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
   });
 });
 
 describe('Race: no stale verification UI after reset', () => {
-  it('verification state listener fires with legacy on reset', () => {
+  it('verification state listener fires with no-info on reset', () => {
     const listener = vi.fn();
     const unsub = onSessionChange(listener);
 
@@ -351,7 +351,7 @@ describe('Race: no stale verification UI after reset', () => {
     resetSession();
 
     // Verification bus should be reset
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
     unsub();
   });
 });
@@ -375,7 +375,7 @@ describe('C7: rapid 5+ connect/reset cycles', () => {
       // After each reset: clean state
       expect(getPhase()).toBe('idle');
       expect(getTargetPeer()).toBeNull();
-      expect(getVerificationState().state).toBe('legacy');
+      expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
       expect(mockState.transferProgress).toBeNull();
       expect(mockState.isConnected).toBe(false);
     }
@@ -441,12 +441,23 @@ describe('Transfer gating policy', () => {
   });
 
   it('legacy allows transfer', () => {
-    const vState = getVerificationState().state;
+    // R3b: must set legacy explicitly. This previously relied on the module
+    // default also being 'legacy', so it asserted the permissive default rather
+    // than a peer that genuinely negotiated a pre-SAS session.
+    setVerificationState({ state: 'legacy', sasCode: null });
+    const vState = getVerificationState()?.state ?? null;
     const transferAllowed = vState === 'verified' || vState === 'legacy';
     expect(transferAllowed).toBe(true);
   });
 
-  it('mismatch blocks transfer (state resets to legacy but connection is down)', () => {
+  it('no verification info yet blocks transfer', () => {
+    resetVerificationState();
+    const vState = getVerificationState()?.state ?? null;
+    const transferAllowed = vState === 'verified' || vState === 'legacy';
+    expect(transferAllowed).toBe(false);
+  });
+
+  it('mismatch blocks transfer (state resets to no-info and connection is down)', () => {
     // Mismatch path: error handler calls resetSession which resets verification
     setVerificationState({ state: 'unverified', sasCode: 'BEEF42' });
     resetSession(); // simulates error handler
@@ -486,7 +497,7 @@ describe('Session snapshot', () => {
     expect(snap.verificationState).toBe('verified');
   });
 
-  it('snapshot reflects legacy after reset', () => {
+  it('snapshot reflects no verification info after reset', () => {
     beginRequest('PEER-A');
     beginConnecting('PEER-A');
     markConnected();
@@ -494,7 +505,7 @@ describe('Session snapshot', () => {
     resetSession();
 
     const snap = getSessionSnapshot();
-    expect(snap.verificationState).toBe('legacy');
+    expect(snap.verificationState).toBeNull(); // R3b: no info yet
   });
 
   it('snapshot verification state tracks through full lifecycle', () => {
@@ -502,13 +513,13 @@ describe('Session snapshot', () => {
     beginConnecting('PEER-A');
     markConnected();
 
-    expect(getSessionSnapshot().verificationState).toBe('legacy');
+    expect(getSessionSnapshot().verificationState).toBeNull(); // R3b: no info yet
     setVerificationState({ state: 'unverified', sasCode: 'ABC' });
     expect(getSessionSnapshot().verificationState).toBe('unverified');
     setVerificationState({ state: 'verified', sasCode: 'ABC' });
     expect(getSessionSnapshot().verificationState).toBe('verified');
 
     resetSession();
-    expect(getSessionSnapshot().verificationState).toBe('legacy');
+    expect(getSessionSnapshot().verificationState).toBeNull(); // R3b: no info yet
   });
 });

@@ -167,14 +167,14 @@ describe('AC-RX-03: new transfer succeeds after reconnect (no app restart)', () 
 
     // Mid-transfer disconnect
     disconnectMidTransfer();
-    expect(isTransferAllowed(getVerificationState().state, false)).toBe(false);
+    expect(isTransferAllowed(getVerificationState()?.state ?? null, false)).toBe(false);
 
     // Session B: reconnect
     connectToPeer('PEER-B');
     mockState.isConnected = true;
 
     // Legacy session (no HELLO/identity): transfer allowed
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
     expect(isTransferAllowed('legacy', true)).toBe(true);
   });
 
@@ -188,7 +188,7 @@ describe('AC-RX-03: new transfer succeeds after reconnect (no app restart)', () 
     mockState.isConnected = true;
 
     // Trust reset — must re-verify
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
     expect(isTransferAllowed('legacy', true)).toBe(true);
   });
 });
@@ -214,8 +214,8 @@ describe('AC-RX-04: no stale transfer state crosses reconnect boundary', () => {
     setVerificationState({ state: 'verified', sasCode: 'SAS-A' });
 
     resetSession();
-    expect(getVerificationState().state).toBe('legacy');
-    expect(getVerificationState().sasCode).toBeNull();
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(getVerificationState()?.sasCode ?? null).toBeNull();
   });
 
   it('session phase clean after disconnect', () => {
@@ -294,7 +294,7 @@ describe('AC-RX-06: regression — full disconnect-reconnect-resend cycle', () =
       expect(isCurrentGeneration(gen)).toBe(false);
       expect(getPhase()).toBe('idle');
       expect(mockState.transferProgress).toBeNull();
-      expect(getVerificationState().state).toBe('legacy');
+      expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
     }
 
     // Can still start a new connection after all cycles

@@ -132,10 +132,9 @@ describe('Verification state bus', () => {
     resetVerificationState();
   });
 
-  it('initializes to legacy state', () => {
-    const state = getVerificationState();
-    expect(state.state).toBe('legacy');
-    expect(state.sasCode).toBeNull();
+  it('initializes to no verification info', () => {
+    // R3b: the default is "nothing reported yet", not a legacy peer.
+    expect(getVerificationState()).toBeNull();
   });
 
   it('transitions to unverified with SAS code', () => {
@@ -150,11 +149,11 @@ describe('Verification state bus', () => {
     expect(getVerificationState().state).toBe('verified');
   });
 
-  it('resets back to legacy', () => {
+  it('resets back to no verification info', () => {
     setVerificationState({ state: 'verified', sasCode: 'A1B2C3' });
     resetVerificationState();
-    expect(getVerificationState().state).toBe('legacy');
-    expect(getVerificationState().sasCode).toBeNull();
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
+    expect(getVerificationState()?.sasCode ?? null).toBeNull();
   });
 
   it('notifies listeners on state change', () => {
@@ -184,14 +183,14 @@ describe('Transfer gating by verification state', () => {
 
   it('blocks transfer when unverified (state = unverified)', () => {
     setVerificationState({ state: 'unverified', sasCode: 'ABC123' });
-    const vState = getVerificationState().state;
+    const vState = getVerificationState()?.state ?? null;
     const transferAllowed = vState === 'verified' || vState === 'legacy';
     expect(transferAllowed).toBe(false);
   });
 
   it('allows transfer when verified', () => {
     setVerificationState({ state: 'verified', sasCode: 'ABC123' });
-    const vState = getVerificationState().state;
+    const vState = getVerificationState()?.state ?? null;
     const transferAllowed = vState === 'verified' || vState === 'legacy';
     expect(transferAllowed).toBe(true);
   });
@@ -199,7 +198,7 @@ describe('Transfer gating by verification state', () => {
   it('allows transfer for legacy peers (with warning in UI)', () => {
     // Legacy state means transfer MAY proceed — the UI shows a warning
     setVerificationState({ state: 'legacy', sasCode: null });
-    const vState = getVerificationState().state;
+    const vState = getVerificationState()?.state ?? null;
     const transferAllowed = vState === 'verified' || vState === 'legacy';
     expect(transferAllowed).toBe(true);
   });
@@ -251,7 +250,7 @@ describe('Reject verification flow', () => {
 
     // User rejects → disconnect → resetVerificationState
     resetVerificationState();
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
 
     // Transfer remains blocked (legacy is allowed, but connection is gone)
     // The store.isConnected would be false — file upload hidden
@@ -262,7 +261,7 @@ describe('Reject verification flow', () => {
 
     // Reject path resets, never calls setVerificationState('verified')
     resetVerificationState();
-    expect(getVerificationState().state).not.toBe('verified');
+    expect(getVerificationState()?.state ?? null).not.toBe('verified');
   });
 });
 
@@ -287,7 +286,7 @@ describe('Pin mismatch handling', () => {
     // Simulate mismatch path: error handler calls resetVerificationState
     setVerificationState({ state: 'unverified', sasCode: 'BEEF42' });
     resetVerificationState();
-    expect(getVerificationState().state).toBe('legacy');
+    expect(getVerificationState()).toBeNull(); // R3b: no verification info yet
   });
 });
 
@@ -307,12 +306,12 @@ describe('Legacy peer handling', () => {
 
   it('legacy is distinct from verified', () => {
     setVerificationState({ state: 'legacy', sasCode: null });
-    expect(getVerificationState().state).not.toBe('verified');
+    expect(getVerificationState()?.state ?? null).not.toBe('verified');
   });
 
   it('legacy is distinct from unverified', () => {
     setVerificationState({ state: 'legacy', sasCode: null });
-    expect(getVerificationState().state).not.toBe('unverified');
+    expect(getVerificationState()?.state ?? null).not.toBe('unverified');
   });
 
   it('notifies listener with legacy state', () => {

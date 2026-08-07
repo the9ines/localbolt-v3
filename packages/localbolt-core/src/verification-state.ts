@@ -8,14 +8,26 @@
 
 import type { VerificationInfo } from '@the9ines/localbolt-browser';
 
-type Listener = (info: VerificationInfo) => void;
+/**
+ * R3b: `null` means "no verification info received yet" - the state before any
+ * handshake reports, and the state restored on every reset.
+ *
+ * It is deliberately NOT `legacy`. `legacy` is a wire state meaning a peer
+ * genuinely negotiated a pre-SAS session, and it permits transfer; using it as
+ * the default made "we have heard nothing" indistinguishable from "we heard
+ * legacy" and left the outbound gate open before any peer was assessed.
+ *
+ * This sentinel is internal app state only. It is not a fourth VerificationState
+ * and never crosses the wire - the union stays 'unverified' | 'verified' | 'legacy'.
+ * Callers must handle null explicitly and treat it as not-yet-trusted.
+ */
+type Listener = (info: VerificationInfo | null) => void;
 
-const INITIAL: VerificationInfo = { state: 'legacy', sasCode: null };
-
-let current: VerificationInfo = { ...INITIAL };
+let current: VerificationInfo | null = null;
 const listeners = new Set<Listener>();
 
-export function getVerificationState(): VerificationInfo {
+/** Current verification info, or null when nothing has been reported yet. */
+export function getVerificationState(): VerificationInfo | null {
   return current;
 }
 
@@ -29,7 +41,8 @@ export function onVerificationStateChange(fn: Listener): () => void {
   return () => listeners.delete(fn);
 }
 
+/** Clear back to "no info yet". Subscribers are notified with null. */
 export function resetVerificationState(): void {
-  current = { ...INITIAL };
+  current = null;
   listeners.forEach((fn) => fn(current));
 }

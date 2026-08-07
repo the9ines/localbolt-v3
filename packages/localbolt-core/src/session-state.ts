@@ -35,7 +35,13 @@ export interface SessionSnapshot {
   phase: SessionPhase;
   generation: number;
   targetPeer: string | null;
-  verificationState: VerificationInfo['state'];
+  /**
+   * R3b: null when no verification info has been received yet. Deliberately not
+   * collapsed to 'legacy' — that would reintroduce the conflation this field is
+   * meant to expose. SessionSnapshot is internal app state, so widening it here
+   * does not add a value to the VerificationState wire union.
+   */
+  verificationState: VerificationInfo['state'] | null;
 }
 
 type SessionListener = (snapshot: SessionSnapshot) => void;
@@ -55,7 +61,7 @@ function snapshot(): SessionSnapshot {
     phase,
     generation,
     targetPeer,
-    verificationState: getVerificationState().state,
+    verificationState: getVerificationState()?.state ?? null,
   };
 }
 
@@ -148,7 +154,8 @@ export function markConnected(): boolean {
  * Clears:
  *  - session phase → idle
  *  - target peer → null
- *  - verification state → legacy (via resetVerificationState)
+ *  - verification state → no-info/null (via resetVerificationState), which
+ *    closes the transfer gate until a peer is assessed again
  *  - SDK store: connectingTo, incomingRequest, connectedDevice,
  *               isConnected, transferProgress, showDeviceList
  */
